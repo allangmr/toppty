@@ -107,33 +107,39 @@ export default async function ActivityPage({
   return (
     <>
       <Header />
-      <main className="mx-auto flex w-full max-w-xl flex-1 flex-col gap-4 px-4 py-8">
+      <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-4 px-4 py-8">
         {row.activity.type === "NEW_NUMBER_ONE" ? (
-          <p className="font-display text-2xl tracking-[0.14em] text-accent">
-            NUEVO #1 EN PANAMÁ 👑
+          <p className="text-sm font-semibold tracking-wide text-primary uppercase">
+            Nuevo #1 en Panamá
           </p>
         ) : (
-          <p className="font-display text-2xl tracking-[0.14em]">MOVIMIENTO</p>
+          <p className="text-sm font-semibold tracking-wide text-muted-foreground uppercase">
+            Movimiento
+          </p>
         )}
-        <h1 className="font-display text-6xl leading-none">{name}</h1>
+        <h1 className="text-5xl font-bold tracking-[-0.04em] md:text-6xl">
+          {name}
+        </h1>
         {row.activity.amountCents ? (
-          <p className="font-display text-6xl">
+          <p className="text-5xl font-bold tracking-[-0.04em] text-primary">
             {formatUsd(row.activity.amountCents)}
           </p>
         ) : null}
         {prev ? (
-          <p className="text-lg">
+          <p className="text-lg text-muted-foreground">
             acaba de tumbar a {prev}
-            {prevAmount ? ` · ${formatUsd(prevAmount)} → ${formatUsd(row.activity.amountCents ?? 0)}` : ""}
+            {prevAmount
+              ? ` · ${formatUsd(prevAmount)} → ${formatUsd(row.activity.amountCents ?? 0)}`
+              : ""}
           </p>
         ) : (
-          <p className="text-lg">{copyFrom(row)}</p>
+          <p className="text-lg text-muted-foreground">{copyFrom(row)}</p>
         )}
         <Link
           href="/#ranking"
-          className="mt-4 border-2 border-ink bg-ink px-4 py-3 text-center font-display text-xl tracking-widest text-cream"
+          className="mt-4 inline-flex h-11 w-fit items-center justify-center rounded-full bg-primary px-5 text-sm font-bold text-primary-foreground transition-colors hover:bg-primary/80"
         >
-          VER EL RANKING
+          Ver el ranking
         </Link>
       </main>
       <Footer />

@@ -31,7 +31,13 @@ export function CheckoutSuccessClient() {
       setStatus(json);
       setTries((n) => n + 1);
     }
-    void poll();
+    void fetch("/api/paypal/capture", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ bidId }),
+    }).finally(() => {
+      if (!cancelled) void poll();
+    });
     const timer = window.setInterval(poll, 1500);
     return () => {
       cancelled = true;
@@ -45,39 +51,48 @@ export function CheckoutSuccessClient() {
   return (
     <>
       <Header />
-      <main className="mx-auto flex w-full max-w-xl flex-1 flex-col justify-center gap-4 px-4 py-12">
+      <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col justify-center gap-4 px-4 py-12">
         {paid ? (
           <>
-            <p className="font-display text-5xl leading-none">Ya estás dentro.</p>
-            <p className="text-lg">
+            <p className="text-4xl font-bold tracking-[-0.04em] md:text-5xl">
+              Ya estás dentro.
+            </p>
+            <p className="text-lg text-muted-foreground">
               {status.displayName} quedó #{status.rank} con{" "}
               {formatUsd(status.amountCents)}.
             </p>
             {status.rank === 1 ? (
-              <p className="font-display text-2xl">Nuevo rey de PTY 👑</p>
+              <p className="text-xl font-semibold text-primary">
+                Nuevo #1 en PTY
+              </p>
             ) : (
-              <p>A ver cuánto duras ahí.</p>
+              <p className="text-muted-foreground">A ver cuánto duras ahí.</p>
             )}
             <Link
               href="/#ranking"
-              className="mt-4 border-2 border-ink bg-ink px-4 py-3 text-center font-display text-xl tracking-widest text-cream"
+              className="mt-4 inline-flex h-11 w-fit items-center justify-center rounded-full bg-primary px-5 text-sm font-bold text-primary-foreground transition-colors hover:bg-primary/80"
             >
-              VER EL RANKING
+              Ver el ranking
             </Link>
           </>
         ) : failed ? (
           <>
-            <p className="font-display text-5xl">El pago no pasó.</p>
-            <Link href="/#subir" className="underline">
+            <p className="text-4xl font-bold tracking-[-0.04em]">
+              El pago no pasó.
+            </p>
+            <Link
+              href="/#subir"
+              className="text-primary underline-offset-2 hover:underline"
+            >
               Inténtalo otra vez
             </Link>
           </>
         ) : (
           <>
-            <p className="font-display text-5xl leading-none">
+            <p className="text-4xl font-bold tracking-[-0.04em] md:text-5xl">
               Confirmando tu pago…
             </p>
-            <p className="text-muted">
+            <p className="text-muted-foreground">
               No cerramos con el redirect. Esperamos la confirmación real.
               {tries > 8 ? " Si tarda, recarga en un minuto." : ""}
             </p>

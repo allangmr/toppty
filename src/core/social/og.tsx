@@ -1,25 +1,10 @@
-import { readFile } from "node:fs/promises";
-import { join } from "node:path";
 import { ImageResponse } from "next/og";
 
 export const ogSize = { width: 1200, height: 630 };
 
-export async function displayFontData() {
-  return readFile(join(process.cwd(), "src/fonts/BebasNeue-Regular.ttf"));
-}
-
 export async function renderOg(element: React.ReactElement) {
-  const font = await displayFontData();
   return new ImageResponse(element, {
     ...ogSize,
-    fonts: [
-      {
-        name: "Bebas Neue",
-        data: font,
-        style: "normal",
-        weight: 400,
-      },
-    ],
   });
 }
 
@@ -31,9 +16,9 @@ export function OgShell({ children }: { children: React.ReactNode }) {
         height: "630px",
         display: "flex",
         flexDirection: "column",
-        background: "#f3eee4",
-        color: "#161412",
-        padding: "42px",
+        background: "#f7f9fc",
+        color: "#121826",
+        padding: "48px",
       }}
     >
       <div
@@ -42,9 +27,11 @@ export function OgShell({ children }: { children: React.ReactNode }) {
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          border: "10px solid #161412",
-          padding: "36px 40px",
-          background: "#fffaf1",
+          borderRadius: 28,
+          border: "2px solid #d9e0eb",
+          padding: "40px 44px",
+          background: "#ffffff",
+          boxShadow: "0 18px 60px rgba(11,79,168,0.08)",
         }}
       >
         {children}

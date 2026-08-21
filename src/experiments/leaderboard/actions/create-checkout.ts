@@ -5,7 +5,7 @@ import { and, eq, gte, sql } from "drizzle-orm";
 import { z } from "zod";
 import { trackEvent } from "@/core/analytics/track";
 import { bids, getDb, listings } from "@/core/db";
-import { canSkipStripe, getStripe } from "@/core/payments/stripe";
+import { canSkipPaypal, createPaypalCheckout, paypalEnabled } from "@/core/payments/paypal";
 import { fingerprintFromHeaders } from "@/core/security/fingerprint";
 import { getAppUrl, createId, dollarsToCents } from "@/lib/utils";
 import { leaderboardConfig } from "../config";
@@ -161,48 +161,34 @@ export async function createCheckout(
   const successUrl = `${appUrl}/checkout/success?bid=${bidId}`;
   const cancelUrl = `${appUrl}/checkout/cancel`;
 
-  if (canSkipStripe()) {
+  if (canSkipPaypal()) {
     await fulfillPaidBid({ bidId });
     return { ok: true, url: successUrl };
   }
 
-  const session = await getStripe().checkout.sessions.create({
-    mode: "payment",
-    success_url: successUrl,
-    cancel_url: cancelUrl,
-    client_reference_id: bidId,
-    metadata: {
-      bidId,
-      experiment: leaderboardConfig.experimentId,
-    },
-    payment_intent_data: {
-      metadata: { bidId },
-    },
-    line_items: [
-      {
-        quantity: 1,
-        price_data: {
-          currency: leaderboardConfig.currency,
-          unit_amount: amountCents,
-          product_data: {
-            name: `TopPTY ranking · ${displayName}`,
-            description: "Puesto en el ranking de TopPTY.lol",
-          },
-        },
-      },
-    ],
-  });
-
-  if (!session.url) {
-    return { ok: false, error: "No se pudo abrir el pago. Intenta de nuevo." };
+  if (!paypalEnabled()) {
+    return { ok: false, error: "PayPal no está configurado todavía." };
   }
 
-  await db
-    .update(bids)
-    .set({ stripeSessionId: session.id })
-    .where(eq(bids.id, bidId));
+  try {
+    const checkout = await createPaypalCheckout({
+      bidId,
+      amountCents,
+      currency: leaderboardConfig.currency,
+      displayName,
+      successUrl,
+      cancelUrl,
+    });
 
-  return { ok: true, url: session.url };
+    await db
+      .update(bids)
+      .set({ paypalOrderId: checkout.orderId })
+      .where(eq(bids.id, bidId));
+
+    return { ok: true, url: checkout.url };
+  } catch {
+    return { ok: false, error: "No se pudo abrir PayPal. Intenta de nuevo." };
+  }
 }
 
 export async function lookupIdentity(identifier: string) {

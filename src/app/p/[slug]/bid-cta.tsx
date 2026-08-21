@@ -21,7 +21,7 @@ export function BidCta({
         trackClient("rank_cta_clicked", { rank, amountCents });
         router.push(`/?amount=${centsToDollars(amountCents)}#subir`);
       }}
-      className="w-full border-2 border-ink bg-ink px-4 py-4 font-display text-2xl tracking-[0.12em] text-cream"
+      className="inline-flex h-12 w-full items-center justify-center rounded-full bg-primary px-5 text-sm font-bold text-primary-foreground transition-colors hover:bg-primary/80"
     >
       {copy.takePlace(rank, formatUsd(amountCents))}
     </button>

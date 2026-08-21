@@ -33,24 +33,25 @@ const QUESTIONS = [
 
 export function Faq() {
   return (
-    <section id="como-funciona" className="scroll-mt-24 space-y-4">
-      <h2 className="font-display text-3xl tracking-[0.12em]">
+    <section id="como-funciona" className="mt-10 scroll-mt-6 space-y-4">
+      <h2 className="text-center text-2xl font-bold tracking-[-0.03em]">
         {copy.how}
       </h2>
-      <div id="reglas" className="scroll-mt-24 space-y-2">
+      <div id="reglas" className="scroll-mt-6 space-y-2">
         {QUESTIONS.map((item) => (
           <details
             key={item.q}
-            className="border-2 border-ink bg-bg-card px-3 py-2"
+            className="rounded-xl border border-border bg-card px-4 py-3 shadow-[var(--shadow-soft)] open:bg-muted/40"
           >
-            <summary className="cursor-pointer font-medium">{item.q}</summary>
-            <p className="mt-2 pb-2 text-sm leading-relaxed text-muted">
+            <summary className="cursor-pointer font-medium tracking-[-0.01em]">
+              {item.q}
+            </summary>
+            <p className="mt-2 pb-1 text-sm leading-relaxed text-muted-foreground">
               {item.a}
             </p>
           </details>
         ))}
       </div>
-      <p className="text-xs leading-relaxed text-muted">{copy.paymentsFinal}</p>
     </section>
   );
 }

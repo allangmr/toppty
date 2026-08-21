@@ -9,7 +9,7 @@ const csp = [
   "connect-src 'self' https://vitals.vercel-insights.com https://va.vercel-scripts.com",
   "frame-ancestors 'none'",
   "base-uri 'self'",
-  "form-action 'self' https://checkout.stripe.com",
+  "form-action 'self' https://www.paypal.com https://www.sandbox.paypal.com",
 ].join("; ");
 
 const nextConfig: NextConfig = {

@@ -8,33 +8,46 @@ export const runtime = "nodejs";
 export default async function Image() {
   return renderOg(
     <OgShell>
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <div
           style={{
-            fontFamily: "Bebas Neue",
-            fontSize: 42,
-            letterSpacing: 4,
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+            fontSize: 36,
+            fontWeight: 600,
+            letterSpacing: -1,
           }}
         >
-          TOPPTY.LOL
+          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+            <div style={{ width: 42, height: 10, borderRadius: 999, background: "#d21034" }} />
+            <div style={{ width: 58, height: 10, borderRadius: 999, background: "#0b4fa8" }} />
+            <div style={{ width: 72, height: 10, borderRadius: 999, background: "#121826" }} />
+          </div>
+          <span>
+            toppty
+            <span style={{ color: "#d21034" }}>.</span>
+            lol
+          </span>
         </div>
-        <div style={{ fontSize: 28 }}>PANAMA</div>
+        <div style={{ fontSize: 22, color: "#5b6578" }}>Panamá 🇵🇦</div>
       </div>
       <div
         style={{
           display: "flex",
           flexDirection: "column",
-          fontFamily: "Bebas Neue",
-          fontSize: 92,
-          lineHeight: 0.9,
-          letterSpacing: 1,
+          fontSize: 72,
+          fontWeight: 700,
+          lineHeight: 1.02,
+          letterSpacing: -2,
         }}
       >
-        ¿QUIEN ESTA ARRIBA
-        <br />
-        EN PANAMA?
+        Reclama el #1
+        <span style={{ color: "#0b4fa8" }}>en Panamá.</span>
       </div>
-      <div style={{ fontSize: 28 }}>Paga. Sube. Que te tumben si pueden.</div>
+      <div style={{ fontSize: 26, color: "#5b6578" }}>
+        Paga. Sube. Que te tumben si pueden.
+      </div>
     </OgShell>,
   );
 }

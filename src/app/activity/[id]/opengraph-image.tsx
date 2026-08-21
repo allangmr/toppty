@@ -14,7 +14,7 @@ export default async function Image({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  let name = "TOPPTY";
+  let name = "TopPTY";
   let prev: string | undefined;
   let isTakeover = false;
   let amount = "";
@@ -27,7 +27,7 @@ export default async function Image({
       .leftJoin(listings, eq(activities.listingId, listings.id))
       .where(eq(activities.id, id))
       .limit(1);
-    name = row?.listing?.displayName ?? "TOPPTY";
+    name = row?.listing?.displayName ?? "TopPTY";
     prev = row?.activity.metadata?.previousNumberOneDisplayName as
       | string
       | undefined;
@@ -40,7 +40,7 @@ export default async function Image({
       "@/experiments/leaderboard/queries/mock-snapshot"
     );
     const item = mockSnapshot().activity.find((row) => row.id === id);
-    name = item?.listingDisplayName ?? "TOPPTY";
+    name = item?.listingDisplayName ?? "TopPTY";
     prev = item?.metadata?.previousNumberOneDisplayName as string | undefined;
     isTakeover = item?.type === "NEW_NUMBER_ONE";
     amount = item?.amountCents ? formatUsd(item.amountCents) : "";
@@ -52,36 +52,43 @@ export default async function Image({
         style={{
           display: "flex",
           justifyContent: "space-between",
-          fontFamily: "Bebas Neue",
-          fontSize: 40,
-          letterSpacing: 3,
+          alignItems: "center",
+          fontSize: 28,
+          fontWeight: 600,
         }}
       >
-        <div>TOPPTY.LOL</div>
-        <div style={{ color: isTakeover ? "#d61f26" : "#161412" }}>
-          {isTakeover ? "NUEVO #1 EN PANAMA" : "MOVIMIENTO"}
+        <div>
+          toppty
+          <span style={{ color: "#d21034" }}>.</span>
+          lol
+        </div>
+        <div style={{ color: isTakeover ? "#e57255" : "#67625d" }}>
+          {isTakeover ? "Nuevo #1 en Panamá" : "Movimiento"}
         </div>
       </div>
-      <div style={{ display: "flex", flexDirection: "column" }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
         <div
           style={{
-            fontFamily: "Bebas Neue",
-            fontSize: 88,
-            lineHeight: 0.9,
+            fontSize: 72,
+            fontWeight: 700,
+            lineHeight: 1,
+            letterSpacing: -2,
           }}
         >
           {name}
         </div>
         <div
           style={{
-            fontFamily: "Bebas Neue",
-            fontSize: 72,
+            fontSize: 56,
+            fontWeight: 700,
+            color: "#0b4fa8",
+            letterSpacing: -1,
           }}
         >
           {amount}
         </div>
       </div>
-      <div style={{ fontSize: 28 }}>
+      <div style={{ fontSize: 26, color: "#67625d" }}>
         {isTakeover && prev
           ? `acaba de tumbar a ${prev}`
           : "A ver cuánto duras arriba."}

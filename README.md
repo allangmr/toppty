@@ -17,10 +17,8 @@ This repo is the ranking experiment inside TopPTY. Later experiments (`/ta-caro`
 - Next.js, React, TypeScript
 - Tailwind CSS
 - PostgreSQL + Drizzle ORM
-- Stripe Checkout (temporary)
+- PayPal Checkout
 - Vercel-compatible
-
-**Note:** Payments will migrate from Stripe to PayPal Checkout. Stripe is only the first checkout path. Design new payment work so swapping the provider later is straightforward.
 
 ## Commands
 
@@ -60,17 +58,30 @@ If checkout keys are empty, local bids skip the provider and mark as paid. That 
 
 ## Payments
 
-Checkout currently uses Stripe. **We will migrate to PayPal Checkout.**
+Checkout uses **PayPal**. Stripe is not used (it is not available for Panama).
 
-Until that swap, set `STRIPE_SECRET_KEY` and `STRIPE_WEBHOOK_SECRET`. Webhook:
+Create a REST app in the [PayPal Developer Dashboard](https://developer.paypal.com/dashboard/). Set:
+
+- `PAYPAL_CLIENT_ID`
+- `PAYPAL_CLIENT_SECRET`
+- `PAYPAL_ENV=sandbox` or `live`
+- `PAYPAL_WEBHOOK_ID`
+
+Webhook URL:
 
 ```text
-https://your-domain/api/stripe/webhook
+https://your-domain/api/paypal/webhook
 ```
 
-Events: `checkout.session.completed`, `checkout.session.expired`, `checkout.session.async_payment_failed`, `charge.refunded`.
+Subscribe at least to:
 
-Bids only change the ranking after a verified webhook. The success URL is not treated as payment confirmation.
+- `CHECKOUT.ORDER.APPROVED`
+- `PAYMENT.CAPTURE.COMPLETED`
+- `PAYMENT.CAPTURE.DENIED`
+- `PAYMENT.CAPTURE.REFUNDED`
+- `CHECKOUT.ORDER.VOIDED`
+
+The ranking only updates after PayPal confirms a **completed capture**. The return URL asks the server to capture the approved order, then polls bid status. A webhook is still required in production.
 
 ## Admin
 
@@ -84,8 +95,10 @@ See `.env.example`.
 | --- | --- |
 | `DATABASE_URL` | Postgres connection |
 | `NEXT_PUBLIC_APP_URL` | Canonical site URL |
-| `STRIPE_SECRET_KEY` | Stripe secret (temporary; PayPal next) |
-| `STRIPE_WEBHOOK_SECRET` | Stripe webhook signature (temporary) |
+| `PAYPAL_CLIENT_ID` | PayPal REST client id |
+| `PAYPAL_CLIENT_SECRET` | PayPal REST secret |
+| `PAYPAL_WEBHOOK_ID` | PayPal webhook id for signature verification |
+| `PAYPAL_ENV` | `sandbox` or `live` |
 | `ADMIN_PASSWORD` | Admin gate |
 | `IP_HASH_SALT` | Hash clicks without storing raw IPs |
 

@@ -105,6 +105,22 @@ const seedListings = [
     clickCount: 19,
     minutes: 300,
   },
+  ...Array.from({ length: 38 }, (_, index) => {
+    const rank = index + 8;
+    return {
+      slug: `spot-${rank}`,
+      displayName: `spot${rank}.pa`,
+      identifier: `https://spot${rank}.pa/`,
+      normalizedIdentifier: `website:spot${rank}.pa`,
+      identifierType: "website" as const,
+      socialNetwork: null,
+      destinationUrl: `https://spot${rank}.pa/`,
+      description: rank <= 20 ? `Puesto #${rank} en el ranking de PTY.` : null,
+      totalBidCents: Math.max(100, 450 - index * 8),
+      clickCount: Math.max(1, 40 - index),
+      minutes: 20 + index * 7,
+    };
+  }),
 ];
 
 async function seed() {
