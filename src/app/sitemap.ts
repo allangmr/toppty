@@ -1,12 +1,12 @@
 import type { MetadataRoute } from "next";
-import { getRankedListings } from "@/experiments/leaderboard/queries/leaderboard";
+import { getCachedRankedListings } from "@/experiments/leaderboard/queries/leaderboard";
 import { getAppUrl } from "@/lib/utils";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = getAppUrl();
-  const listings = await getRankedListings().catch(() => []);
+  const listings = await getCachedRankedListings().catch(() => []);
   return [
     {
       url: base,

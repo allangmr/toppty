@@ -6,12 +6,14 @@ import { Footer } from "@/components/footer";
 import { ListingAvatar } from "@/experiments/leaderboard/components/avatar";
 import { copy } from "@/experiments/leaderboard/copy";
 import { leaderboardConfig } from "@/experiments/leaderboard/config";
-import { getListingBySlug } from "@/experiments/leaderboard/queries/leaderboard";
+import { JsonLd } from "@/components/json-ld";
+import { getCachedListingBySlug } from "@/experiments/leaderboard/queries/leaderboard";
+import { listingJsonLd } from "@/experiments/leaderboard/seo";
 import { listingUrl } from "@/core/social/share";
 import { formatUsd } from "@/lib/utils";
 import { BidCta } from "./bid-cta";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export async function generateMetadata({
   params,
@@ -19,7 +21,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const listing = await getListingBySlug(slug);
+  const listing = await getCachedListingBySlug(slug);
   if (!listing) {
     return { title: "TopPTY.lol" };
   }
@@ -35,7 +37,12 @@ export async function generateMetadata({
       url: listingUrl(listing.slug),
       images: [{ url: `/p/${listing.slug}/opengraph-image`, width: 1200, height: 630 }],
     },
-    twitter: { card: "summary_large_image", title, description },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [`/p/${listing.slug}/opengraph-image`],
+    },
   };
 }
 
@@ -45,14 +52,18 @@ export default async function ListingPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const listing = await getListingBySlug(slug);
+  const listing = await getCachedListingBySlug(slug);
   if (!listing) notFound();
   const takeCents = listing.totalBidCents + leaderboardConfig.minIncrementCents;
 
   return (
     <>
+      <JsonLd data={listingJsonLd(listing)} />
       <Header />
-      <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-6 px-4 py-8">
+      <main
+        id="contenido"
+        className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-6 px-4 py-8"
+      >
         <p className="text-sm font-medium tracking-[-0.02em] text-muted-foreground">
           {copy.brand}
         </p>

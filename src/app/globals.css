@@ -13,7 +13,7 @@
   --secondary: #eef2f8;
   --secondary-foreground: #121826;
   --muted: #eef2f8;
-  --muted-foreground: #5b6578;
+  --muted-foreground: #445066;
   --accent: #eef2f8;
   --accent-foreground: #121826;
   --destructive: #d21034;
@@ -36,7 +36,7 @@
   --secondary: #1c2433;
   --secondary-foreground: #f2f5fa;
   --muted: #1c2433;
-  --muted-foreground: #9aa6bc;
+  --muted-foreground: #b4bfd0;
   --accent: #1c2433;
   --accent-foreground: #f2f5fa;
   --destructive: #ff4d6a;
@@ -66,7 +66,7 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
   --font-sans: var(--font-dm-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   --radius-sm: calc(var(--radius) * 0.8);
   --radius-md: var(--radius);
   --radius-xl: calc(var(--radius) * 1.4);
@@ -75,6 +75,25 @@
 
 html {
   scroll-behavior: smooth;
+}
+
+.skip-link {
+  position: absolute;
+  left: 0.75rem;
+  top: 0.75rem;
+  z-index: 100;
+  border-radius: 999px;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  padding: 0.5rem 0.9rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  transform: translateY(-180%);
+  transition: transform 0.15s ease;
+}
+
+.skip-link:focus {
+  transform: none;
 }
 
 body {

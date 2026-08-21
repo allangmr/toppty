@@ -31,7 +31,10 @@ export default async function AdminLoginPage({
 }) {
   const { error } = await searchParams;
   return (
-    <main className="mx-auto flex min-h-dvh max-w-md flex-col justify-center px-4">
+    <main
+      id="contenido"
+      className="mx-auto flex min-h-dvh max-w-md flex-col justify-center px-4"
+    >
       <h1 className="text-4xl font-bold tracking-[-0.04em]">Admin</h1>
       {!adminConfigured() ? (
         <p className="mt-4 text-muted-foreground">

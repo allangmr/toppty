@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeftIcon, ChevronRightIcon } from "@/components/icons";
 import { copy } from "../copy";
 import { leaderboardConfig } from "../config";
 import type { RankedListing } from "../types";
@@ -106,7 +106,7 @@ export function LeaderboardList({ listings }: { listings: RankedListing[] }) {
         >
           <p className="text-sm text-muted-foreground">
             {copy.pageLabel(currentPage, totalPages)}
-            <span className="text-muted-foreground/70">
+            <span className="text-muted-foreground">
               {" "}
               · {listings.length} en total
             </span>
@@ -116,9 +116,10 @@ export function LeaderboardList({ listings }: { listings: RankedListing[] }) {
               type="button"
               onClick={() => goTo(currentPage - 1)}
               disabled={currentPage <= 1}
+              aria-label="Página anterior"
               className="inline-flex h-10 items-center gap-1 rounded-full border border-border px-3 text-sm font-bold transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-40"
             >
-              <ChevronLeft className="size-4" aria-hidden />
+              <ChevronLeftIcon className="size-4" />
               {copy.pagePrev}
             </button>
             <div className="flex max-w-full flex-wrap items-center justify-center gap-1">
@@ -135,6 +136,7 @@ export function LeaderboardList({ listings }: { listings: RankedListing[] }) {
                     key={item}
                     type="button"
                     onClick={() => goTo(item)}
+                    aria-label={`Ir a la página ${item}`}
                     aria-current={item === currentPage ? "page" : undefined}
                     className={
                       item === currentPage
@@ -151,10 +153,11 @@ export function LeaderboardList({ listings }: { listings: RankedListing[] }) {
               type="button"
               onClick={() => goTo(currentPage + 1)}
               disabled={currentPage >= totalPages}
+              aria-label="Página siguiente"
               className="inline-flex h-10 items-center gap-1 rounded-full border border-border px-3 text-sm font-bold transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-40"
             >
               {copy.pageNext}
-              <ChevronRight className="size-4" aria-hidden />
+              <ChevronRightIcon className="size-4" />
             </button>
           </div>
         </nav>

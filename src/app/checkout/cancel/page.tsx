@@ -6,7 +6,10 @@ export default function CheckoutCancelPage() {
   return (
     <>
       <Header />
-      <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col justify-center gap-4 px-4 py-12">
+      <main
+        id="contenido"
+        className="mx-auto flex w-full max-w-4xl flex-1 flex-col justify-center gap-4 px-4 py-12"
+      >
         <p className="text-4xl font-bold tracking-[-0.04em] md:text-5xl">
           No se cobró nada.
         </p>

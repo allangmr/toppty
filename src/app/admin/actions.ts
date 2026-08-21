@@ -2,7 +2,7 @@
 
 import { eq } from "drizzle-orm";
 import { cookies } from "next/headers";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { isValidAdminCookie, ADMIN_COOKIE } from "@/core/admin/auth";
 import { getDb, listings } from "@/core/db";
 
@@ -21,6 +21,7 @@ export async function hideListing(formData: FormData) {
     .update(listings)
     .set({ moderationStatus: "hidden", updatedAt: new Date() })
     .where(eq(listings.id, id));
+  revalidateTag("home", "max");
   revalidatePath("/admin");
   revalidatePath("/");
 }
@@ -33,6 +34,7 @@ export async function removeListing(formData: FormData) {
     .update(listings)
     .set({ moderationStatus: "removed", updatedAt: new Date() })
     .where(eq(listings.id, id));
+  revalidateTag("home", "max");
   revalidatePath("/admin");
   revalidatePath("/");
 }
@@ -45,6 +47,7 @@ export async function restoreListing(formData: FormData) {
     .update(listings)
     .set({ moderationStatus: "active", updatedAt: new Date() })
     .where(eq(listings.id, id));
+  revalidateTag("home", "max");
   revalidatePath("/admin");
   revalidatePath("/");
 }

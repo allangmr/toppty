@@ -1,16 +1,27 @@
+import { Header } from "@/components/header";
+import { Footer } from "@/components/footer";
+import { JsonLd } from "@/components/json-ld";
+import { Faq } from "@/experiments/leaderboard/components/faq";
 import { HomeClient } from "@/experiments/leaderboard/components/home-client";
-import { getHomeSnapshot } from "@/experiments/leaderboard/queries/leaderboard";
+import { getCachedHomeSnapshot } from "@/experiments/leaderboard/queries/leaderboard";
+import { homeJsonLd } from "@/experiments/leaderboard/seo";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 30;
 
-export default async function Home({
-  searchParams,
-}: {
-  searchParams: Promise<{ amount?: string }>;
-}) {
-  const snapshot = await getHomeSnapshot();
-  const { amount } = await searchParams;
-  const prefill =
-    amount && /^\d+$/.test(amount) ? Math.max(1, Number(amount)) : null;
-  return <HomeClient initial={snapshot} prefillAmount={prefill} />;
+export default async function Home() {
+  const snapshot = await getCachedHomeSnapshot();
+  return (
+    <>
+      <JsonLd data={homeJsonLd(snapshot)} />
+      <Header />
+      <main
+        id="contenido"
+        className="mx-auto flex w-full max-w-4xl flex-1 flex-col px-4 pt-4 pb-16"
+      >
+        <HomeClient initial={snapshot} />
+        <Faq />
+      </main>
+      <Footer />
+    </>
+  );
 }

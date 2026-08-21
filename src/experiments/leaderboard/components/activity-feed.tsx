@@ -56,9 +56,12 @@ export function ActivityFeed({ items }: { items: ActivityItem[] }) {
                         {item.highlight ? " · nuevo #1" : ""}
                       </span>
                     </p>
-                    <span className="shrink-0 text-muted-foreground">
+                    <time
+                      className="shrink-0 text-muted-foreground"
+                      dateTime={item.createdAt}
+                    >
                       {timeAgoEs(new Date(item.createdAt))}
-                    </span>
+                    </time>
                   </a>
                 </li>
               );

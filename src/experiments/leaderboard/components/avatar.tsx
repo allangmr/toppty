@@ -31,6 +31,8 @@ export function ListingAvatar({
         alt=""
         width={64}
         height={64}
+        loading="lazy"
+        decoding="async"
         className={cn(dim, "shrink-0 rounded-md bg-muted object-cover")}
       />
     );

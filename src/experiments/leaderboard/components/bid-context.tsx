@@ -4,6 +4,7 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
   type ReactNode,
@@ -20,16 +21,21 @@ const BidContext = createContext<BidContextValue | null>(null);
 
 export function BidProvider({
   initialAmountCents,
-  prefillAmount,
   children,
 }: {
   initialAmountCents: number;
-  prefillAmount: number | null;
   children: ReactNode;
 }) {
-  const [amountDollars, setAmountDollars] = useState(
-    prefillAmount ?? centsToDollars(initialAmountCents),
+  const [amountDollars, setAmountDollars] = useState(() =>
+    centsToDollars(initialAmountCents),
   );
+
+  useEffect(() => {
+    const raw = new URLSearchParams(window.location.search).get("amount");
+    if (raw && /^\d+$/.test(raw)) {
+      setAmountDollars(Math.max(1, Number(raw)));
+    }
+  }, []);
 
   const takePlace = useCallback((amountCents: number) => {
     setAmountDollars(centsToDollars(amountCents));

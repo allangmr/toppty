@@ -127,7 +127,7 @@ export function ListingCard({
           {listing.description ? (
             <p
               className={cn(
-                "min-w-0 text-muted-foreground/70",
+                "min-w-0 text-muted-foreground",
                 isFirst
                   ? "line-clamp-3 text-xs md:text-sm"
                   : isSecond
@@ -146,10 +146,14 @@ export function ListingCard({
               isTopThree ? "text-[11px] md:text-xs" : "text-[10px] md:text-[11px]",
             )}
           >
-            <span className="text-muted-foreground/70">
-              {listing.lastPaidAt
-                ? timeAgoEs(new Date(listing.lastPaidAt))
-                : "recién"}
+            <span className="text-muted-foreground">
+              {listing.lastPaidAt ? (
+                <time dateTime={listing.lastPaidAt}>
+                  {timeAgoEs(new Date(listing.lastPaidAt))}
+                </time>
+              ) : (
+                "recién"
+              )}
             </span>
             <span className="inline-flex items-center gap-1 font-semibold text-foreground">
               <span className="relative inline-flex size-1.5 shrink-0">

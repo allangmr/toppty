@@ -14,7 +14,7 @@ export const dynamic = "force-dynamic";
 export default async function AdminPage() {
   if (!process.env.DATABASE_URL) {
     return (
-      <main className="mx-auto max-w-xl px-4 py-12">
+      <main id="contenido" className="mx-auto max-w-xl px-4 py-12">
         <h1 className="text-4xl font-bold tracking-[-0.04em]">Admin</h1>
         <p className="mt-4 text-muted-foreground">
           Configura DATABASE_URL para ver listings y pagos.
@@ -47,7 +47,7 @@ export default async function AdminPage() {
   ]);
 
   return (
-    <main className="mx-auto max-w-5xl space-y-10 px-4 py-8 text-sm">
+    <main id="contenido" className="mx-auto max-w-5xl space-y-10 px-4 py-8 text-sm">
       <h1 className="text-4xl font-bold tracking-[-0.04em]">Admin</h1>
       <section className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <Stat label="Listings" value={listingRows.length} />

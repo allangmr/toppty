@@ -2,7 +2,7 @@
 
 import { useActionState, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Globe } from "lucide-react";
+import { GlobeIcon } from "@/components/icons";
 import { trackClient } from "@/components/track-client";
 import { centsToDollars, dollarsToCents, formatUsd } from "@/lib/utils";
 import {
@@ -93,7 +93,7 @@ export function BidModule({
 
   return (
     <section id="subir" className="scroll-mt-6 animate-fade-up">
-      <h2 className="flex flex-wrap items-center justify-center gap-x-2 text-center text-[28px] font-bold tracking-[-0.03em] text-pretty md:text-[40px]">
+      <h1 className="flex flex-wrap items-center justify-center gap-x-2 text-center text-[28px] font-bold tracking-[-0.03em] text-pretty md:text-[40px]">
         <span>{copy.takeNumberOne}</span>
         <span className="inline-flex items-center gap-2">
           <button
@@ -144,7 +144,7 @@ export function BidModule({
             +
           </button>
         </span>
-      </h2>
+      </h1>
 
       <p className="mx-auto mt-2 max-w-md text-center text-sm font-medium leading-relaxed text-pretty text-muted-foreground">
         <span className="text-primary/70">
@@ -160,7 +160,7 @@ export function BidModule({
         <div className="flex flex-col items-stretch gap-2 md:flex-row md:items-center">
           <div className="relative min-w-0 flex-1">
             <span className="pointer-events-none absolute top-1/2 left-2.5 -translate-y-1/2 text-muted-foreground">
-              <Globe className="size-3.5" aria-hidden />
+              <GlobeIcon className="size-3.5" />
             </span>
             <input
               id="identifier"
@@ -170,6 +170,7 @@ export function BidModule({
               onChange={(event) => setIdentifier(event.target.value)}
               onBlur={() => void onIdentifierBlur()}
               placeholder={copy.identifierLabel}
+              aria-label={copy.identifierLabel}
               autoComplete="off"
               spellCheck={false}
               required
