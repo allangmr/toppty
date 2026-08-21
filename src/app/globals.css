@@ -155,6 +155,56 @@ body {
   }
 }
 
+@keyframes pop {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.08);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes nudge {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-1px);
+  }
+}
+
+@keyframes dash-shift {
+  to {
+    background-position: 16px 100%;
+  }
+}
+
+@keyframes bar-in {
+  from {
+    opacity: 0;
+    transform: scaleX(0.4);
+  }
+  to {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}
+
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .animate-fade-up {
   animation: fade-up 0.45s ease-out both;
 }
@@ -180,17 +230,117 @@ body {
 }
 
 .animate-crown {
-  animation:
-    podium-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) both,
-    crown-glow 3s ease-in-out 0.55s infinite,
-    podium-float 3.6s ease-in-out 0.55s infinite;
+  animation: podium-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-pop {
+  animation: pop 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.animate-nudge {
+  animation: nudge 2.8s ease-in-out infinite;
+}
+
+.animate-card-in {
+  animation: card-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-card-in-delay {
+  animation-delay: 0.08s;
+}
+
+.motion-press {
+  transition: transform 0.15s ease;
+}
+
+.motion-press:active {
+  transform: scale(0.94);
+}
+
+.amount-dash {
+  background-image: linear-gradient(
+    to right,
+    currentColor 50%,
+    transparent 50%
+  );
+  background-position: 0 100%;
+  background-repeat: repeat-x;
+  background-size: 16px 2px;
+}
+
+.brand-bar {
+  transform-box: fill-box;
+  transform-origin: left center;
+  animation: bar-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.brand-bar:nth-child(1) {
+  animation-delay: 0.02s;
+}
+
+.brand-bar:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.brand-bar:nth-child(3) {
+  animation-delay: 0.18s;
+}
+
+@media (max-width: 767px) {
+  .animate-nudge {
+    animation: none;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .motion-press:hover {
+    transform: scale(1.06);
+  }
+
+  .motion-lift {
+    transition: transform 0.2s ease;
+  }
+
+  .motion-lift:hover {
+    transform: translateY(-2px);
+  }
+
+  .animate-crown {
+    animation:
+      podium-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) both,
+      podium-float 3.6s ease-in-out 0.55s infinite;
+  }
+
+  .amount-dash {
+    animation: dash-shift 0.8s linear infinite;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
   .animate-podium,
   .animate-crown,
   .animate-fade-up,
-  .animate-soft-pulse {
+  .animate-soft-pulse,
+  .animate-pop,
+  .animate-nudge,
+  .animate-card-in,
+  .brand-bar,
+  .amount-dash {
     animation: none !important;
+  }
+
+  .motion-press,
+  .motion-lift {
+    transition: none !important;
+  }
+
+  .motion-press:hover,
+  .motion-press:active,
+  .motion-lift:hover {
+    transform: none !important;
   }
 }

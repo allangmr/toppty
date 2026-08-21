@@ -57,8 +57,12 @@ export function HomeClient({
           />
 
           <div className="mb-2 grid grid-cols-1 items-stretch gap-4 md:grid-cols-2">
-            <Trending items={data.trending} />
-            <ActivityFeed items={data.activity} />
+            <div className="animate-card-in motion-lift h-full">
+              <Trending items={data.trending} />
+            </div>
+            <div className="animate-card-in animate-card-in-delay motion-lift h-full">
+              <ActivityFeed items={data.activity} />
+            </div>
           </div>
 
           <section id="ranking" className="scroll-mt-6">

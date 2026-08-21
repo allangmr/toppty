@@ -103,16 +103,19 @@ export function BidModule({
               bump(-1);
             }}
             aria-label="Bajar monto un dólar"
-            className="inline-flex size-6 items-center justify-center rounded-full bg-primary/15 text-sm font-bold text-primary transition-colors hover:bg-primary/25"
+            className="motion-press inline-flex size-6 items-center justify-center rounded-full bg-primary/15 text-sm font-bold text-primary transition-colors hover:bg-primary/25"
           >
             −
           </button>
-          <label className="relative inline-block text-primary underline decoration-2 decoration-dashed underline-offset-[6px]">
+          <label className="relative inline-block text-primary">
             <span className="sr-only">Monto en dólares</span>
             <span className="invisible whitespace-nowrap tabular-nums" aria-hidden>
               ${amountDollars}
             </span>
-            <span className="absolute inset-0 flex items-baseline">
+            <span
+              key={amountDollars}
+              className="amount-dash animate-pop absolute inset-0 flex items-baseline pb-0.5"
+            >
               <span aria-hidden>$</span>
               <input
                 name="amountDollarsDisplay"
@@ -136,7 +139,7 @@ export function BidModule({
               bump(1);
             }}
             aria-label="Subir monto un dólar"
-            className="inline-flex size-6 items-center justify-center rounded-full bg-primary/15 text-sm font-bold text-primary transition-colors hover:bg-primary/25"
+            className="motion-press inline-flex size-6 items-center justify-center rounded-full bg-primary/15 text-sm font-bold text-primary transition-colors hover:bg-primary/25"
           >
             +
           </button>
@@ -176,7 +179,7 @@ export function BidModule({
           <button
             type="submit"
             disabled={pending || !identifier.trim()}
-            className="inline-flex h-11 w-full shrink-0 cursor-pointer items-center justify-center rounded-full bg-primary px-5 text-sm font-bold text-primary-foreground transition-colors hover:bg-primary/80 disabled:cursor-not-allowed disabled:opacity-50 md:w-auto"
+            className="motion-press inline-flex h-11 w-full shrink-0 cursor-pointer items-center justify-center rounded-full bg-primary px-5 text-sm font-bold text-primary-foreground transition-colors hover:bg-primary/80 disabled:cursor-not-allowed disabled:opacity-50 md:w-auto"
           >
             {pending ? "Abriendo pago…" : copy.submit}
           </button>
@@ -185,7 +188,10 @@ export function BidModule({
         <p className="text-center text-xs leading-relaxed text-pretty text-muted-foreground">
           {copy.identifierHint}
         </p>
-        <p className="text-center text-sm text-muted-foreground">
+        <p
+          key={`${estimated}-${amountDollars}`}
+          className="animate-pop text-center text-sm text-muted-foreground"
+        >
           {helper}
           {nextHint}
         </p>
