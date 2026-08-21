@@ -1,3 +1,4 @@
+import { revalidatePath, revalidateTag } from "next/cache";
 import { and, asc, desc, eq, gt } from "drizzle-orm";
 import { trackEvent } from "@/core/analytics/track";
 import { activities, bids, getDb, listings, type ListingRow } from "@/core/db";
@@ -163,6 +164,12 @@ export async function fulfillPaidBid(input: {
         rank: result.newRank ?? 0,
       },
     });
+    revalidateTag("home", "max");
+    revalidatePath("/");
+    revalidatePath("/sitemap.xml");
+    if (result.listing) {
+      revalidatePath(`/p/${result.listing.slug}`);
+    }
   }
 
   return result;

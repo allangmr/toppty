@@ -65,6 +65,7 @@ export type HomeSnapshot = {
   visitCount: number | null;
   takeFirstCents: number;
   numberOne: RankedListing | null;
+  generatedAt: string;
 };
 
 export type ActivityOgPayload = {

@@ -4,6 +4,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
+import { JsonLd } from "@/components/json-ld";
+import { activityJsonLd } from "@/experiments/leaderboard/seo";
 import { activities, getDb, listings } from "@/core/db";
 import { activityUrl } from "@/core/social/share";
 import { formatUsd } from "@/lib/utils";
@@ -70,7 +72,12 @@ export async function generateMetadata({
       description: copyFrom(row),
       url: activityUrl(id),
     },
-    twitter: { card: "summary_large_image", title },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description: copyFrom(row),
+      images: [`/activity/${id}/opengraph-image`],
+    },
   };
 }
 
@@ -106,8 +113,18 @@ export default async function ActivityPage({
 
   return (
     <>
+      <JsonLd
+        data={activityJsonLd({
+          id,
+          name,
+          description: copyFrom(row),
+        })}
+      />
       <Header />
-      <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-4 px-4 py-8">
+      <main
+        id="contenido"
+        className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-4 px-4 py-8"
+      >
         {row.activity.type === "NEW_NUMBER_ONE" ? (
           <p className="text-sm font-semibold tracking-wide text-primary uppercase">
             Nuevo #1 en Panamá

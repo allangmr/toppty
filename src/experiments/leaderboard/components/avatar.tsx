@@ -31,6 +31,8 @@ export function ListingAvatar({
         alt=""
         width={64}
         height={64}
+        loading="lazy"
+        decoding="async"
         className={cn(dim, "shrink-0 rounded-md bg-muted object-cover")}
       />
     );
@@ -42,7 +44,7 @@ export function ListingAvatar({
         dim,
         "flex shrink-0 items-center justify-center rounded-md font-semibold text-primary-foreground",
       )}
-      style={{ background: `hsl(${hue} 42% 42%)` }}
+      style={{ background: `hsl(${hue} 48% 28%)` }}
       aria-hidden
     >
       {initialsFromName(name)}

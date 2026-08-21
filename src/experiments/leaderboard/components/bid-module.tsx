@@ -1,8 +1,15 @@
 "use client";
 
-import { useActionState, useEffect, useMemo, useRef, useState } from "react";
+import {
+  useActionState,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 import { useRouter } from "next/navigation";
-import { Globe } from "lucide-react";
+import { GlobeIcon } from "@/components/icons";
 import { trackClient } from "@/components/track-client";
 import { centsToDollars, dollarsToCents, formatUsd } from "@/lib/utils";
 import {
@@ -10,7 +17,6 @@ import {
   lookupIdentity,
   type CheckoutState,
 } from "../actions/create-checkout";
-import { leaderboardConfig } from "../config";
 import { copy } from "../copy";
 import { estimateRank } from "../ranking";
 import type { RankedListing } from "../types";
@@ -21,9 +27,13 @@ const initialState: CheckoutState | null = null;
 export function BidModule({
   takeFirstCents,
   listings,
+  claim,
+  intro,
 }: {
   takeFirstCents: number;
   listings: RankedListing[];
+  claim: ReactNode;
+  intro: ReactNode;
 }) {
   const router = useRouter();
   const { amountDollars, setAmountDollars } = useBid();
@@ -92,9 +102,9 @@ export function BidModule({
       : "";
 
   return (
-    <section id="subir" className="scroll-mt-6 animate-fade-up">
-      <h2 className="flex flex-wrap items-center justify-center gap-x-2 text-center text-[28px] font-bold tracking-[-0.03em] text-pretty md:text-[40px]">
-        <span>{copy.takeNumberOne}</span>
+    <section id="subir" className="scroll-mt-6">
+      <h1 className="flex flex-wrap items-center justify-center gap-x-2 text-center text-[28px] font-bold tracking-[-0.03em] md:text-[40px]">
+        {claim}
         <span className="inline-flex items-center gap-2">
           <button
             type="button"
@@ -114,7 +124,7 @@ export function BidModule({
             </span>
             <span
               key={amountDollars}
-              className="amount-dash animate-pop absolute inset-0 flex items-baseline pb-0.5"
+              className="amount-dash absolute inset-0 flex items-baseline pb-0.5"
             >
               <span aria-hidden>$</span>
               <input
@@ -144,23 +154,16 @@ export function BidModule({
             +
           </button>
         </span>
-      </h2>
+      </h1>
 
-      <p className="mx-auto mt-2 max-w-md text-center text-sm font-medium leading-relaxed text-pretty text-muted-foreground">
-        <span className="text-primary/70">
-          Los puestos nuevos empiezan en{" "}
-          {formatUsd(leaderboardConfig.minBidCents)}.
-        </span>{" "}
-        Pagar menos que el #1 igual te pone en el ranking en el puesto que
-        alcance tu monto.
-      </p>
+      {intro}
 
       <form action={action} className="mt-4 flex flex-col gap-3">
         <input type="hidden" name="amountDollars" value={amountDollars} />
         <div className="flex flex-col items-stretch gap-2 md:flex-row md:items-center">
           <div className="relative min-w-0 flex-1">
             <span className="pointer-events-none absolute top-1/2 left-2.5 -translate-y-1/2 text-muted-foreground">
-              <Globe className="size-3.5" aria-hidden />
+              <GlobeIcon className="size-3.5" />
             </span>
             <input
               id="identifier"
@@ -170,6 +173,7 @@ export function BidModule({
               onChange={(event) => setIdentifier(event.target.value)}
               onBlur={() => void onIdentifierBlur()}
               placeholder={copy.identifierLabel}
+              aria-label={copy.identifierLabel}
               autoComplete="off"
               spellCheck={false}
               required

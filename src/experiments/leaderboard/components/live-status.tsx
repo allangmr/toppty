@@ -8,7 +8,10 @@ export function LiveStatus({
   if (!onlineCount && !visitCount) return null;
 
   return (
-    <div className="animate-pop inline-block max-w-full rounded-full bg-muted px-3 py-1.5 text-center text-sm text-balance text-muted-foreground transition-colors">
+    <div
+      aria-live="polite"
+      className="inline-block max-w-full rounded-full bg-muted px-3 py-1.5 text-center text-sm text-balance text-muted-foreground transition-colors"
+    >
       <span className="inline-flex flex-wrap items-center justify-center gap-x-1.5 gap-y-1">
         {onlineCount ? (
           <span className="inline-flex items-center gap-1.5 whitespace-nowrap">

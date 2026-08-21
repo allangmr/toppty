@@ -25,28 +25,28 @@ export function Header() {
           <nav aria-label="Principal">
             <ul className="flex items-center gap-4 text-sm sm:gap-5">
               <li>
-                <a
-                  href="#ranking"
+                <Link
+                  href="/#ranking"
                   className="font-medium text-foreground transition-colors hover:text-foreground"
                 >
                   {copy.ranking}
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="#como-funciona"
+                <Link
+                  href="/#como-funciona"
                   className="font-medium text-muted-foreground transition-colors hover:text-foreground"
                 >
                   {copy.how}
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="#reglas"
+                <Link
+                  href="/#reglas"
                   className="font-medium text-muted-foreground transition-colors hover:text-foreground"
                 >
                   {copy.rules}
-                </a>
+                </Link>
               </li>
             </ul>
           </nav>

@@ -1,3 +1,4 @@
+import { unstable_cache } from "next/cache";
 import { and, asc, desc, eq, gt, gte, sql } from "drizzle-orm";
 import {
   activities,
@@ -218,6 +219,7 @@ async function loadHomeSnapshot(): Promise<HomeSnapshot> {
     visitCount: stats.visitCount,
     takeFirstCents,
     numberOne,
+    generatedAt: new Date().toISOString(),
   };
 }
 
@@ -225,12 +227,42 @@ export async function getHomeSnapshot(): Promise<HomeSnapshot> {
   try {
     return await loadHomeSnapshot();
   } catch (error) {
-    if (process.env.NODE_ENV === "production") throw error;
+    if (process.env.NODE_ENV === "production" && process.env.DATABASE_URL) {
+      throw error;
+    }
     console.warn("Database unavailable; using development snapshot.");
     const { mockSnapshot } = await import("./mock-snapshot");
     return mockSnapshot();
   }
 }
+
+export const getCachedHomeSnapshot = unstable_cache(
+  async () => getHomeSnapshot(),
+  ["home-snapshot"],
+  { revalidate: 30, tags: ["home"] },
+);
+
+export const getCachedListingBySlug = unstable_cache(
+  async (slug: string) => getListingBySlug(slug),
+  ["listing-by-slug"],
+  { revalidate: 60, tags: ["home"] },
+);
+
+export const getCachedRankedListings = unstable_cache(
+  async () => {
+    try {
+      return await getRankedListings();
+    } catch (error) {
+      if (process.env.NODE_ENV === "production" && process.env.DATABASE_URL) {
+        throw error;
+      }
+      const { mockSnapshot } = await import("./mock-snapshot");
+      return mockSnapshot().listings;
+    }
+  },
+  ["ranked-listings"],
+  { revalidate: 300, tags: ["home"] },
+);
 
 export async function getListingBySlug(slug: string) {
   try {

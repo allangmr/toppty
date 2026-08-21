@@ -6,7 +6,13 @@ import type { ActivityItem } from "../types";
 import { ListingAvatar } from "./avatar";
 import { formatUsd, timeAgoEs } from "@/lib/utils";
 
-export function ActivityFeed({ items }: { items: ActivityItem[] }) {
+export function ActivityFeed({
+  items,
+  nowMs,
+}: {
+  items: ActivityItem[];
+  nowMs: number;
+}) {
   const [expanded, setExpanded] = useState(false);
 
   if (items.length === 0) return null;
@@ -56,9 +62,12 @@ export function ActivityFeed({ items }: { items: ActivityItem[] }) {
                         {item.highlight ? " · nuevo #1" : ""}
                       </span>
                     </p>
-                    <span className="shrink-0 text-muted-foreground">
-                      {timeAgoEs(new Date(item.createdAt))}
-                    </span>
+                    <time
+                      className="shrink-0 text-muted-foreground"
+                      dateTime={item.createdAt}
+                    >
+                      {timeAgoEs(new Date(item.createdAt), nowMs)}
+                    </time>
                   </a>
                 </li>
               );

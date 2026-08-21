@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeftIcon, ChevronRightIcon } from "@/components/icons";
 import { copy } from "../copy";
 import { leaderboardConfig } from "../config";
 import type { RankedListing } from "../types";
@@ -46,7 +46,13 @@ function Marker({ label }: { label: string }) {
   );
 }
 
-export function LeaderboardList({ listings }: { listings: RankedListing[] }) {
+export function LeaderboardList({
+  listings,
+  nowMs,
+}: {
+  listings: RankedListing[];
+  nowMs: number;
+}) {
   const { takePlace } = useBid();
   const totalPages = Math.max(1, Math.ceil(listings.length / PAGE_SIZE));
   const [page, setPage] = useState(1);
@@ -86,7 +92,7 @@ export function LeaderboardList({ listings }: { listings: RankedListing[] }) {
     <div id="leaderboard" className="scroll-mt-6">
       {visible.map((listing) => (
         <div key={listing.id}>
-          <ListingCard listing={listing} listings={listings} />
+          <ListingCard listing={listing} listings={listings} nowMs={nowMs} />
           {listing.rank === 3 && listings.length > 3 ? (
             <Marker label="Top 3" />
           ) : null}
@@ -106,7 +112,7 @@ export function LeaderboardList({ listings }: { listings: RankedListing[] }) {
         >
           <p className="text-sm text-muted-foreground">
             {copy.pageLabel(currentPage, totalPages)}
-            <span className="text-muted-foreground/70">
+            <span className="text-muted-foreground">
               {" "}
               · {listings.length} en total
             </span>
@@ -116,9 +122,10 @@ export function LeaderboardList({ listings }: { listings: RankedListing[] }) {
               type="button"
               onClick={() => goTo(currentPage - 1)}
               disabled={currentPage <= 1}
+              aria-label="Página anterior"
               className="inline-flex h-10 items-center gap-1 rounded-full border border-border px-3 text-sm font-bold transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-40"
             >
-              <ChevronLeft className="size-4" aria-hidden />
+              <ChevronLeftIcon className="size-4" />
               {copy.pagePrev}
             </button>
             <div className="flex max-w-full flex-wrap items-center justify-center gap-1">
@@ -135,6 +142,7 @@ export function LeaderboardList({ listings }: { listings: RankedListing[] }) {
                     key={item}
                     type="button"
                     onClick={() => goTo(item)}
+                    aria-label={`Ir a la página ${item}`}
                     aria-current={item === currentPage ? "page" : undefined}
                     className={
                       item === currentPage
@@ -151,10 +159,11 @@ export function LeaderboardList({ listings }: { listings: RankedListing[] }) {
               type="button"
               onClick={() => goTo(currentPage + 1)}
               disabled={currentPage >= totalPages}
+              aria-label="Página siguiente"
               className="inline-flex h-10 items-center gap-1 rounded-full border border-border px-3 text-sm font-bold transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-40"
             >
               {copy.pageNext}
-              <ChevronRight className="size-4" aria-hidden />
+              <ChevronRightIcon className="size-4" />
             </button>
           </div>
         </nav>
