@@ -31,7 +31,13 @@ export function CheckoutSuccessClient() {
       setStatus(json);
       setTries((n) => n + 1);
     }
-    void poll();
+    void fetch("/api/paypal/capture", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ bidId }),
+    }).finally(() => {
+      if (!cancelled) void poll();
+    });
     const timer = window.setInterval(poll, 1500);
     return () => {
       cancelled = true;

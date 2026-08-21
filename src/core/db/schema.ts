@@ -93,6 +93,8 @@ export const bids = pgTable(
     currency: text("currency").notNull().default("usd"),
     stripeSessionId: text("stripe_session_id"),
     stripePaymentIntentId: text("stripe_payment_intent_id"),
+    paypalOrderId: text("paypal_order_id"),
+    paypalCaptureId: text("paypal_capture_id"),
     status: bidStatusEnum("status").notNull().default("pending"),
     fingerprintHash: text("fingerprint_hash"),
     createdAt: timestamp("created_at", { withTimezone: true })
@@ -102,6 +104,8 @@ export const bids = pgTable(
   },
   (table) => [
     uniqueIndex("bids_stripe_session_idx").on(table.stripeSessionId),
+    uniqueIndex("bids_paypal_order_idx").on(table.paypalOrderId),
+    uniqueIndex("bids_paypal_capture_idx").on(table.paypalCaptureId),
     index("bids_listing_idx").on(table.listingId),
     index("bids_status_idx").on(table.status),
   ],

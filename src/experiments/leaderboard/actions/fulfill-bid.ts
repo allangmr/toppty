@@ -32,7 +32,7 @@ function rankOf(rows: ListingRow[], listingId: string) {
 
 export async function fulfillPaidBid(input: {
   bidId: string;
-  stripePaymentIntentId?: string | null;
+  paypalCaptureId?: string | null;
 }) {
   const db = getDb();
   const result = await db.transaction(async (tx) => {
@@ -71,8 +71,7 @@ export async function fulfillPaidBid(input: {
       .set({
         status: "paid",
         paidAt: now,
-        stripePaymentIntentId:
-          input.stripePaymentIntentId || bid.stripePaymentIntentId,
+        paypalCaptureId: input.paypalCaptureId || bid.paypalCaptureId,
       })
       .where(eq(bids.id, bid.id));
 
@@ -177,13 +176,13 @@ export async function markBidFailed(bidId: string) {
     .where(and(eq(bids.id, bidId), eq(bids.status, "pending")));
 }
 
-export async function markBidRefunded(paymentIntentId: string) {
+export async function markBidRefunded(captureId: string) {
   const db = getDb();
   await db.transaction(async (tx) => {
     const [bid] = await tx
       .select()
       .from(bids)
-      .where(eq(bids.stripePaymentIntentId, paymentIntentId))
+      .where(eq(bids.paypalCaptureId, captureId))
       .for("update")
       .limit(1);
     if (!bid || bid.status !== "paid") return;
