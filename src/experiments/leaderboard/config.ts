@@ -7,6 +7,7 @@ export const leaderboardConfig = {
   minBidCents: 100,
   minIncrementCents: 100,
   maxBidCents: 10_000_000,
+  pageSize: 20,
   clickCooldownMs: 30 * 60 * 1000,
   trendingWindowMs: 60 * 60 * 1000,
   onlineWindowMs: 5 * 60 * 1000,

@@ -8,18 +8,19 @@ export function ListingAvatar({
 }: {
   name: string;
   imageUrl?: string | null;
-  size?: "xs" | "sm" | "md" | "lg";
+  size?: "xs" | "sm" | "md" | "lg" | "xl";
 }) {
   const dim =
-    size === "lg"
-      ? "size-14 text-base md:size-14"
-      : size === "sm"
-        ? "size-8 text-xs"
-        : size === "xs"
-          ? "size-5 text-[10px]"
-          : "size-10 text-sm md:size-14 md:text-base";
+    size === "xl"
+      ? "size-14 text-base md:size-16 md:text-lg"
+      : size === "lg"
+        ? "size-12 text-sm md:size-14 md:text-base"
+        : size === "sm"
+          ? "size-8 text-xs"
+          : size === "xs"
+            ? "size-5 text-[10px]"
+            : "size-10 text-sm md:size-12 md:text-base";
   const hue = avatarHue(name);
-  const rounded = size === "xs" || size === "sm" ? "rounded-md" : "rounded-md";
 
   if (imageUrl) {
     return (
@@ -30,7 +31,7 @@ export function ListingAvatar({
         alt=""
         width={64}
         height={64}
-        className={cn(dim, rounded, "shrink-0 bg-muted object-cover")}
+        className={cn(dim, "shrink-0 rounded-md bg-muted object-cover")}
       />
     );
   }
@@ -39,8 +40,7 @@ export function ListingAvatar({
     <div
       className={cn(
         dim,
-        rounded,
-        "flex shrink-0 items-center justify-center font-semibold text-primary-foreground",
+        "flex shrink-0 items-center justify-center rounded-md font-semibold text-primary-foreground",
       )}
       style={{ background: `hsl(${hue} 42% 42%)` }}
       aria-hidden

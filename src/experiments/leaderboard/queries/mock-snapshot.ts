@@ -124,6 +124,27 @@ const listings: RankedListing[] = [
     createdAt: minutesAgo(600),
     rank: 7,
   },
+  ...Array.from({ length: 38 }, (_, index) => {
+    const rank = index + 8;
+    const bid = Math.max(100, 450 - index * 8);
+    return {
+      id: `lst_filler_${rank}`,
+      slug: `spot-${rank}`,
+      identifierType: "website" as const,
+      identifier: `https://spot${rank}.pa/`,
+      normalizedIdentifier: `website:spot${rank}.pa`,
+      socialNetwork: null,
+      displayName: `spot${rank}.pa`,
+      destinationUrl: `https://spot${rank}.pa/`,
+      description: rank <= 20 ? `Puesto #${rank} en el ranking de PTY.` : null,
+      imageUrl: null,
+      totalBidCents: bid,
+      clickCount: Math.max(1, 40 - index),
+      lastPaidAt: minutesAgo(20 + index * 7),
+      createdAt: minutesAgo(700 + index * 10),
+      rank,
+    };
+  }),
 ];
 
 export function emptySnapshot(): HomeSnapshot {

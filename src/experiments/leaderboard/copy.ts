@@ -37,4 +37,7 @@ export const copy = {
     "Los pagos son finales una vez procesados, salvo donde la ley exija lo contrario. Estás comprando un puesto en el ranking, no una inversión ni un juego de azar.",
   showMore: "Ver más",
   showLess: "Ver menos",
+  pagePrev: "Anterior",
+  pageNext: "Siguiente",
+  pageLabel: (page: number, total: number) => `Página ${page} de ${total}`,
 };

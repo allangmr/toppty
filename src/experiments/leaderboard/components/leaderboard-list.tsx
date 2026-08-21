@@ -1,10 +1,34 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { copy } from "../copy";
+import { leaderboardConfig } from "../config";
 import type { RankedListing } from "../types";
 import { useBid } from "./bid-context";
 import { ListingCard } from "./listing-card";
+
+const PAGE_SIZE = leaderboardConfig.pageSize;
+
+function pageItems(current: number, total: number): Array<number | "…"> {
+  if (total <= 7) {
+    return Array.from({ length: total }, (_, index) => index + 1);
+  }
+
+  const marks = new Set(
+    [1, total, current - 1, current, current + 1].filter(
+      (n) => n >= 1 && n <= total,
+    ),
+  );
+  const sorted = [...marks].sort((a, b) => a - b);
+  const items: Array<number | "…"> = [];
+  for (const n of sorted) {
+    const prev = items[items.length - 1];
+    if (typeof prev === "number" && n - prev > 1) items.push("…");
+    items.push(n);
+  }
+  return items;
+}
 
 function Marker({ label }: { label: string }) {
   return (
@@ -24,8 +48,23 @@ function Marker({ label }: { label: string }) {
 
 export function LeaderboardList({ listings }: { listings: RankedListing[] }) {
   const { takePlace } = useBid();
-  const [showAll, setShowAll] = useState(false);
-  const visible = showAll ? listings : listings.slice(0, 20);
+  const totalPages = Math.max(1, Math.ceil(listings.length / PAGE_SIZE));
+  const [page, setPage] = useState(1);
+  const currentPage = Math.min(page, totalPages);
+
+  const visible = useMemo(() => {
+    const start = (currentPage - 1) * PAGE_SIZE;
+    return listings.slice(start, start + PAGE_SIZE);
+  }, [listings, currentPage]);
+
+  function goTo(next: number) {
+    const clamped = Math.min(totalPages, Math.max(1, next));
+    setPage(clamped);
+    document.getElementById("ranking")?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  }
 
   if (listings.length === 0) {
     return (
@@ -59,14 +98,66 @@ export function LeaderboardList({ listings }: { listings: RankedListing[] }) {
           ) : null}
         </div>
       ))}
-      {listings.length > 20 && !showAll ? (
-        <button
-          type="button"
-          onClick={() => setShowAll(true)}
-          className="mt-4 w-full rounded-full border border-border py-3 text-sm font-bold transition-colors hover:bg-muted"
+
+      {totalPages > 1 ? (
+        <nav
+          aria-label="Paginación del ranking"
+          className="mt-6 flex flex-col items-center gap-3 sm:flex-row sm:justify-between"
         >
-          Ver el resto
-        </button>
+          <p className="text-sm text-muted-foreground">
+            {copy.pageLabel(currentPage, totalPages)}
+            <span className="text-muted-foreground/70">
+              {" "}
+              · {listings.length} en total
+            </span>
+          </p>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => goTo(currentPage - 1)}
+              disabled={currentPage <= 1}
+              className="inline-flex h-10 items-center gap-1 rounded-full border border-border px-3 text-sm font-bold transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              <ChevronLeft className="size-4" aria-hidden />
+              {copy.pagePrev}
+            </button>
+            <div className="flex max-w-full flex-wrap items-center justify-center gap-1">
+              {pageItems(currentPage, totalPages).map((item, index) =>
+                item === "…" ? (
+                  <span
+                    key={`gap-${index}`}
+                    className="inline-flex size-9 items-center justify-center text-sm text-muted-foreground"
+                  >
+                    …
+                  </span>
+                ) : (
+                  <button
+                    key={item}
+                    type="button"
+                    onClick={() => goTo(item)}
+                    aria-current={item === currentPage ? "page" : undefined}
+                    className={
+                      item === currentPage
+                        ? "inline-flex size-9 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground"
+                        : "inline-flex size-9 items-center justify-center rounded-full text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                    }
+                  >
+                    {item}
+                  </button>
+                ),
+              )}
+            </div>
+            <button
+              type="button"
+              onClick={() => goTo(currentPage + 1)}
+              disabled={currentPage >= totalPages}
+              className="inline-flex h-10 items-center gap-1 rounded-full border border-border px-3 text-sm font-bold transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              {copy.pageNext}
+              <ChevronRight className="size-4" aria-hidden />
+            </button>
+          </div>
+        </nav>
       ) : null}
     </div>
   );
