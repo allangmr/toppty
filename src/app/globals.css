@@ -9,7 +9,7 @@
   --primary: #0b4fa8;
   --primary-foreground: #ffffff;
   --flag-red: #d21034;
-  --live: #0a8f3d;
+  --live: #046628;
   --secondary: #eef2f8;
   --secondary-foreground: #121826;
   --muted: #eef2f8;
@@ -75,6 +75,11 @@
 
 html {
   scroll-behavior: smooth;
+}
+
+#leaderboard {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 2400px;
 }
 
 .skip-link {

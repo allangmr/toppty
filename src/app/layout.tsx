@@ -9,7 +9,7 @@ import "./globals.css";
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
   subsets: ["latin"],
-  display: "swap",
+  display: "optional",
   preload: true,
   adjustFontFallback: true,
 });
@@ -114,7 +114,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         </a>
         {children}
         <TrackPageView />
-        <Analytics />
+        {process.env.VERCEL ? <Analytics /> : null}
       </body>
     </html>
   );

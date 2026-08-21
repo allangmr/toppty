@@ -219,6 +219,7 @@ async function loadHomeSnapshot(): Promise<HomeSnapshot> {
     visitCount: stats.visitCount,
     takeFirstCents,
     numberOne,
+    generatedAt: new Date().toISOString(),
   };
 }
 

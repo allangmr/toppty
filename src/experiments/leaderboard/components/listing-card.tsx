@@ -17,9 +17,11 @@ function restScale(rank: number) {
 export function ListingCard({
   listing,
   listings,
+  nowMs,
 }: {
   listing: RankedListing;
   listings: RankedListing[];
+  nowMs: number;
 }) {
   const { takePlace } = useBid();
   const takeCents = amountToTakeRank(listings, listing.rank);
@@ -149,7 +151,7 @@ export function ListingCard({
             <span className="text-muted-foreground">
               {listing.lastPaidAt ? (
                 <time dateTime={listing.lastPaidAt}>
-                  {timeAgoEs(new Date(listing.lastPaidAt))}
+                  {timeAgoEs(new Date(listing.lastPaidAt), nowMs)}
                 </time>
               ) : (
                 "recién"

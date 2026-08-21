@@ -46,7 +46,13 @@ function Marker({ label }: { label: string }) {
   );
 }
 
-export function LeaderboardList({ listings }: { listings: RankedListing[] }) {
+export function LeaderboardList({
+  listings,
+  nowMs,
+}: {
+  listings: RankedListing[];
+  nowMs: number;
+}) {
   const { takePlace } = useBid();
   const totalPages = Math.max(1, Math.ceil(listings.length / PAGE_SIZE));
   const [page, setPage] = useState(1);
@@ -86,7 +92,7 @@ export function LeaderboardList({ listings }: { listings: RankedListing[] }) {
     <div id="leaderboard" className="scroll-mt-6">
       {visible.map((listing) => (
         <div key={listing.id}>
-          <ListingCard listing={listing} listings={listings} />
+          <ListingCard listing={listing} listings={listings} nowMs={nowMs} />
           {listing.rank === 3 && listings.length > 3 ? (
             <Marker label="Top 3" />
           ) : null}

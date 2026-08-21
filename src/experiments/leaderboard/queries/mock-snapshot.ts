@@ -156,6 +156,7 @@ export function emptySnapshot(): HomeSnapshot {
     visitCount: null,
     takeFirstCents: leaderboardConfig.minBidCents,
     numberOne: null,
+    generatedAt: new Date().toISOString(),
   };
 }
 
@@ -212,6 +213,7 @@ export function mockSnapshot(): HomeSnapshot {
     visitCount: 18420,
     takeFirstCents: listings[0]!.totalBidCents + leaderboardConfig.minIncrementCents,
     numberOne: listings[0]!,
+    generatedAt: new Date().toISOString(),
   };
 }
 

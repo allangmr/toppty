@@ -10,7 +10,7 @@ export function LiveStatus({
   return (
     <div
       aria-live="polite"
-      className="animate-pop inline-block max-w-full rounded-full bg-muted px-3 py-1.5 text-center text-sm text-balance text-muted-foreground transition-colors"
+      className="inline-block max-w-full rounded-full bg-muted px-3 py-1.5 text-center text-sm text-balance text-muted-foreground transition-colors"
     >
       <span className="inline-flex flex-wrap items-center justify-center gap-x-1.5 gap-y-1">
         {onlineCount ? (

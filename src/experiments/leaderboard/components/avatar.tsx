@@ -44,7 +44,7 @@ export function ListingAvatar({
         dim,
         "flex shrink-0 items-center justify-center rounded-md font-semibold text-primary-foreground",
       )}
-      style={{ background: `hsl(${hue} 42% 42%)` }}
+      style={{ background: `hsl(${hue} 48% 28%)` }}
       aria-hidden
     >
       {initialsFromName(name)}

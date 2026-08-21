@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import type { HomeSnapshot } from "../types";
 import { ActivityFeed } from "./activity-feed";
 import { BidModule } from "./bid-module";
@@ -16,7 +16,15 @@ const LeaderboardList = dynamic(
     })),
 );
 
-export function HomeClient({ initial }: { initial: HomeSnapshot }) {
+export function HomeClient({
+  initial,
+  claim,
+  intro,
+}: {
+  initial: HomeSnapshot;
+  claim: ReactNode;
+  intro: ReactNode;
+}) {
   const [data, setData] = useState(initial);
 
   useEffect(() => {
@@ -46,6 +54,8 @@ export function HomeClient({ initial }: { initial: HomeSnapshot }) {
         <BidModule
           takeFirstCents={data.takeFirstCents}
           listings={data.listings}
+          claim={claim}
+          intro={intro}
         />
 
         <div className="mb-2 grid grid-cols-1 items-stretch gap-4 md:grid-cols-2">
@@ -53,7 +63,10 @@ export function HomeClient({ initial }: { initial: HomeSnapshot }) {
             <Trending items={data.trending} />
           </div>
           <div className="animate-card-in animate-card-in-delay motion-lift h-full">
-            <ActivityFeed items={data.activity} />
+            <ActivityFeed
+              items={data.activity}
+              nowMs={Date.parse(data.generatedAt)}
+            />
           </div>
         </div>
 
@@ -65,7 +78,10 @@ export function HomeClient({ initial }: { initial: HomeSnapshot }) {
           <h2 id="ranking-heading" className="sr-only">
             Ranking
           </h2>
-          <LeaderboardList listings={data.listings} />
+          <LeaderboardList
+            listings={data.listings}
+            nowMs={Date.parse(data.generatedAt)}
+          />
         </section>
       </div>
     </BidProvider>
