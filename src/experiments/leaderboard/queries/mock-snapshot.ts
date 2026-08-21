@@ -187,8 +187,8 @@ export function mockSnapshot(): HomeSnapshot {
         message: "@sushipty subió al #3 · $25 · hace 8 min",
       },
     ],
-    onlineCount: null,
-    visitCount: null,
+    onlineCount: 128,
+    visitCount: 18420,
     takeFirstCents: listings[0]!.totalBidCents + leaderboardConfig.minIncrementCents,
     numberOne: listings[0]!,
   };
