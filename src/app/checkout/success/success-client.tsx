@@ -58,7 +58,7 @@ export function CheckoutSuccessClient() {
         {paid ? (
           <>
             <p className="text-4xl font-bold tracking-[-0.04em] md:text-5xl">
-              Ya estás dentro.
+              Ya ta&apos; dentro.
             </p>
             <p className="text-lg text-muted-foreground">
               {status.displayName} quedó #{status.rank} con{" "}
@@ -75,7 +75,7 @@ export function CheckoutSuccessClient() {
               href="/#ranking"
               className="mt-4 inline-flex h-11 w-fit items-center justify-center rounded-full bg-primary px-5 text-sm font-bold text-primary-foreground transition-colors hover:bg-primary/80"
             >
-              Ver el ranking
+              Ver la tabla
             </Link>
           </>
         ) : failed ? (
@@ -87,7 +87,7 @@ export function CheckoutSuccessClient() {
               href="/#subir"
               className="text-primary underline-offset-2 hover:underline"
             >
-              Inténtalo otra vez
+              Inténtalo de una
             </Link>
           </>
         ) : (

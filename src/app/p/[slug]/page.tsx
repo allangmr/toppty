@@ -26,7 +26,7 @@ export async function generateMetadata({
     return { title: "TopPTY.lol" };
   }
   const title = `${listing.displayName} es #${listing.rank} en TopPTY`;
-  const description = `${listing.displayName} está #${listing.rank} con ${formatUsd(listing.totalBidCents)}. ¿Lo tumbas?`;
+  const description = `${listing.displayName} ta #${listing.rank} con ${formatUsd(listing.totalBidCents)}. ¿Lo tumbas?`;
   return {
     title,
     description,
@@ -95,14 +95,14 @@ export default async function ListingPage({
           href={`/go/${listing.slug}`}
           className="inline-flex h-11 items-center justify-center rounded-full border border-border px-4 text-center text-sm font-medium transition-colors hover:bg-muted"
         >
-          Ir al perfil
+          Ir pa&apos;l perfil
         </a>
         <BidCta rank={listing.rank} amountCents={takeCents} />
         <Link
           href="/"
           className="text-sm text-muted-foreground underline-offset-2 transition-colors hover:text-foreground hover:underline"
         >
-          Ver el ranking completo
+          Ver toda la tabla
         </Link>
       </main>
       <Footer />

@@ -1,3 +1,5 @@
+import { copy } from "@/experiments/leaderboard/copy";
+
 export function LiveStatus({
   onlineCount,
   visitCount,
@@ -20,16 +22,12 @@ export function LiveStatus({
               <span className="relative inline-flex size-2 rounded-full bg-live" />
             </span>
             <span className="font-semibold text-live">
-              {onlineCount.toLocaleString("es-PA")} online
+              {copy.onlineNow(onlineCount)}
             </span>
           </span>
         ) : null}
         {onlineCount && visitCount ? <span>·</span> : null}
-        {visitCount ? (
-          <span>
-            {visitCount.toLocaleString("es-PA")} visitas desde el lanzamiento
-          </span>
-        ) : null}
+        {visitCount ? <span>{copy.visitsSince(visitCount)}</span> : null}
       </span>
     </div>
   );

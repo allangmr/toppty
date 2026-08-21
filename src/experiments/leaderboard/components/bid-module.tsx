@@ -92,13 +92,13 @@ export function BidModule({
 
   const helper =
     estimated === 1
-      ? "Vas por el #1."
-      : `Con ${formatUsd(amountCents)} caes en el #${estimated}.`;
+      ? copy.goingFirst
+      : copy.landingAt(formatUsd(amountCents), estimated);
 
   const gapToFirst = Math.max(0, takeFirstDollars - amountDollars);
   const nextHint =
     estimated > 1 && gapToFirst > 0
-      ? ` Te faltan ${formatUsd(dollarsToCents(gapToFirst))} para el #1.`
+      ? copy.shortToFirst(formatUsd(dollarsToCents(gapToFirst)))
       : "";
 
   return (
@@ -185,7 +185,7 @@ export function BidModule({
             disabled={pending || !identifier.trim()}
             className="motion-press inline-flex h-11 w-full shrink-0 cursor-pointer items-center justify-center rounded-full bg-primary px-5 text-sm font-bold text-primary-foreground transition-colors hover:bg-primary/80 disabled:cursor-not-allowed disabled:opacity-50 md:w-auto"
           >
-            {pending ? "Abriendo pago…" : copy.submit}
+            {pending ? copy.openingPay : copy.submit}
           </button>
         </div>
 

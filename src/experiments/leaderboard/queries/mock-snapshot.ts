@@ -136,7 +136,7 @@ const listings: RankedListing[] = [
       socialNetwork: null,
       displayName: `spot${rank}.pa`,
       destinationUrl: `https://spot${rank}.pa/`,
-      description: rank <= 20 ? `Puesto #${rank} en el ranking de PTY.` : null,
+      description: rank <= 20 ? `Puesto #${rank} en la tabla de PTY.` : null,
       imageUrl: null,
       totalBidCents: bid,
       clickCount: Math.max(1, 40 - index),

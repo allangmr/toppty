@@ -3,6 +3,7 @@ import { DM_Sans } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { TrackPageView } from "@/components/track-page-view";
 import { copy } from "@/experiments/leaderboard/copy";
+import { leaderboardConfig } from "@/experiments/leaderboard/config";
 import { getAppUrl } from "@/lib/utils";
 import "./globals.css";
 
@@ -27,6 +28,8 @@ export const metadata: Metadata = {
   applicationName: "TopPTY",
   keywords: [
     "Panamá",
+    "PTY",
+    "tabla",
     "ranking",
     "leaderboard",
     "pay to rank",
@@ -34,8 +37,10 @@ export const metadata: Metadata = {
     "viral",
     "TopPTY",
   ],
-  authors: [{ name: "TopPTY.lol", url: getAppUrl() }],
-  creator: "TopPTY.lol",
+  authors: [
+    { name: leaderboardConfig.creator.name, url: leaderboardConfig.creator.xUrl },
+  ],
+  creator: `@${leaderboardConfig.creator.xHandle}`,
   publisher: "TopPTY.lol",
   category: "entertainment",
   formatDetection: {
@@ -64,6 +69,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title,
     description,
+    creator: `@${leaderboardConfig.creator.xHandle}`,
     images: ["/twitter-image"],
   },
   robots: {

@@ -20,7 +20,7 @@ export default function CheckoutCancelPage() {
           href="/#subir"
           className="inline-flex h-11 w-fit items-center justify-center rounded-full bg-primary px-5 text-sm font-bold text-primary-foreground transition-colors hover:bg-primary/80"
         >
-          Volver al ranking
+          Volver pa&apos; la tabla
         </Link>
       </main>
       <Footer />

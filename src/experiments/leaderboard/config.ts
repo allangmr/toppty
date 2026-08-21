@@ -13,4 +13,9 @@ export const leaderboardConfig = {
   onlineWindowMs: 5 * 60 * 1000,
   checkoutRateLimit: { limit: 8, windowMs: 15 * 60 * 1000 },
   reportRateLimit: { limit: 5, windowMs: 60 * 60 * 1000 },
+  creator: {
+    name: "Allan",
+    xHandle: "allan_coding",
+    xUrl: "https://x.com/allan_coding",
+  },
 } as const;

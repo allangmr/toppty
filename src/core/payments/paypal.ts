@@ -169,7 +169,7 @@ export async function createPaypalCheckout(input: {
         {
           reference_id: input.bidId,
           custom_id: input.bidId,
-          description: `TopPTY ranking · ${input.displayName}`.slice(0, 127),
+          description: `TopPTY · ${input.displayName}`.slice(0, 127),
           amount: {
             currency_code: input.currency.toUpperCase(),
             value: centsToPaypalValue(input.amountCents),

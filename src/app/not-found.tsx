@@ -18,13 +18,13 @@ export default function NotFound() {
       >
         <p className="text-6xl font-bold tracking-[-0.04em]">404</p>
         <p className="mt-2 text-muted-foreground">
-          Ese puesto no existe. El ranking sí.
+          Ese puesto no existe. La tabla sí.
         </p>
         <Link
           href="/"
           className="mt-6 text-primary underline-offset-2 hover:underline"
         >
-          Volver
+          Volver pa&apos; la tabla
         </Link>
       </main>
       <Footer />

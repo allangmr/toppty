@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { trackClient } from "@/components/track-client";
 import { shareText } from "@/core/social/share";
+import { copy } from "@/experiments/leaderboard/copy";
 import { cn } from "@/lib/utils";
 
 export function ShareButton({
@@ -59,7 +60,7 @@ export function ShareButton({
         prominent && "bg-primary px-4 py-2 text-sm text-primary-foreground hover:bg-primary/80",
       )}
     >
-      {copied ? "Link copiado" : prominent ? "Compartir" : "Compartir"}
+      {copied ? copy.copied : prominent ? copy.shareNumberOne : copy.share}
     </button>
   );
 }
