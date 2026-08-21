@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 
+/** Three bars: red + blue + navy — a soft nod to the Panama flag. */
 export function BrandMark({ className }: { className?: string }) {
   return (
     <svg
@@ -8,15 +9,8 @@ export function BrandMark({ className }: { className?: string }) {
       aria-hidden="true"
       className={cn("h-5 w-auto", className)}
     >
-      <rect x="22" y="0" width="14" height="6" rx="3" className="fill-primary" />
-      <rect
-        x="12"
-        y="11"
-        width="24"
-        height="6"
-        rx="3"
-        className="fill-foreground"
-      />
+      <rect x="22" y="0" width="14" height="6" rx="3" className="fill-flag-red" />
+      <rect x="12" y="11" width="24" height="6" rx="3" className="fill-primary" />
       <rect
         x="0"
         y="22"

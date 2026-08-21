@@ -1,46 +1,49 @@
 @import "tailwindcss";
 
 :root {
-  --background: #fffdfa;
-  --foreground: #282624;
-  --card: #fffdfa;
-  --card-foreground: #282624;
-  --primary: #e57255;
+  /* Panama-forward palette on the outbid layout base */
+  --background: #f7f9fc;
+  --foreground: #121826;
+  --card: #ffffff;
+  --card-foreground: #121826;
+  --primary: #0b4fa8;
   --primary-foreground: #ffffff;
-  --live: #009f31;
-  --secondary: #f6f3ef;
-  --secondary-foreground: #282624;
-  --muted: #f6f3ef;
-  --muted-foreground: #67625d;
-  --accent: #f6f3ef;
-  --accent-foreground: #282624;
-  --destructive: #e40014;
-  --border: #e6e0da;
-  --input: #e6e0da;
-  --ring: #e57255;
+  --flag-red: #d21034;
+  --live: #0a8f3d;
+  --secondary: #eef2f8;
+  --secondary-foreground: #121826;
+  --muted: #eef2f8;
+  --muted-foreground: #5b6578;
+  --accent: #eef2f8;
+  --accent-foreground: #121826;
+  --destructive: #d21034;
+  --border: #d9e0eb;
+  --input: #d9e0eb;
+  --ring: #0b4fa8;
   --radius: 0.875rem;
-  --shadow-soft: 0 12px 50px rgba(40, 38, 36, 0.08);
+  --shadow-soft: 0 12px 50px rgba(11, 79, 168, 0.08);
 }
 
 .dark {
-  --background: #1a1512;
-  --foreground: #f7f5f1;
-  --card: #231e1b;
-  --card-foreground: #f7f5f1;
-  --primary: #e57255;
-  --primary-foreground: #ffffff;
-  --live: #50c05f;
-  --secondary: #2d2824;
-  --secondary-foreground: #f7f5f1;
-  --muted: #2d2824;
-  --muted-foreground: #aba39b;
-  --accent: #2d2824;
-  --accent-foreground: #f7f5f1;
-  --destructive: #ff6568;
+  --background: #0d121c;
+  --foreground: #f2f5fa;
+  --card: #161d2b;
+  --card-foreground: #f2f5fa;
+  --primary: #4d8fe0;
+  --primary-foreground: #06101f;
+  --flag-red: #ff4d6a;
+  --live: #3ecf6e;
+  --secondary: #1c2433;
+  --secondary-foreground: #f2f5fa;
+  --muted: #1c2433;
+  --muted-foreground: #9aa6bc;
+  --accent: #1c2433;
+  --accent-foreground: #f2f5fa;
+  --destructive: #ff4d6a;
   --border: rgb(255 255 255 / 0.1);
   --input: rgb(255 255 255 / 0.15);
-  --ring: #e57255;
-  --shadow-soft: 0 12px 50px rgba(0, 0, 0, 0.35);
+  --ring: #4d8fe0;
+  --shadow-soft: 0 12px 50px rgba(0, 0, 0, 0.4);
 }
 
 @theme inline {
@@ -50,6 +53,7 @@
   --color-card-foreground: var(--card-foreground);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
+  --color-flag-red: var(--flag-red);
   --color-live: var(--live);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
@@ -75,8 +79,8 @@ html {
 
 body {
   background:
-    radial-gradient(1200px 500px at 50% -10%, rgb(229 114 85 / 0.1), transparent 55%),
-    radial-gradient(900px 420px at 100% 0%, rgb(229 114 85 / 0.05), transparent 45%),
+    radial-gradient(1100px 480px at 12% -8%, rgb(11 79 168 / 0.12), transparent 55%),
+    radial-gradient(900px 420px at 92% 0%, rgb(210 16 52 / 0.08), transparent 50%),
     var(--background);
   color: var(--foreground);
   font-family: var(--font-dm-sans), system-ui, sans-serif;
@@ -84,8 +88,8 @@ body {
 
 .dark body {
   background:
-    radial-gradient(1200px 500px at 50% -10%, rgb(229 114 85 / 0.12), transparent 55%),
-    radial-gradient(900px 420px at 100% 0%, rgb(229 114 85 / 0.06), transparent 45%),
+    radial-gradient(1100px 480px at 12% -8%, rgb(77 143 224 / 0.16), transparent 55%),
+    radial-gradient(900px 420px at 92% 0%, rgb(255 77 106 / 0.1), transparent 50%),
     var(--background);
 }
 

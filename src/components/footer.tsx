@@ -7,9 +7,9 @@ export function Footer() {
       <div className="mx-auto flex w-full max-w-4xl flex-col gap-3">
         <p className="inline-flex items-center gap-1.5 text-base font-medium tracking-[-0.03em] text-foreground">
           <BrandMark className="h-4" />
-          toppty<span className="text-primary">.</span>lol
+          toppty<span className="text-flag-red">.</span>lol
         </p>
-        <p>Hecho en Panamá. El ranking manda.</p>
+        <p>Hecho en Panamá {copy.flag}. El ranking manda.</p>
         <p className="text-xs leading-relaxed">{copy.paymentsFinal}</p>
         <p>
           <a

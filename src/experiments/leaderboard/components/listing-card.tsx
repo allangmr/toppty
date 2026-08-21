@@ -22,7 +22,7 @@ export function ListingCard({
 
   const shell =
     listing.rank === 1
-      ? "my-1.5 rounded-xl border-2 border-primary bg-primary/22 px-2.5 md:my-3 md:rounded-2xl md:px-3.5"
+      ? "my-1.5 rounded-xl border-2 border-flag-red/50 bg-flag-red/10 px-2.5 md:my-3 md:rounded-2xl md:px-3.5"
       : listing.rank === 2
         ? "my-1.5 rounded-xl border-2 border-primary/40 bg-primary/8 px-2.5 md:my-3 md:rounded-2xl md:px-3.5"
         : listing.rank === 3
@@ -53,9 +53,11 @@ export function ListingCard({
           <span
             className={cn(
               "inline-flex min-w-7 items-center justify-center text-xs md:min-w-10 md:text-base",
-              isTopThree
-                ? "rounded-full bg-primary px-1.5 py-px font-semibold text-primary-foreground md:px-2 md:py-0.5"
-                : "font-medium text-muted-foreground",
+              listing.rank === 1
+                ? "rounded-full bg-flag-red px-1.5 py-px font-semibold text-white md:px-2 md:py-0.5"
+                : isTopThree
+                  ? "rounded-full bg-primary px-1.5 py-px font-semibold text-primary-foreground md:px-2 md:py-0.5"
+                  : "font-medium text-muted-foreground",
             )}
           >
             #{listing.rank}

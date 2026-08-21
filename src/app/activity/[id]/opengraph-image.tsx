@@ -59,7 +59,7 @@ export default async function Image({
       >
         <div>
           toppty
-          <span style={{ color: "#e57255" }}>.</span>
+          <span style={{ color: "#d21034" }}>.</span>
           lol
         </div>
         <div style={{ color: isTakeover ? "#e57255" : "#67625d" }}>
@@ -81,7 +81,7 @@ export default async function Image({
           style={{
             fontSize: 56,
             fontWeight: 700,
-            color: "#e57255",
+            color: "#0b4fa8",
             letterSpacing: -1,
           }}
         >

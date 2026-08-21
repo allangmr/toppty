@@ -16,8 +16,8 @@ export function OgShell({ children }: { children: React.ReactNode }) {
         height: "630px",
         display: "flex",
         flexDirection: "column",
-        background: "#fffdfa",
-        color: "#282624",
+        background: "#f7f9fc",
+        color: "#121826",
         padding: "48px",
       }}
     >
@@ -28,10 +28,10 @@ export function OgShell({ children }: { children: React.ReactNode }) {
           flexDirection: "column",
           justifyContent: "space-between",
           borderRadius: 28,
-          border: "2px solid #e6e0da",
+          border: "2px solid #d9e0eb",
           padding: "40px 44px",
-          background: "#fffdfa",
-          boxShadow: "0 18px 60px rgba(40,38,36,0.08)",
+          background: "#ffffff",
+          boxShadow: "0 18px 60px rgba(11,79,168,0.08)",
         }}
       >
         {children}

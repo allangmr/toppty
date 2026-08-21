@@ -20,17 +20,17 @@ export default async function Image() {
           }}
         >
           <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-            <div style={{ width: 42, height: 10, borderRadius: 999, background: "#e57255" }} />
-            <div style={{ width: 58, height: 10, borderRadius: 999, background: "#282624" }} />
-            <div style={{ width: 72, height: 10, borderRadius: 999, background: "#282624" }} />
+            <div style={{ width: 42, height: 10, borderRadius: 999, background: "#d21034" }} />
+            <div style={{ width: 58, height: 10, borderRadius: 999, background: "#0b4fa8" }} />
+            <div style={{ width: 72, height: 10, borderRadius: 999, background: "#121826" }} />
           </div>
           <span>
             toppty
-            <span style={{ color: "#e57255" }}>.</span>
+            <span style={{ color: "#d21034" }}>.</span>
             lol
           </span>
         </div>
-        <div style={{ fontSize: 22, color: "#67625d" }}>Panamá</div>
+        <div style={{ fontSize: 22, color: "#5b6578" }}>Panamá 🇵🇦</div>
       </div>
       <div
         style={{
@@ -43,9 +43,9 @@ export default async function Image() {
         }}
       >
         Reclama el #1
-        <span style={{ color: "#e57255" }}>cuando esto se vuelva viral.</span>
+        <span style={{ color: "#0b4fa8" }}>en Panamá.</span>
       </div>
-      <div style={{ fontSize: 26, color: "#67625d" }}>
+      <div style={{ fontSize: 26, color: "#5b6578" }}>
         Paga. Sube. Que te tumben si pueden.
       </div>
     </OgShell>,

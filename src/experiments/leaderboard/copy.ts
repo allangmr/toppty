@@ -3,7 +3,7 @@ export const copy = {
   flag: "🇵🇦",
   title: "TopPTY.lol — ¿Quién está arriba en Panamá?",
   description:
-    "Sin ads, sin API keys, sin revenue share. Solo outbidea a la competencia y llega arriba.",
+    "El ranking público de Panamá. Paga, sube y que te tumben si pueden.",
   hero: "Reclama el #1 por",
   punch: [
     "Compra tu puesto.",
@@ -14,17 +14,17 @@ export const copy = {
   identifierLabel: "Tu URL o @usuario",
   identifierHint:
     "¿Ya estás en la lista? Usa el mismo link o @usuario y sube tu apuesta.",
-  submit: "Outbid",
+  submit: "Súbete",
   submitHint:
     "Los puestos nuevos empiezan en $1. Pagar menos que el #1 igual te pone en el ranking en el puesto que alcance tu monto.",
   alreadyIn:
     "Ya estás en el ranking. Usa el mismo link o @usuario para subir tu apuesta.",
-  trending: "Trending ahora",
+  trending: "Lo que pega ahora",
   activity: "Última actividad",
-  ranking: "Leaderboard",
+  ranking: "Ranking",
   how: "Cómo funciona",
   rules: "Reglas",
-  emptyTitle: "Nadie manda todavía.",
+  emptyTitle: "Nadie manda todavía en PTY.",
   emptyBody: "El #1 puede ser tuyo por $1.",
   emptyCta: "Quiero el #1",
   shareNumberOne: "Compartir",

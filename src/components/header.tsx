@@ -14,8 +14,11 @@ export function Header() {
           <BrandMark />
           <span>
             toppty
-            <span className="text-primary">.</span>
+            <span className="text-flag-red">.</span>
             lol
+          </span>
+          <span className="ml-1.5 hidden text-xs font-medium text-muted-foreground sm:inline">
+            Panamá {copy.flag}
           </span>
         </Link>
         <div className="flex items-center gap-3 sm:gap-4">

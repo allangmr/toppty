@@ -32,7 +32,7 @@ export default async function Image({
           }}
         >
           toppty
-          <span style={{ color: "#e57255" }}>.</span>
+          <span style={{ color: "#d21034" }}>.</span>
           lol
         </div>
         <div style={{ fontSize: 22, color: "#67625d" }}>Panamá</div>
@@ -43,7 +43,7 @@ export default async function Image({
             display: "flex",
             width: "fit-content",
             borderRadius: 999,
-            background: "#e57255",
+            background: "#0b4fa8",
             color: "#fff",
             padding: "6px 14px",
             fontSize: 28,
@@ -74,7 +74,7 @@ export default async function Image({
           style={{
             fontSize: 72,
             fontWeight: 700,
-            color: "#e57255",
+            color: "#0b4fa8",
             letterSpacing: -2,
           }}
         >
