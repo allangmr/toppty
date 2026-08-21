@@ -8,10 +8,16 @@ import { ListingCard } from "./listing-card";
 
 function Marker({ label }: { label: string }) {
   return (
-    <div className="flex items-center gap-3 py-2">
-      <div className="h-0.5 flex-1 bg-ink" />
-      <p className="font-display text-sm tracking-[0.2em]">{label}</p>
-      <div className="h-0.5 flex-1 bg-ink" />
+    <div
+      role="separator"
+      aria-label={`Fin de ${label.toLowerCase()}`}
+      className="flex items-center gap-3 px-3 py-5 md:gap-4 md:px-4 md:py-7"
+    >
+      <span className="h-0.5 flex-1 rounded-full bg-primary/30" />
+      <span className="rounded-full border border-primary/25 bg-primary/10 px-2.5 py-1 text-[11px] font-semibold tracking-wide text-primary uppercase md:px-3 md:text-xs">
+        {label}
+      </span>
+      <span className="h-0.5 flex-1 rounded-full bg-primary/30" />
     </div>
   );
 }
@@ -23,13 +29,13 @@ export function LeaderboardList({ listings }: { listings: RankedListing[] }) {
 
   if (listings.length === 0) {
     return (
-      <div className="border-2 border-ink bg-bg-card p-6 text-center shadow-[4px_4px_0_#161412]">
-        <p className="font-display text-4xl">{copy.emptyTitle}</p>
-        <p className="mt-2 text-lg">{copy.emptyBody}</p>
+      <div className="rounded-2xl border border-border bg-card px-6 py-10 text-center shadow-[var(--shadow-soft)]">
+        <p className="text-2xl font-bold tracking-[-0.03em]">{copy.emptyTitle}</p>
+        <p className="mt-2 text-muted-foreground">{copy.emptyBody}</p>
         <button
           type="button"
           onClick={() => takePlace(100)}
-          className="mt-4 w-full border-2 border-ink bg-ink px-4 py-3 font-display text-2xl tracking-[0.14em] text-cream"
+          className="mt-5 inline-flex h-11 items-center justify-center rounded-full bg-primary px-5 text-sm font-bold text-primary-foreground transition-colors hover:bg-primary/80"
         >
           {copy.emptyCta}
         </button>
@@ -38,18 +44,18 @@ export function LeaderboardList({ listings }: { listings: RankedListing[] }) {
   }
 
   return (
-    <div className="space-y-3">
+    <div id="leaderboard" className="scroll-mt-6">
       {visible.map((listing) => (
         <div key={listing.id}>
           <ListingCard listing={listing} listings={listings} />
           {listing.rank === 3 && listings.length > 3 ? (
-            <Marker label="TOP 3" />
+            <Marker label="Top 3" />
           ) : null}
           {listing.rank === 10 && listings.length > 10 ? (
-            <Marker label="TOP 10" />
+            <Marker label="Top 10" />
           ) : null}
           {listing.rank === 20 && listings.length > 20 ? (
-            <Marker label="TOP 20" />
+            <Marker label="Top 20" />
           ) : null}
         </div>
       ))}
@@ -57,7 +63,7 @@ export function LeaderboardList({ listings }: { listings: RankedListing[] }) {
         <button
           type="button"
           onClick={() => setShowAll(true)}
-          className="w-full border-2 border-ink py-3 font-display tracking-widest"
+          className="mt-4 w-full rounded-full border border-border py-3 text-sm font-bold transition-colors hover:bg-muted"
         >
           Ver el resto
         </button>

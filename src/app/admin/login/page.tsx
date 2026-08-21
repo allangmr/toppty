@@ -32,21 +32,25 @@ export default async function AdminLoginPage({
   const { error } = await searchParams;
   return (
     <main className="mx-auto flex min-h-dvh max-w-md flex-col justify-center px-4">
-      <h1 className="font-display text-5xl">Admin</h1>
+      <h1 className="text-4xl font-bold tracking-[-0.04em]">Admin</h1>
       {!adminConfigured() ? (
-        <p className="mt-4">ADMIN_PASSWORD no está configurado.</p>
+        <p className="mt-4 text-muted-foreground">
+          ADMIN_PASSWORD no está configurado.
+        </p>
       ) : (
         <form action={login} className="mt-6 space-y-3">
           <input
             type="password"
             name="password"
             placeholder="Clave"
-            className="h-12 w-full border-2 border-ink bg-cream px-3"
+            className="h-11 w-full rounded-xl border border-input bg-transparent px-3 outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
           />
-          {error ? <p className="text-sm text-accent">Clave incorrecta.</p> : null}
+          {error ? (
+            <p className="text-sm text-destructive">Clave incorrecta.</p>
+          ) : null}
           <button
             type="submit"
-            className="h-12 w-full border-2 border-ink bg-ink font-display tracking-widest text-cream"
+            className="inline-flex h-11 w-full items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground transition-colors hover:bg-primary/80"
           >
             Entrar
           </button>

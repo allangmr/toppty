@@ -1,35 +1,93 @@
+"use client";
+
+import { useState } from "react";
 import { copy } from "../copy";
 import type { ActivityItem } from "../types";
+import { ListingAvatar } from "./avatar";
+import { formatUsd, timeAgoEs } from "@/lib/utils";
 
 export function ActivityFeed({ items }: { items: ActivityItem[] }) {
+  const [expanded, setExpanded] = useState(false);
+
   if (items.length === 0) return null;
 
   return (
-    <section className="space-y-3">
-      <h2 className="font-display text-2xl tracking-[0.12em]">
-        {copy.activity}
+    <section className="flex h-full flex-col rounded-2xl bg-card px-4 pt-3.5 pb-1 shadow-[var(--shadow-soft)] md:px-5 md:pt-4">
+      <h2 className="mb-1 text-sm font-semibold tracking-[-0.02em]">
+        <span className="inline-flex items-center gap-1.5 text-foreground">
+          <span className="relative inline-flex size-1.5 shrink-0">
+            <span className="absolute inline-flex size-full animate-ping rounded-full bg-primary opacity-75 motion-reduce:animate-none" />
+            <span className="relative inline-flex size-1.5 rounded-full bg-primary" />
+          </span>
+          {copy.activity}
+        </span>
       </h2>
-      <ul className="space-y-2">
-        {items.map((item) => (
-          <li key={item.id}>
-            <a
-              href={`/activity/${item.id}`}
-              className={
-                item.highlight
-                  ? "block border-2 border-ink bg-ink p-3 text-cream"
-                  : "block border-2 border-ink bg-bg-card p-3"
-              }
+      <div className="relative flex min-h-0 flex-1 flex-col">
+        <div
+          className={
+            expanded
+              ? "overflow-visible"
+              : "max-h-16 overflow-hidden md:max-h-none md:overflow-visible"
+          }
+        >
+          <ul className="flex flex-1 flex-col">
+            {items.map((item, index) => {
+              const name = item.listingDisplayName ?? "Alguien";
+              const rankLabel = item.newRank ? `#${item.newRank}` : null;
+              const amountLabel = item.amountCents
+                ? formatUsd(item.amountCents)
+                : null;
+              return (
+                <li
+                  key={item.id}
+                  className={index === 0 ? undefined : "border-t border-border"}
+                >
+                  <a
+                    href={`/activity/${item.id}`}
+                    className="flex items-center gap-2 py-1.5 text-xs transition-colors hover:text-primary"
+                  >
+                    <ListingAvatar name={name} size="xs" />
+                    <p className="min-w-0 flex-1 truncate">
+                      <span className="font-semibold">{name}</span>{" "}
+                      <span className="text-muted-foreground">
+                        {rankLabel ? `en ${rankLabel}` : ""}
+                        {rankLabel && amountLabel ? " · " : ""}
+                        {amountLabel ?? ""}
+                        {item.highlight ? " · nuevo #1" : ""}
+                      </span>
+                    </p>
+                    <span className="shrink-0 text-muted-foreground">
+                      {timeAgoEs(new Date(item.createdAt))}
+                    </span>
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+        {!expanded ? (
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 flex h-11 items-end justify-center pb-1 md:hidden">
+            <div className="absolute inset-0 bg-gradient-to-t from-card from-20% via-card/80 to-transparent" />
+            <button
+              type="button"
+              onClick={() => setExpanded(true)}
+              className="pointer-events-auto relative z-10 inline-flex h-6 items-center rounded-full border border-border bg-card px-2 text-xs font-bold transition-colors hover:bg-muted"
             >
-              {item.highlight ? (
-                <p className="font-display text-sm tracking-[0.16em] text-accent">
-                  NUEVO #1
-                </p>
-              ) : null}
-              <p className="text-sm leading-snug">{item.message}</p>
-            </a>
-          </li>
-        ))}
-      </ul>
+              {copy.showMore}
+            </button>
+          </div>
+        ) : (
+          <div className="flex justify-center py-2 md:hidden">
+            <button
+              type="button"
+              onClick={() => setExpanded(false)}
+              className="inline-flex h-6 items-center rounded-full border border-border bg-card px-2 text-xs font-bold transition-colors hover:bg-muted"
+            >
+              {copy.showLess}
+            </button>
+          </div>
+        )}
+      </div>
     </section>
   );
 }

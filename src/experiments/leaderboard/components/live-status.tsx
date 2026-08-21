@@ -7,23 +7,27 @@ export function LiveStatus({
 }) {
   if (!onlineCount && !visitCount) return null;
 
-  const parts: string[] = [];
-  if (onlineCount) parts.push(`${onlineCount} online`);
-  if (visitCount) {
-    parts.push(
-      `${visitCount.toLocaleString("es-PA")} visitas desde el lanzamiento`,
-    );
-  }
-
   return (
-    <p className="flex items-center gap-2 text-sm">
-      {onlineCount ? (
-        <span className="relative flex h-2.5 w-2.5">
-          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-online opacity-60" />
-          <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-online" />
-        </span>
-      ) : null}
-      {parts.join(" · ")}
-    </p>
+    <div className="inline-block max-w-full rounded-full bg-muted px-3 py-1.5 text-center text-sm text-balance text-muted-foreground transition-colors">
+      <span className="inline-flex flex-wrap items-center justify-center gap-x-1.5 gap-y-1">
+        {onlineCount ? (
+          <span className="inline-flex items-center gap-1.5 whitespace-nowrap">
+            <span className="relative inline-flex size-2 shrink-0">
+              <span className="absolute inline-flex size-full animate-ping rounded-full bg-live opacity-75 motion-reduce:animate-none" />
+              <span className="relative inline-flex size-2 rounded-full bg-live" />
+            </span>
+            <span className="font-semibold text-live">
+              {onlineCount.toLocaleString("es-PA")} online
+            </span>
+          </span>
+        ) : null}
+        {onlineCount && visitCount ? <span>·</span> : null}
+        {visitCount ? (
+          <span>
+            {visitCount.toLocaleString("es-PA")} visitas desde el lanzamiento
+          </span>
+        ) : null}
+      </span>
+    </div>
   );
 }

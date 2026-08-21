@@ -33,27 +33,29 @@ export function ReportButton({ listingId }: { listingId: string }) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="text-xs text-muted underline-offset-2 hover:underline"
+        className="text-xs text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
       >
         Reportar
       </button>
       {open ? (
         <div
-          className="fixed inset-0 z-50 flex items-end justify-center bg-ink/40 p-4 sm:items-center"
+          className="fixed inset-0 z-50 flex items-end justify-center bg-foreground/30 p-4 backdrop-blur-[2px] sm:items-center"
           role="dialog"
           aria-modal="true"
           aria-labelledby="report-title"
         >
-          <div className="w-full max-w-md border-2 border-ink bg-bg-card p-4 shadow-[4px_4px_0_#161412]">
+          <div className="w-full max-w-md rounded-2xl border border-border bg-card p-5 shadow-[var(--shadow-soft)]">
             {done ? (
               <div className="space-y-3">
-                <p id="report-title" className="font-display text-2xl">
+                <p id="report-title" className="text-xl font-bold tracking-[-0.03em]">
                   Gracias
                 </p>
-                <p>Lo revisamos. No hace falta que lo digas dos veces.</p>
+                <p className="text-sm text-muted-foreground">
+                  Lo revisamos. No hace falta que lo digas dos veces.
+                </p>
                 <button
                   type="button"
-                  className="border-2 border-ink bg-ink px-3 py-2 font-display tracking-widest text-cream"
+                  className="inline-flex h-10 items-center justify-center rounded-full bg-primary px-4 text-sm font-bold text-primary-foreground"
                   onClick={() => setOpen(false)}
                 >
                   Cerrar
@@ -67,13 +69,13 @@ export function ReportButton({ listingId }: { listingId: string }) {
                   void submit();
                 }}
               >
-                <p id="report-title" className="font-display text-2xl">
+                <p id="report-title" className="text-xl font-bold tracking-[-0.03em]">
                   Reportar
                 </p>
                 <label className="block text-sm">
                   Motivo
                   <select
-                    className="mt-1 w-full border-2 border-ink bg-cream px-2 py-2"
+                    className="mt-1 h-10 w-full rounded-xl border border-input bg-transparent px-3"
                     value={reason}
                     onChange={(event) =>
                       setReason(event.target.value as typeof reason)
@@ -89,23 +91,25 @@ export function ReportButton({ listingId }: { listingId: string }) {
                 <label className="block text-sm">
                   Detalle (opcional)
                   <textarea
-                    className="mt-1 min-h-20 w-full border-2 border-ink bg-cream px-2 py-2"
+                    className="mt-1 min-h-20 w-full rounded-xl border border-input bg-transparent px-3 py-2"
                     value={details}
                     onChange={(event) => setDetails(event.target.value)}
                     maxLength={500}
                   />
                 </label>
-                {error ? <p className="text-sm text-accent">{error}</p> : null}
+                {error ? (
+                  <p className="text-sm text-destructive">{error}</p>
+                ) : null}
                 <div className="flex gap-2">
                   <button
                     type="submit"
-                    className="border-2 border-ink bg-ink px-3 py-2 font-display tracking-widest text-cream"
+                    className="inline-flex h-10 items-center justify-center rounded-full bg-primary px-4 text-sm font-bold text-primary-foreground"
                   >
                     Enviar
                   </button>
                   <button
                     type="button"
-                    className="border-2 border-ink px-3 py-2"
+                    className="inline-flex h-10 items-center justify-center rounded-full border border-border px-4 text-sm font-medium"
                     onClick={() => setOpen(false)}
                   >
                     Cancelar

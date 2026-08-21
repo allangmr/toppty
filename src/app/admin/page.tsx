@@ -15,8 +15,10 @@ export default async function AdminPage() {
   if (!process.env.DATABASE_URL) {
     return (
       <main className="mx-auto max-w-xl px-4 py-12">
-        <h1 className="font-display text-5xl">Admin</h1>
-        <p className="mt-4">Configura DATABASE_URL para ver listings y pagos.</p>
+        <h1 className="text-4xl font-bold tracking-[-0.04em]">Admin</h1>
+        <p className="mt-4 text-muted-foreground">
+          Configura DATABASE_URL para ver listings y pagos.
+        </p>
       </main>
     );
   }
@@ -46,7 +48,7 @@ export default async function AdminPage() {
 
   return (
     <main className="mx-auto max-w-5xl space-y-10 px-4 py-8 text-sm">
-      <h1 className="font-display text-5xl">Admin</h1>
+      <h1 className="text-4xl font-bold tracking-[-0.04em]">Admin</h1>
       <section className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <Stat label="Listings" value={listingRows.length} />
         <Stat label="Pagos" value={paid?.n ?? 0} />
@@ -55,29 +57,29 @@ export default async function AdminPage() {
       </section>
 
       <section className="space-y-3">
-        <h2 className="font-display text-3xl">Listings</h2>
-        <div className="overflow-x-auto border-2 border-ink">
+        <h2 className="text-2xl font-bold tracking-[-0.03em]">Listings</h2>
+        <div className="overflow-x-auto rounded-2xl border border-border">
           <table className="w-full min-w-[640px] text-left">
-            <thead className="bg-paper">
+            <thead className="bg-muted">
               <tr>
-                <th className="p-2">Nombre</th>
-                <th className="p-2">Monto</th>
-                <th className="p-2">Clicks</th>
-                <th className="p-2">Estado</th>
-                <th className="p-2">Acciones</th>
+                <th className="p-3">Nombre</th>
+                <th className="p-3">Monto</th>
+                <th className="p-3">Clicks</th>
+                <th className="p-3">Estado</th>
+                <th className="p-3">Acciones</th>
               </tr>
             </thead>
             <tbody>
               {listingRows.map((row) => (
-                <tr key={row.id} className="border-t border-ink">
-                  <td className="p-2">
+                <tr key={row.id} className="border-t border-border">
+                  <td className="p-3">
                     {row.displayName}
-                    <div className="text-xs text-muted">{row.slug}</div>
+                    <div className="text-xs text-muted-foreground">{row.slug}</div>
                   </td>
-                  <td className="p-2">{formatUsd(row.totalBidCents)}</td>
-                  <td className="p-2">{row.clickCount}</td>
-                  <td className="p-2">{row.moderationStatus}</td>
-                  <td className="space-x-2 p-2">
+                  <td className="p-3">{formatUsd(row.totalBidCents)}</td>
+                  <td className="p-3">{row.clickCount}</td>
+                  <td className="p-3">{row.moderationStatus}</td>
+                  <td className="space-x-2 p-3">
                     <form action={hideListing} className="inline">
                       <input type="hidden" name="id" value={row.id} />
                       <button className="underline">Ocultar</button>
@@ -99,8 +101,8 @@ export default async function AdminPage() {
       </section>
 
       <section className="space-y-3">
-        <h2 className="font-display text-3xl">Pagos</h2>
-        <ul className="space-y-1 border-2 border-ink p-3">
+        <h2 className="text-2xl font-bold tracking-[-0.03em]">Pagos</h2>
+        <ul className="space-y-1 rounded-2xl border border-border p-4">
           {bidRows.map((bid) => (
             <li key={bid.id}>
               {bid.status} · {formatUsd(bid.amountCents)} · {bid.id}
@@ -110,8 +112,8 @@ export default async function AdminPage() {
       </section>
 
       <section className="space-y-3">
-        <h2 className="font-display text-3xl">Reportes</h2>
-        <ul className="space-y-2 border-2 border-ink p-3">
+        <h2 className="text-2xl font-bold tracking-[-0.03em]">Reportes</h2>
+        <ul className="space-y-2 rounded-2xl border border-border p-4">
           {reportRows.map((row) => (
             <li key={row.report.id}>
               {row.listing?.displayName ?? row.report.listingId} ·{" "}
@@ -127,9 +129,11 @@ export default async function AdminPage() {
 
 function Stat({ label, value }: { label: string; value: number }) {
   return (
-    <div className="border-2 border-ink bg-bg-card p-3">
-      <p className="text-xs uppercase tracking-wide text-muted">{label}</p>
-      <p className="font-display text-4xl">{value}</p>
+    <div className="rounded-2xl border border-border bg-card p-4 shadow-[var(--shadow-soft)]">
+      <p className="text-xs tracking-wide text-muted-foreground uppercase">
+        {label}
+      </p>
+      <p className="mt-1 text-3xl font-bold tracking-[-0.03em]">{value}</p>
     </div>
   );
 }

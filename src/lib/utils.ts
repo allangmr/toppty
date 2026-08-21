@@ -25,7 +25,7 @@ export function centsToDollars(cents: number) {
 }
 
 export function formatUsd(cents: number) {
-  return `$${centsToDollars(cents)}`;
+  return `$${centsToDollars(cents).toLocaleString("en-US")}`;
 }
 
 export function timeAgoEs(date: Date, now = Date.now()) {

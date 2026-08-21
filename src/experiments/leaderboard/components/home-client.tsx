@@ -11,7 +11,6 @@ import { Faq } from "./faq";
 import { LeaderboardList } from "./leaderboard-list";
 import { LiveStatus } from "./live-status";
 import { Trending } from "./trending";
-import { copy } from "../copy";
 
 export function HomeClient({
   initial,
@@ -42,37 +41,33 @@ export function HomeClient({
       prefillAmount={prefillAmount}
     >
       <Header />
-      <main className="mx-auto flex w-full max-w-xl flex-1 flex-col gap-10 px-4 py-6">
-        <div className="space-y-4">
+      <div className="mx-auto flex w-full max-w-4xl flex-1 flex-col px-4 pt-4 pb-16">
+        <header className="mb-6 text-center">
+          <h1 className="sr-only">toppty.lol</h1>
           <LiveStatus
             onlineCount={data.onlineCount}
             visitCount={data.visitCount}
           />
-          <h1 className="font-display text-[clamp(2.6rem,12vw,4.4rem)] leading-[0.95]">
-            {copy.hero}
-          </h1>
-          <p className="text-lg leading-snug">
-            {copy.punch.map((line) => (
-              <span key={line} className="block">
-                {line}
-              </span>
-            ))}
-          </p>
+        </header>
+
+        <div className="flex flex-col gap-6">
+          <BidModule
+            takeFirstCents={data.takeFirstCents}
+            listings={data.listings}
+          />
+
+          <div className="mb-2 grid grid-cols-1 items-stretch gap-4 md:grid-cols-2">
+            <Trending items={data.trending} />
+            <ActivityFeed items={data.activity} />
+          </div>
+
+          <section id="ranking" className="scroll-mt-6">
+            <LeaderboardList listings={data.listings} />
+          </section>
+
+          <Faq />
         </div>
-
-        <BidModule takeFirstCents={data.takeFirstCents} listings={data.listings} />
-        <Trending items={data.trending} />
-        <ActivityFeed items={data.activity} />
-
-        <section id="ranking" className="scroll-mt-24 space-y-4">
-          <h2 className="font-display text-3xl tracking-[0.14em]">
-            {copy.ranking}
-          </h2>
-          <LeaderboardList listings={data.listings} />
-        </section>
-
-        <Faq />
-      </main>
+      </div>
       <Footer />
     </BidProvider>
   );

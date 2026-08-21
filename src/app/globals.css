@@ -1,30 +1,72 @@
 @import "tailwindcss";
 
 :root {
-  --bg: #f3eee4;
-  --bg-card: #fffaf1;
-  --ink: #161412;
-  --muted: #6b645b;
-  --line: #161412;
-  --accent: #d61f26;
-  --cream: #fffaf1;
-  --paper: #e8e0d2;
-  --online: #1f7a43;
-  --shadow: 4px 4px 0 #161412;
+  --background: #fffdfa;
+  --foreground: #282624;
+  --card: #fffdfa;
+  --card-foreground: #282624;
+  --primary: #e57255;
+  --primary-foreground: #ffffff;
+  --live: #009f31;
+  --secondary: #f6f3ef;
+  --secondary-foreground: #282624;
+  --muted: #f6f3ef;
+  --muted-foreground: #67625d;
+  --accent: #f6f3ef;
+  --accent-foreground: #282624;
+  --destructive: #e40014;
+  --border: #e6e0da;
+  --input: #e6e0da;
+  --ring: #e57255;
+  --radius: 0.875rem;
+  --shadow-soft: 0 12px 50px rgba(40, 38, 36, 0.08);
+}
+
+.dark {
+  --background: #1a1512;
+  --foreground: #f7f5f1;
+  --card: #231e1b;
+  --card-foreground: #f7f5f1;
+  --primary: #e57255;
+  --primary-foreground: #ffffff;
+  --live: #50c05f;
+  --secondary: #2d2824;
+  --secondary-foreground: #f7f5f1;
+  --muted: #2d2824;
+  --muted-foreground: #aba39b;
+  --accent: #2d2824;
+  --accent-foreground: #f7f5f1;
+  --destructive: #ff6568;
+  --border: rgb(255 255 255 / 0.1);
+  --input: rgb(255 255 255 / 0.15);
+  --ring: #e57255;
+  --shadow-soft: 0 12px 50px rgba(0, 0, 0, 0.35);
 }
 
 @theme inline {
-  --color-bg: var(--bg);
-  --color-bg-card: var(--bg-card);
-  --color-ink: var(--ink);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-live: var(--live);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
-  --color-line: var(--line);
+  --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
-  --color-cream: var(--cream);
-  --color-paper: var(--paper);
-  --color-online: var(--online);
-  --font-sans: var(--font-geist-sans);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --font-sans: var(--font-dm-sans);
   --font-mono: var(--font-geist-mono);
+  --radius-sm: calc(var(--radius) * 0.8);
+  --radius-md: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
 }
 
 html {
@@ -32,22 +74,56 @@ html {
 }
 
 body {
-  background: var(--bg);
-  color: var(--ink);
-  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  background:
+    radial-gradient(1200px 500px at 50% -10%, rgb(229 114 85 / 0.1), transparent 55%),
+    radial-gradient(900px 420px at 100% 0%, rgb(229 114 85 / 0.05), transparent 45%),
+    var(--background);
+  color: var(--foreground);
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
 }
 
-.font-display {
-  font-family: var(--font-display), Impact, "Arial Narrow", sans-serif;
-  letter-spacing: 0.04em;
+.dark body {
+  background:
+    radial-gradient(1200px 500px at 50% -10%, rgb(229 114 85 / 0.12), transparent 55%),
+    radial-gradient(900px 420px at 100% 0%, rgb(229 114 85 / 0.06), transparent 45%),
+    var(--background);
 }
 
 ::selection {
-  background: var(--ink);
-  color: var(--cream);
+  background: color-mix(in oklab, var(--primary) 35%, transparent);
+  color: var(--foreground);
 }
 
 :focus-visible {
-  outline: 3px solid var(--accent);
+  outline: 2px solid var(--ring);
   outline-offset: 2px;
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes soft-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.45s ease-out both;
+}
+
+.animate-soft-pulse {
+  animation: soft-pulse 2.4s ease-in-out infinite;
 }

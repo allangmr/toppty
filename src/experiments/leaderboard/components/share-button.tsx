@@ -55,16 +55,11 @@ export function ShareButton({
       type="button"
       onClick={share}
       className={cn(
-        "border-2 border-ink bg-cream px-3 py-1.5 text-xs font-bold uppercase tracking-wide",
-        prominent &&
-          "bg-accent px-4 py-2 font-display text-base tracking-[0.14em] text-cream",
+        "rounded-full border border-border bg-card px-3 py-1.5 text-xs font-bold transition-colors hover:bg-muted",
+        prominent && "bg-primary px-4 py-2 text-sm text-primary-foreground hover:bg-primary/80",
       )}
     >
-      {copied
-        ? "Link copiado"
-        : prominent
-          ? "COMPARTIR 👑"
-          : "Compartir"}
+      {copied ? "Link copiado" : prominent ? "Compartir" : "Compartir"}
     </button>
   );
 }

@@ -5,8 +5,10 @@ export default function CheckoutSuccessPage() {
   return (
     <Suspense
       fallback={
-        <main className="mx-auto flex min-h-dvh max-w-xl flex-col justify-center px-4">
-          <p className="font-display text-5xl">Confirmando tu pago…</p>
+        <main className="mx-auto flex min-h-dvh max-w-4xl flex-col justify-center px-4">
+          <p className="text-4xl font-bold tracking-[-0.04em]">
+            Confirmando tu pago…
+          </p>
         </main>
       }
     >

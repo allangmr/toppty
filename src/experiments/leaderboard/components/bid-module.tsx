@@ -2,6 +2,7 @@
 
 import { useActionState, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Globe } from "lucide-react";
 import { trackClient } from "@/components/track-client";
 import { centsToDollars, dollarsToCents, formatUsd } from "@/lib/utils";
 import {
@@ -91,48 +92,42 @@ export function BidModule({
       : "";
 
   return (
-    <section
-      id="subir"
-      className="scroll-mt-24 border-2 border-ink bg-bg-card p-4 shadow-[4px_4px_0_#161412] sm:p-6"
-    >
-      <p className="font-display text-xl tracking-[0.18em] text-muted sm:text-2xl">
-        {copy.takeNumberOne}
-      </p>
-      <p className="font-display text-[clamp(4.5rem,22vw,8.5rem)] leading-none">
-        {formatUsd(takeFirstCents)}
-      </p>
-
-      <form action={action} className="mt-4 space-y-3">
-        <div className="flex items-stretch gap-2">
+    <section id="subir" className="scroll-mt-6 animate-fade-up">
+      <h2 className="flex flex-wrap items-center justify-center gap-x-2 text-center text-[28px] font-bold tracking-[-0.03em] text-pretty md:text-[40px]">
+        <span>{copy.takeNumberOne}</span>
+        <span className="inline-flex items-center gap-2">
           <button
             type="button"
             onClick={() => {
               markStarted();
               bump(-1);
             }}
-            className="h-14 w-14 shrink-0 border-2 border-ink bg-paper font-display text-3xl leading-none"
-            aria-label="Bajar monto"
+            aria-label="Bajar monto un dólar"
+            className="inline-flex size-6 items-center justify-center rounded-full bg-primary/15 text-sm font-bold text-primary transition-colors hover:bg-primary/25"
           >
             −
           </button>
-          <label className="relative block min-w-0 flex-1">
+          <label className="relative inline-block text-primary underline decoration-2 decoration-dashed underline-offset-[6px]">
             <span className="sr-only">Monto en dólares</span>
-            <span className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 font-display text-3xl">
-              $
+            <span className="invisible whitespace-nowrap tabular-nums" aria-hidden>
+              ${amountDollars}
             </span>
-            <input
-              name="amountDollars"
-              inputMode="numeric"
-              pattern="[0-9]*"
-              value={amountDollars}
-              onFocus={markStarted}
-              onChange={(event) => {
-                markStarted();
-                const next = event.target.value.replace(/[^\d]/g, "");
-                setAmountDollars(next ? Math.max(1, Number(next)) : 1);
-              }}
-              className="h-14 w-full border-2 border-ink bg-cream pl-8 text-center font-display text-3xl"
-            />
+            <span className="absolute inset-0 flex items-baseline">
+              <span aria-hidden>$</span>
+              <input
+                name="amountDollarsDisplay"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                value={amountDollars}
+                onFocus={markStarted}
+                onChange={(event) => {
+                  markStarted();
+                  const next = event.target.value.replace(/[^\d]/g, "");
+                  setAmountDollars(next ? Math.max(1, Number(next)) : 1);
+                }}
+                className="w-full min-w-0 bg-transparent p-0 font-[inherit] text-[inherit] tracking-[inherit] tabular-nums outline-none"
+              />
+            </span>
           </label>
           <button
             type="button"
@@ -140,52 +135,66 @@ export function BidModule({
               markStarted();
               bump(1);
             }}
-            className="h-14 w-14 shrink-0 border-2 border-ink bg-paper font-display text-3xl leading-none"
-            aria-label="Subir monto"
+            aria-label="Subir monto un dólar"
+            className="inline-flex size-6 items-center justify-center rounded-full bg-primary/15 text-sm font-bold text-primary transition-colors hover:bg-primary/25"
           >
             +
           </button>
+        </span>
+      </h2>
+
+      <p className="mx-auto mt-2 max-w-md text-center text-sm font-medium leading-relaxed text-pretty text-muted-foreground">
+        <span className="text-primary/70">
+          Los puestos nuevos empiezan en{" "}
+          {formatUsd(leaderboardConfig.minBidCents)}.
+        </span>{" "}
+        Pagar menos que el #1 igual te pone en el ranking en el puesto que
+        alcance tu monto.
+      </p>
+
+      <form action={action} className="mt-4 flex flex-col gap-3">
+        <input type="hidden" name="amountDollars" value={amountDollars} />
+        <div className="flex flex-col items-stretch gap-2 md:flex-row md:items-center">
+          <div className="relative min-w-0 flex-1">
+            <span className="pointer-events-none absolute top-1/2 left-2.5 -translate-y-1/2 text-muted-foreground">
+              <Globe className="size-3.5" aria-hidden />
+            </span>
+            <input
+              id="identifier"
+              name="identifier"
+              value={identifier}
+              onFocus={markStarted}
+              onChange={(event) => setIdentifier(event.target.value)}
+              onBlur={() => void onIdentifierBlur()}
+              placeholder={copy.identifierLabel}
+              autoComplete="off"
+              spellCheck={false}
+              required
+              className="h-11 w-full min-w-0 rounded-xl border border-input bg-transparent py-1 pr-3 pl-10 text-base outline-none transition-colors placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+            />
+          </div>
+          <button
+            type="submit"
+            disabled={pending || !identifier.trim()}
+            className="inline-flex h-11 w-full shrink-0 cursor-pointer items-center justify-center rounded-full bg-primary px-5 text-sm font-bold text-primary-foreground transition-colors hover:bg-primary/80 disabled:cursor-not-allowed disabled:opacity-50 md:w-auto"
+          >
+            {pending ? "Abriendo pago…" : copy.submit}
+          </button>
         </div>
 
-        <label className="block">
-          <span className="sr-only">{copy.identifierLabel}</span>
-          <input
-            id="identifier"
-            name="identifier"
-            value={identifier}
-            onFocus={markStarted}
-            onChange={(event) => setIdentifier(event.target.value)}
-            onBlur={() => void onIdentifierBlur()}
-            placeholder={copy.identifierLabel}
-            autoComplete="off"
-            spellCheck={false}
-            required
-            className="h-14 w-full border-2 border-ink bg-cream px-3 text-base"
-          />
-        </label>
-        <p className="text-xs text-muted">{copy.identifierHint}</p>
-
-        <p className="text-sm">
+        <p className="text-center text-xs leading-relaxed text-pretty text-muted-foreground">
+          {copy.identifierHint}
+        </p>
+        <p className="text-center text-sm text-muted-foreground">
           {helper}
           {nextHint}
         </p>
-        {lookup ? <p className="text-sm">{lookup}</p> : null}
-        {state && !state.ok ? (
-          <p className="text-sm text-accent">{state.error}</p>
+        {lookup ? (
+          <p className="text-center text-sm text-muted-foreground">{lookup}</p>
         ) : null}
-
-        <button
-          type="submit"
-          disabled={pending}
-          className="h-14 w-full border-2 border-ink bg-ink font-display text-2xl tracking-[0.18em] text-cream shadow-[4px_4px_0_#161412] transition active:translate-x-0.5 active:translate-y-0.5 active:shadow-none disabled:opacity-60"
-        >
-          {pending ? "ABRIENDO PAGO…" : copy.submit}
-        </button>
-        <p className="text-sm text-muted">{copy.submitHint}</p>
-        <p className="text-[11px] text-muted">
-          Mínimo {formatUsd(leaderboardConfig.minBidCents)}. Cada peso extra
-          cuenta.
-        </p>
+        {state && !state.ok ? (
+          <p className="text-center text-sm text-destructive">{state.error}</p>
+        ) : null}
       </form>
     </section>
   );

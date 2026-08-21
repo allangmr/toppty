@@ -1,18 +1,54 @@
 import Link from "next/link";
+import { BrandMark } from "@/components/brand-mark";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { copy } from "@/experiments/leaderboard/copy";
 
 export function Header() {
   return (
-    <header className="sticky top-0 z-40 border-b-2 border-ink bg-bg/95 backdrop-blur">
-      <div className="mx-auto flex max-w-xl flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-3">
-        <Link href="/" className="font-display text-2xl tracking-[0.08em]">
-          {copy.brand} {copy.flag}
+    <header className="w-full">
+      <div className="mx-auto flex w-full max-w-4xl items-center justify-between gap-4 px-4 pt-5 pb-4">
+        <Link
+          href="/"
+          className="inline-flex items-center gap-1.5 text-[22px] font-medium tracking-[-0.04em]"
+        >
+          <BrandMark />
+          <span>
+            toppty
+            <span className="text-primary">.</span>
+            lol
+          </span>
         </Link>
-        <nav className="flex flex-wrap gap-x-4 gap-y-1 text-sm font-medium">
-          <a href="#ranking">{copy.ranking}</a>
-          <a href="#como-funciona">{copy.how}</a>
-          <a href="#reglas">{copy.rules}</a>
-        </nav>
+        <div className="flex items-center gap-3 sm:gap-4">
+          <nav aria-label="Principal">
+            <ul className="flex items-center gap-4 text-sm sm:gap-5">
+              <li>
+                <a
+                  href="#ranking"
+                  className="font-medium text-foreground transition-colors hover:text-foreground"
+                >
+                  {copy.ranking}
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#como-funciona"
+                  className="font-medium text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  {copy.how}
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#reglas"
+                  className="font-medium text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  {copy.rules}
+                </a>
+              </li>
+            </ul>
+          </nav>
+          <ThemeToggle />
+        </div>
       </div>
     </header>
   );

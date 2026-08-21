@@ -1,4 +1,5 @@
 import { avatarHue, initialsFromName } from "../identity";
+import { cn } from "@/lib/utils";
 
 export function ListingAvatar({
   name,
@@ -7,11 +8,18 @@ export function ListingAvatar({
 }: {
   name: string;
   imageUrl?: string | null;
-  size?: "sm" | "md" | "lg";
+  size?: "xs" | "sm" | "md" | "lg";
 }) {
   const dim =
-    size === "lg" ? "h-16 w-16 text-xl" : size === "sm" ? "h-10 w-10 text-sm" : "h-12 w-12 text-base";
+    size === "lg"
+      ? "size-14 text-base md:size-14"
+      : size === "sm"
+        ? "size-8 text-xs"
+        : size === "xs"
+          ? "size-5 text-[10px]"
+          : "size-10 text-sm md:size-14 md:text-base";
   const hue = avatarHue(name);
+  const rounded = size === "xs" || size === "sm" ? "rounded-md" : "rounded-md";
 
   if (imageUrl) {
     return (
@@ -22,15 +30,19 @@ export function ListingAvatar({
         alt=""
         width={64}
         height={64}
-        className={`${dim} shrink-0 border-2 border-ink bg-cream object-cover`}
+        className={cn(dim, rounded, "shrink-0 bg-muted object-cover")}
       />
     );
   }
 
   return (
     <div
-      className={`${dim} flex shrink-0 items-center justify-center border-2 border-ink font-display text-cream`}
-      style={{ background: `hsl(${hue} 45% 28%)` }}
+      className={cn(
+        dim,
+        rounded,
+        "flex shrink-0 items-center justify-center font-semibold text-primary-foreground",
+      )}
+      style={{ background: `hsl(${hue} 42% 42%)` }}
       aria-hidden
     >
       {initialsFromName(name)}

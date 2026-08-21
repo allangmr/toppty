@@ -26,30 +26,38 @@ export default async function Image({
       >
         <div
           style={{
-            fontFamily: "Bebas Neue",
-            fontSize: 40,
-            letterSpacing: 4,
+            fontSize: 32,
+            fontWeight: 600,
+            letterSpacing: -1,
           }}
         >
-          TOPPTY.LOL
+          toppty
+          <span style={{ color: "#e57255" }}>.</span>
+          lol
         </div>
-        <div style={{ fontSize: 24 }}>PANAMA</div>
+        <div style={{ fontSize: 22, color: "#67625d" }}>Panamá</div>
       </div>
-      <div style={{ display: "flex", flexDirection: "column" }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
         <div
           style={{
-            fontFamily: "Bebas Neue",
-            fontSize: 120,
-            lineHeight: 0.85,
+            display: "flex",
+            width: "fit-content",
+            borderRadius: 999,
+            background: "#e57255",
+            color: "#fff",
+            padding: "6px 14px",
+            fontSize: 28,
+            fontWeight: 700,
           }}
         >
-          {listing ? `#${listing.rank}` : "TOPPTY"}
+          {listing ? `#${listing.rank}` : "TopPTY"}
         </div>
         <div
           style={{
-            fontFamily: "Bebas Neue",
-            fontSize: 72,
-            lineHeight: 0.95,
+            fontSize: 68,
+            fontWeight: 700,
+            lineHeight: 1,
+            letterSpacing: -2,
           }}
         >
           {listing?.displayName ?? slug}
@@ -64,13 +72,17 @@ export default async function Image({
       >
         <div
           style={{
-            fontFamily: "Bebas Neue",
-            fontSize: 84,
+            fontSize: 72,
+            fontWeight: 700,
+            color: "#e57255",
+            letterSpacing: -2,
           }}
         >
           {listing ? formatUsd(listing.totalBidCents) : ""}
         </div>
-        <div style={{ fontSize: 24 }}>A ver cuánto duras arriba.</div>
+        <div style={{ fontSize: 24, color: "#67625d" }}>
+          A ver cuánto duras arriba.
+        </div>
       </div>
     </OgShell>,
   );

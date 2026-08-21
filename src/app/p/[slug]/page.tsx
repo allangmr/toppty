@@ -52,11 +52,13 @@ export default async function ListingPage({
   return (
     <>
       <Header />
-      <main className="mx-auto flex w-full max-w-xl flex-1 flex-col gap-6 px-4 py-8">
-        <p className="font-display text-xl tracking-[0.16em] text-muted">
+      <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-6 px-4 py-8">
+        <p className="text-sm font-medium tracking-[-0.02em] text-muted-foreground">
           {copy.brand}
         </p>
-        <p className="font-display text-7xl leading-none">#{listing.rank}</p>
+        <p className="inline-flex w-fit rounded-full bg-primary px-3 py-1 text-sm font-semibold text-primary-foreground">
+          #{listing.rank}
+        </p>
         <div className="flex items-center gap-4">
           <ListingAvatar
             name={listing.displayName}
@@ -64,21 +66,31 @@ export default async function ListingPage({
             size="lg"
           />
           <div>
-            <h1 className="font-display text-4xl">{listing.displayName}</h1>
-            <p className="text-muted">{listing.clickCount} clicks</p>
+            <h1 className="text-3xl font-bold tracking-[-0.03em]">
+              {listing.displayName}
+            </h1>
+            <p className="text-muted-foreground">
+              {listing.clickCount} clicks
+            </p>
           </div>
         </div>
-        <p className="font-display text-7xl leading-none">
+        <p className="text-5xl font-bold tracking-[-0.04em] text-primary">
           {formatUsd(listing.totalBidCents)}
         </p>
+        {listing.description ? (
+          <p className="max-w-2xl text-muted-foreground">{listing.description}</p>
+        ) : null}
         <a
           href={`/go/${listing.slug}`}
-          className="border-2 border-ink px-4 py-3 text-center font-medium"
+          className="inline-flex h-11 items-center justify-center rounded-full border border-border px-4 text-center text-sm font-medium transition-colors hover:bg-muted"
         >
           Ir al perfil
         </a>
         <BidCta rank={listing.rank} amountCents={takeCents} />
-        <Link href="/" className="text-sm underline-offset-2 hover:underline">
+        <Link
+          href="/"
+          className="text-sm text-muted-foreground underline-offset-2 transition-colors hover:text-foreground hover:underline"
+        >
           Ver el ranking completo
         </Link>
       </main>
