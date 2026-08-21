@@ -167,7 +167,9 @@ export async function fulfillPaidBid(input: {
     revalidateTag("home", "max");
     revalidatePath("/");
     revalidatePath("/sitemap.xml");
-    revalidatePath(`/p/${result.listing.slug}`);
+    if (result.listing) {
+      revalidatePath(`/p/${result.listing.slug}`);
+    }
   }
 
   return result;

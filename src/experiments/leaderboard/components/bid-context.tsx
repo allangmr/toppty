@@ -4,9 +4,9 @@ import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
   useState,
+  useSyncExternalStore,
   type ReactNode,
 } from "react";
 import { centsToDollars } from "@/lib/utils";
@@ -19,6 +19,17 @@ type BidContextValue = {
 
 const BidContext = createContext<BidContextValue | null>(null);
 
+function readAmountParam(): number | null {
+  const raw = new URLSearchParams(window.location.search).get("amount");
+  if (raw && /^\d+$/.test(raw)) return Math.max(1, Number(raw));
+  return null;
+}
+
+function subscribeSearch(onStoreChange: () => void) {
+  window.addEventListener("popstate", onStoreChange);
+  return () => window.removeEventListener("popstate", onStoreChange);
+}
+
 export function BidProvider({
   initialAmountCents,
   children,
@@ -26,19 +37,21 @@ export function BidProvider({
   initialAmountCents: number;
   children: ReactNode;
 }) {
-  const [amountDollars, setAmountDollars] = useState(() =>
-    centsToDollars(initialAmountCents),
+  const urlAmount = useSyncExternalStore(
+    subscribeSearch,
+    readAmountParam,
+    () => null,
   );
+  const [manualAmount, setManualAmount] = useState<number | null>(null);
+  const amountDollars =
+    manualAmount ?? urlAmount ?? centsToDollars(initialAmountCents);
 
-  useEffect(() => {
-    const raw = new URLSearchParams(window.location.search).get("amount");
-    if (raw && /^\d+$/.test(raw)) {
-      setAmountDollars(Math.max(1, Number(raw)));
-    }
+  const setAmountDollars = useCallback((value: number) => {
+    setManualAmount(value);
   }, []);
 
   const takePlace = useCallback((amountCents: number) => {
-    setAmountDollars(centsToDollars(amountCents));
+    setManualAmount(centsToDollars(amountCents));
     document.getElementById("subir")?.scrollIntoView({ behavior: "smooth" });
     window.setTimeout(() => {
       document.getElementById("identifier")?.focus();
@@ -46,8 +59,12 @@ export function BidProvider({
   }, []);
 
   const value = useMemo(
-    () => ({ amountDollars, setAmountDollars, takePlace }),
-    [amountDollars, takePlace],
+    () => ({
+      amountDollars,
+      setAmountDollars,
+      takePlace,
+    }),
+    [amountDollars, setAmountDollars, takePlace],
   );
 
   return <BidContext.Provider value={value}>{children}</BidContext.Provider>;
