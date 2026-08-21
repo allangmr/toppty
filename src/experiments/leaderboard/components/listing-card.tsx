@@ -62,6 +62,7 @@ export function ListingCard({
         href={`/go/${listing.slug}`}
         className={cn(
           "flex h-full items-center gap-2 transition-colors hover:text-primary md:gap-3",
+          isTopThree && "motion-lift",
           isFirst ? "py-3 md:py-4" : isSecond ? "py-2.5 md:py-3.5" : isThird ? "py-2 md:py-3" : "py-1.5 md:py-2",
         )}
         onClick={() =>
@@ -76,7 +77,7 @@ export function ListingCard({
             className={cn(
               "inline-flex items-center justify-center font-semibold",
               isFirst
-                ? "min-w-9 rounded-full bg-flag-red px-2 py-0.5 text-sm text-white md:min-w-12 md:px-2.5 md:text-lg"
+                ? "animate-nudge min-w-9 rounded-full bg-flag-red px-2 py-0.5 text-sm text-white md:min-w-12 md:px-2.5 md:text-lg"
                 : isSecond
                   ? "min-w-8 rounded-full bg-primary px-1.5 py-px text-xs text-primary-foreground md:min-w-11 md:px-2 md:text-base"
                   : isThird
@@ -152,12 +153,9 @@ export function ListingCard({
             </span>
             <span className="inline-flex items-center gap-1 font-semibold text-foreground">
               <span className="relative inline-flex size-1.5 shrink-0">
-                <span
-                  className={cn(
-                    "absolute inline-flex size-full animate-ping rounded-full opacity-75 motion-reduce:animate-none",
-                    isFirst ? "bg-flag-red" : "bg-primary",
-                  )}
-                />
+                {isFirst ? (
+                  <span className="absolute inline-flex size-full animate-ping rounded-full bg-flag-red opacity-75 motion-reduce:animate-none" />
+                ) : null}
                 <span
                   className={cn(
                     "relative inline-flex size-1.5 rounded-full",
