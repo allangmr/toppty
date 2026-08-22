@@ -5,6 +5,7 @@ import { and, eq, gte, sql } from "drizzle-orm";
 import { z } from "zod";
 import { trackEvent } from "@/core/analytics/track";
 import { bids, getDb, listings } from "@/core/db";
+import { purgeListingById } from "@/core/db/purge-listing";
 import { canSkipPaypal, createPaypalCheckout, paypalEnabled } from "@/core/payments/paypal";
 import { fingerprintFromHeaders } from "@/core/security/fingerprint";
 import { getRequestAppUrl, createId, dollarsToCents } from "@/lib/utils";
@@ -155,14 +156,18 @@ async function createCheckoutInner(formData: FormData): Promise<CheckoutState> {
     )
     .limit(1);
 
-  if (existing?.moderationStatus === "removed") {
+  if (existing?.moderationStatus === "hidden") {
     return { ok: false, error: "Ese perfil no ta disponible." };
   }
 
-  let listingId = existing?.id;
+  if (existing?.moderationStatus === "removed") {
+    await purgeListingById(db, existing.id);
+  }
+
+  let listingId =
+    existing && existing.moderationStatus !== "removed" ? existing.id : undefined;
   let displayNameForPaypal =
     userDisplayName || existing?.displayName || identity.identity.displayName;
-
   if (!listingId) {
     const allSlugs = await db.select({ slug: listings.slug }).from(listings);
     const slug = uniqueSlug(
@@ -318,6 +323,10 @@ export async function lookupIdentity(identifier: string) {
         exists: false as const,
         displayName: identity.identity.displayName,
       };
+    }
+
+    if (existing.moderationStatus === "hidden") {
+      return { ok: false as const, error: "Ese perfil no ta disponible." };
     }
 
     return {

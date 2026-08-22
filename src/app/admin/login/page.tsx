@@ -13,6 +13,7 @@ import {
   registerAdminLoginFailure,
 } from "@/core/admin/lockout";
 import { fingerprintFromHeaders } from "@/core/security/fingerprint";
+import { logAdminLoginEvent } from "@/core/admin/login-events";
 import { AdminLoginForm } from "./login-form";
 
 export const dynamic = "force-dynamic";
@@ -24,6 +25,7 @@ async function login(formData: FormData) {
   const fingerprint = fingerprintFromHeaders(headerList);
   const lock = await getAdminLockStatus(fingerprint);
   if (lock.locked) {
+    await logAdminLoginEvent(headerList, "locked");
     redirect("/admin/login?error=locked");
   }
 
@@ -35,6 +37,10 @@ async function login(formData: FormData) {
   const captchaOk = await verifyHCaptchaToken(captchaToken || null);
   if (!captchaOk) {
     const result = await registerAdminLoginFailure(fingerprint);
+    await logAdminLoginEvent(
+      headerList,
+      result.locked ? "locked" : "captcha_fail",
+    );
     redirect(
       result.locked ? "/admin/login?error=locked" : "/admin/login?error=captcha",
     );
@@ -43,12 +49,17 @@ async function login(formData: FormData) {
   const password = String(formData.get("password") || "");
   if (!passwordsMatch(password)) {
     const result = await registerAdminLoginFailure(fingerprint);
+    await logAdminLoginEvent(
+      headerList,
+      result.locked ? "locked" : "bad_password",
+    );
     redirect(
       result.locked ? "/admin/login?error=locked" : "/admin/login?error=1",
     );
   }
 
   await clearAdminLoginFailures(fingerprint);
+  await logAdminLoginEvent(headerList, "success");
 
   const store = await cookies();
   store.set(ADMIN_COOKIE, await signAdminCookie(), {
@@ -83,23 +94,31 @@ export default async function AdminLoginPage({
   return (
     <main
       id="contenido"
-      className="mx-auto flex min-h-dvh max-w-md flex-col justify-center px-4"
+      className="mx-auto flex min-h-dvh max-w-md flex-col justify-center px-4 py-10"
     >
-      <h1 className="text-4xl font-bold tracking-[-0.04em]">Admin</h1>
-      {!adminConfigured() ? (
-        <p className="mt-4 text-muted-foreground">
-          ADMIN_PASSWORD no ta configurado.
+      <div className="rounded-2xl border border-border bg-card p-6 shadow-[var(--shadow-soft)] sm:p-8">
+        <p className="text-[11px] font-semibold tracking-wide text-primary uppercase">
+          Acceso
         </p>
-      ) : (
-        <AdminLoginForm
-          action={login}
-          siteKey={siteKey}
-          requireCaptcha={requireCaptcha}
-          error={error}
-          locked={lock.locked || error === "locked"}
-          lockedUntilLabel={lockedUntilLabel}
-        />
-      )}
+        <h1 className="mt-1 text-3xl font-bold tracking-[-0.04em]">Admin</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Panel de moderación de TopPTY.
+        </p>
+        {!adminConfigured() ? (
+          <p className="mt-6 text-sm text-muted-foreground">
+            ADMIN_PASSWORD no ta configurado.
+          </p>
+        ) : (
+          <AdminLoginForm
+            action={login}
+            siteKey={siteKey}
+            requireCaptcha={requireCaptcha}
+            error={error}
+            locked={lock.locked || error === "locked"}
+            lockedUntilLabel={lockedUntilLabel}
+          />
+        )}
+      </div>
     </main>
   );
 }
