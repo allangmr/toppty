@@ -6,7 +6,7 @@ export const FAQ_ITEMS = [
     a: "La tabla pública de Panamá. Pagas, te subes, y el que pone más se queda más arriba. Así de directo, sin estafas.",
   },
   {
-    q: "¿Cómo ta la vaina?",
+    q: "¿Cómo va la cosa?",
     a: "La plata manda. Más monto, más alto. Si dos ponen lo mismo, se queda arriba el que pagó primero.",
   },
   {

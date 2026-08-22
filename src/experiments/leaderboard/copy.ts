@@ -26,7 +26,7 @@ export const copy = {
   trending: "Lo que ta pegao",
   activity: "Lo que se movió",
   ranking: "La tabla",
-  how: "Cómo ta la vaina",
+  how: "Cómo va la cosa",
   rules: "Las reglas",
   emptyTitle: "Nadie manda todavía en PTY.",
   emptyBody: "El #1 se coge por $1. De una.",
