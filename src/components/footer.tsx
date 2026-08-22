@@ -8,8 +8,8 @@ export function Footer() {
     <footer className="mt-auto border-t border-border px-4 py-10 text-sm text-muted-foreground">
       <div className="mx-auto flex w-full max-w-4xl flex-col gap-3">
         <p className="inline-flex items-center gap-1.5 text-base font-medium tracking-[-0.03em] text-foreground">
-          <BrandMark className="h-4" />
-          toppty<span className="text-flag-red">.</span>lol
+          <BrandMark className="h-7 sm:h-8" />
+          <span className="sr-only">toppty.lol</span>
         </p>
         <p className="inline-flex flex-wrap items-center gap-x-1 gap-y-1">
           <span className="inline-flex items-center gap-1.5">

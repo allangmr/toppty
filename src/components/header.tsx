@@ -12,20 +12,16 @@ export function Header() {
         <div className="min-w-0">
           <Link
             href="/"
-            className="inline-flex items-center gap-1.5 text-[22px] font-medium tracking-[-0.04em]"
+            className="inline-flex items-center gap-2 text-[22px] font-medium tracking-[-0.04em]"
           >
             <BrandMark />
-            <span>
-              toppty
-              <span className="text-flag-red">.</span>
-              lol
-            </span>
-            <span className="ml-1.5 inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
+            <span className="sr-only">toppty.lol</span>
+            <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
               <PanamaFlag className="h-3 w-4" />
               <span className="hidden sm:inline">Panamá</span>
             </span>
           </Link>
-          <p className="mt-0.5 hidden pl-[1.85rem] text-[11px] font-medium text-muted-foreground sm:block">
+          <p className="mt-0.5 hidden text-[11px] font-medium text-muted-foreground sm:block">
             <CreatorLink prefix="hecho por" />
           </p>
         </div>
