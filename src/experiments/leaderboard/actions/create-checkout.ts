@@ -8,13 +8,25 @@ import { bids, getDb, listings } from "@/core/db";
 import { canSkipPaypal, createPaypalCheckout, paypalEnabled } from "@/core/payments/paypal";
 import { fingerprintFromHeaders } from "@/core/security/fingerprint";
 import { getRequestAppUrl, createId, dollarsToCents } from "@/lib/utils";
+import { isSafeHttpUrl } from "@/core/security/urls";
 import { leaderboardConfig } from "../config";
 import { fetchWebsiteMeta, parseIdentity } from "../identity";
 import { fulfillPaidBid } from "./fulfill-bid";
 
+const optionalText = (max: number) =>
+  z
+    .string()
+    .trim()
+    .max(max)
+    .optional()
+    .transform((value) => (value ? value : undefined));
+
 const inputSchema = z.object({
   identifier: z.string().trim().min(1).max(200),
   amountDollars: z.coerce.number().int().min(1).max(100000),
+  displayName: optionalText(80),
+  description: optionalText(140),
+  imageUrl: optionalText(500),
 });
 
 export type CheckoutState = {
@@ -77,9 +89,12 @@ async function createCheckoutInner(formData: FormData): Promise<CheckoutState> {
   const parsed = inputSchema.safeParse({
     identifier: formData.get("identifier"),
     amountDollars: formData.get("amountDollars"),
+    displayName: formData.get("displayName") || undefined,
+    description: formData.get("description") || undefined,
+    imageUrl: formData.get("imageUrl") || undefined,
   });
   if (!parsed.success) {
-    return { ok: false, error: "Revisa el perfil y el monto." };
+    return { ok: false, error: "Revisa el perfil, el monto y el preview." };
   }
   if (!process.env.DATABASE_URL) {
     return {
@@ -97,6 +112,19 @@ async function createCheckoutInner(formData: FormData): Promise<CheckoutState> {
   }
   if (amountCents > leaderboardConfig.maxBidCents) {
     return { ok: false, error: "Ese monto ta muy alto." };
+  }
+
+  const userDisplayName = parsed.data.displayName?.slice(0, 80) || null;
+  const userDescription = parsed.data.description?.slice(0, 140) || null;
+  let userImageUrl: string | null = null;
+  if (
+    identity.identity.identifierType === "website" &&
+    parsed.data.imageUrl
+  ) {
+    if (!isSafeHttpUrl(parsed.data.imageUrl)) {
+      return { ok: false, error: "Esa URL de logo no es segura." };
+    }
+    userImageUrl = parsed.data.imageUrl;
   }
 
   const headerList = await headers();
@@ -135,6 +163,9 @@ async function createCheckoutInner(formData: FormData): Promise<CheckoutState> {
   }
 
   let listingId = existing?.id;
+  let displayNameForPaypal =
+    userDisplayName || existing?.displayName || identity.identity.displayName;
+
   if (!listingId) {
     const allSlugs = await db.select({ slug: listings.slug }).from(listings);
     const slug = uniqueSlug(
@@ -142,12 +173,18 @@ async function createCheckoutInner(formData: FormData): Promise<CheckoutState> {
       new Set(allSlugs.map((row) => row.slug)),
     );
 
-    let description: string | null = null;
-    let imageUrl: string | null = null;
+    let description: string | null = userDescription;
+    let imageUrl: string | null =
+      identity.identity.identifierType === "website" ? userImageUrl : null;
+    let displayName =
+      userDisplayName || identity.identity.displayName;
+
     if (identity.identity.identifierType === "website") {
       const meta = await fetchWebsiteMeta(identity.identity.destinationUrl);
-      description = meta?.description || meta?.title || null;
-      imageUrl = meta?.imageUrl || null;
+      description =
+        userDescription || meta?.description || meta?.title || null;
+      imageUrl = userImageUrl || meta?.imageUrl || null;
+      displayName = userDisplayName || meta?.title || identity.identity.displayName;
     }
 
     listingId = createId("lst");
@@ -159,24 +196,37 @@ async function createCheckoutInner(formData: FormData): Promise<CheckoutState> {
       identifier: identity.identity.identifier,
       normalizedIdentifier: identity.identity.normalizedIdentifier,
       socialNetwork: identity.identity.socialNetwork,
-      displayName: identity.identity.displayName,
+      displayName,
       destinationUrl: identity.identity.destinationUrl,
       description,
       imageUrl,
     });
-  } else if (
-    identity.identity.identifierType === "website" &&
-    (!existing.description || !existing.imageUrl)
-  ) {
-    const meta = await fetchWebsiteMeta(identity.identity.destinationUrl);
-    if (meta) {
-      await db
-        .update(listings)
-        .set({
-          description: existing.description || meta.description || meta.title || null,
-          imageUrl: existing.imageUrl || meta.imageUrl || null,
-        })
-        .where(eq(listings.id, listingId));
+    displayNameForPaypal = displayName;
+  } else {
+    const patch: {
+      displayName?: string;
+      description?: string | null;
+      imageUrl?: string | null;
+    } = {};
+    if (userDisplayName) patch.displayName = userDisplayName;
+    if (userDescription) patch.description = userDescription;
+    if (identity.identity.identifierType === "website" && userImageUrl) {
+      patch.imageUrl = userImageUrl;
+    } else if (
+      identity.identity.identifierType === "website" &&
+      (!existing.description || !existing.imageUrl)
+    ) {
+      const meta = await fetchWebsiteMeta(identity.identity.destinationUrl);
+      if (meta) {
+        if (!existing.description) {
+          patch.description = meta.description || meta.title || null;
+        }
+        if (!existing.imageUrl) patch.imageUrl = meta.imageUrl || null;
+      }
+    }
+    if (Object.keys(patch).length > 0) {
+      await db.update(listings).set(patch).where(eq(listings.id, listingId));
+      if (patch.displayName) displayNameForPaypal = patch.displayName;
     }
   }
 
@@ -199,8 +249,6 @@ async function createCheckoutInner(formData: FormData): Promise<CheckoutState> {
     },
   });
 
-  const displayName =
-    existing?.displayName || identity.identity.displayName;
   const appUrl = getRequestAppUrl(headerList);
   const successUrl = `${appUrl}/checkout/success?bid=${bidId}`;
   const cancelUrl = `${appUrl}/checkout/cancel`;
@@ -219,7 +267,7 @@ async function createCheckoutInner(formData: FormData): Promise<CheckoutState> {
       bidId,
       amountCents,
       currency: leaderboardConfig.currency,
-      displayName,
+      displayName: displayNameForPaypal,
       successUrl,
       cancelUrl,
     });
