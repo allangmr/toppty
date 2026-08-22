@@ -59,7 +59,10 @@ export async function getRankedListings(experimentId = leaderboardConfig.experim
   return rows.map((row, index) => toRanked(row, index + 1));
 }
 
-export async function getTrending(ranked: RankedListing[]): Promise<TrendingListing[]> {
+export async function getTrending(
+  ranked: RankedListing[],
+  experimentId = leaderboardConfig.experimentId,
+): Promise<TrendingListing[]> {
   if (ranked.length === 0) return [];
   const db = getDb();
   const since = new Date(Date.now() - leaderboardConfig.trendingWindowMs);
@@ -69,7 +72,15 @@ export async function getTrending(ranked: RankedListing[]): Promise<TrendingList
       count: sql<number>`count(*)::int`,
     })
     .from(clicks)
-    .where(gte(clicks.createdAt, since))
+    .innerJoin(listings, eq(clicks.listingId, listings.id))
+    .where(
+      and(
+        gte(clicks.createdAt, since),
+        eq(listings.experimentId, experimentId),
+        eq(listings.moderationStatus, "active"),
+        gt(listings.totalBidCents, 0),
+      ),
+    )
     .groupBy(clicks.listingId)
     .orderBy(desc(sql`count(*)`))
     .limit(5);
@@ -127,8 +138,13 @@ export async function getRecentActivity(
       listing: listings,
     })
     .from(activities)
-    .leftJoin(listings, eq(activities.listingId, listings.id))
-    .where(eq(activities.experimentId, experimentId))
+    .innerJoin(listings, eq(activities.listingId, listings.id))
+    .where(
+      and(
+        eq(activities.experimentId, experimentId),
+        eq(listings.moderationStatus, "active"),
+      ),
+    )
     .orderBy(desc(activities.createdAt))
     .limit(20);
 
@@ -140,7 +156,7 @@ export async function getRecentActivity(
     )
     .slice(0, 5)
     .map((row) => {
-      const name = row.listing?.displayName || "Alguien";
+      const name = row.listing.displayName || "Alguien";
       const previousName =
         (row.activity.metadata?.previousNumberOneDisplayName as
           | string
@@ -148,8 +164,8 @@ export async function getRecentActivity(
       return {
         id: row.activity.id,
         type: row.activity.type,
-        listingSlug: row.listing?.slug ?? null,
-        listingDisplayName: row.listing?.displayName ?? null,
+        listingSlug: row.listing.slug,
+        listingDisplayName: row.listing.displayName,
         previousRank: row.activity.previousRank,
         newRank: row.activity.newRank,
         amountCents: row.activity.amountCents,

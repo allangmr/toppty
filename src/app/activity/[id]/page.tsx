@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Header } from "@/components/header";
@@ -18,8 +18,10 @@ async function getActivity(id: string) {
     const [row] = await db
       .select({ activity: activities, listing: listings })
       .from(activities)
-      .leftJoin(listings, eq(activities.listingId, listings.id))
-      .where(eq(activities.id, id))
+      .innerJoin(listings, eq(activities.listingId, listings.id))
+      .where(
+        and(eq(activities.id, id), eq(listings.moderationStatus, "active")),
+      )
       .limit(1);
     return row ?? null;
   } catch (error) {
