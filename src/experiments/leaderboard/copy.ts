@@ -52,7 +52,11 @@ export const copy = {
   newNumberOne: "Nuevo #1 en PTY",
   reported: "Listo. Lo vemos.",
   paymentsFinal:
-    "El pago es de una y no se devuelve, salvo donde la ley lo pida. Si removemos tu puesto por romper las reglas, tampoco hay devolución. Estás comprando un puesto en la tabla, no una inversión ni un chance.",
+    "El pago es de una y no se devuelve, salvo donde la ley lo pida. Al pagar compras un puesto digital en la tabla (se entrega al instante cuando PayPal confirma). Que te tumben, que no te guste el resultado, o que removamos el puesto por romper las reglas, no da derecho a devolución ni a reclamación en PayPal. Estás comprando un puesto en la tabla, no una inversión ni un chance.",
+  disputePolicy:
+    "Si abres un dispute, chargeback o reclamación en PayPal después de que el puesto ya quedó en la tabla, lo tratamos como abuso: podemos ocultar o remover el listing y bloquearte de futuros pagos. El servicio digital ya se entregó al capturar el pago. Si hay un lío real (doble cobro, fallo técnico), chatéanos primero — no abras reclamo a ciegas.",
+  checkoutAck:
+    "Al pagar aceptas: puesto digital, entrega inmediata, sin devolución. Reclamar en PayPal después de entregado = abuso.",
   listingAllowed:
     "@ pa' X, # pa' Instagram, $ pa' TikTok, o un link limpio. No se permite porno ni contenido adulto, estafas, phishing, malware, ni sitios marcados como no seguros. Eso se remueve de una y no hay devolución.",
   listingProhibited:

@@ -190,6 +190,14 @@ export async function createPaypalCheckout(input: {
   successUrl: string;
   cancelUrl: string;
 }) {
+  const currency = input.currency.toUpperCase();
+  const value = centsToPaypalValue(input.amountCents);
+  const itemName =
+    `TopPTY.lol puesto digital (sin reembolso) · ${input.displayName}`.slice(
+      0,
+      127,
+    );
+
   // application_context is the widely supported Orders shape for merchant apps.
   const order = await paypalRequest<PaypalOrder>("/v2/checkout/orders", {
     method: "POST",
@@ -200,11 +208,30 @@ export async function createPaypalCheckout(input: {
         {
           reference_id: input.bidId,
           custom_id: input.bidId,
-          description: `TopPTY · ${input.displayName}`.slice(0, 127),
+          description: itemName,
           amount: {
-            currency_code: input.currency.toUpperCase(),
-            value: centsToPaypalValue(input.amountCents),
+            currency_code: currency,
+            value,
+            breakdown: {
+              item_total: {
+                currency_code: currency,
+                value,
+              },
+            },
           },
+          items: [
+            {
+              name: itemName.slice(0, 127),
+              description:
+                "Ranking spot on TopPTY.lol. Digital good delivered on payment capture. Non-refundable except where required by law.",
+              quantity: "1",
+              category: "DIGITAL_GOODS",
+              unit_amount: {
+                currency_code: currency,
+                value,
+              },
+            },
+          ],
         },
       ],
       application_context: {

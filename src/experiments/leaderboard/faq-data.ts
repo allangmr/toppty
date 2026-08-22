@@ -26,6 +26,10 @@ export const FAQ_ITEMS = [
     a: copy.paymentsFinal,
   },
   {
+    q: "¿Y si reclamo en PayPal?",
+    a: copy.disputePolicy,
+  },
+  {
     q: "¿Qué puedo poner en la tabla?",
     a: copy.listingAllowed,
   },
