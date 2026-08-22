@@ -56,8 +56,11 @@ export async function fulfillPaidBid(input: {
       .limit(1);
 
     if (!listing) return { ok: false as const, reason: "missing-listing" };
-    if (listing.moderationStatus === "removed") {
-      return { ok: false as const, reason: "removed" };
+    if (
+      listing.moderationStatus === "removed" ||
+      listing.moderationStatus === "hidden"
+    ) {
+      return { ok: false as const, reason: listing.moderationStatus };
     }
 
     const before = await rankedInTx(tx, listing.experimentId);
@@ -83,10 +86,7 @@ export async function fulfillPaidBid(input: {
         firstPaidAt: listing.firstPaidAt ?? now,
         lastPaidAt: now,
         updatedAt: now,
-        moderationStatus:
-          listing.moderationStatus === "hidden"
-            ? "hidden"
-            : "active",
+        moderationStatus: "active",
       })
       .where(eq(listings.id, listing.id));
 
