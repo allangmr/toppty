@@ -48,6 +48,12 @@ export function CheckoutSuccessClient() {
   const paid = status?.status === "paid";
   const failed = status?.status === "failed";
 
+  function goToBoard() {
+    // Full navigation bypasses the App Router soft cache so the board
+    // shows the newly paid rank instead of a stale home snapshot.
+    window.location.assign(`/?paid=${Date.now()}#ranking`);
+  }
+
   return (
     <>
       <Header />
@@ -71,12 +77,13 @@ export function CheckoutSuccessClient() {
             ) : (
               <p className="text-muted-foreground">A ver cuánto duras ahí.</p>
             )}
-            <Link
-              href="/#ranking"
-              className="mt-4 inline-flex h-11 w-fit items-center justify-center rounded-full bg-primary px-5 text-sm font-bold text-primary-foreground transition-colors hover:bg-primary/80"
+            <button
+              type="button"
+              onClick={goToBoard}
+              className="mt-4 inline-flex h-11 w-fit cursor-pointer items-center justify-center rounded-full bg-primary px-5 text-sm font-bold text-primary-foreground transition-colors hover:bg-primary/80"
             >
               Ver la tabla
-            </Link>
+            </button>
           </>
         ) : failed ? (
           <>
