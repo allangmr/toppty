@@ -126,6 +126,13 @@ export function parseIdentity(raw: string): IdentityResult {
   }
 }
 
+/** Client-safe favicon URL for website identity preview (Google s2). */
+export function faviconUrlForDomain(domain: string) {
+  const host = domain.trim().toLowerCase();
+  if (!host) return null;
+  return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(host)}&sz=64`;
+}
+
 export function initialsFromName(name: string) {
   const cleaned = name.replace(/^@/, "").trim();
   if (!cleaned) return "P";

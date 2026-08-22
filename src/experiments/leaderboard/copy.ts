@@ -18,6 +18,9 @@ export const copy = {
   identifierLabel: "Tu link o @usuario",
   identifierHint:
     "¿Ya ta' en la lista? Mete el mismo link o @ y súbele al monto.",
+  descriptionLabel: "Descripción (opcional)",
+  descriptionPlaceholder: "Una línea pa' que sepan quién eres",
+  descriptionHint: "Sale debajo de tu nombre en la tabla.",
   submit: "Súbete",
   submitHint:
     "Los puestos nuevos arrancan en $1. Si pones menos que el #1 igual caes donde te alcance la plata.",
