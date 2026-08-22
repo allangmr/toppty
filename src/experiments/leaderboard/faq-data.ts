@@ -26,7 +26,15 @@ export const FAQ_ITEMS = [
     a: copy.paymentsFinal,
   },
   {
+    q: "¿Y si reclamo en PayPal?",
+    a: copy.disputePolicy,
+  },
+  {
     q: "¿Qué puedo poner en la tabla?",
-    a: "@ pa' X, # pa' Instagram, $ pa' TikTok, o un link. Nada ilegal, nada de estafas, nada de porno, nada de odio.",
+    a: copy.listingAllowed,
+  },
+  {
+    q: "¿Qué no se permite?",
+    a: copy.listingProhibited,
   },
 ] as const;

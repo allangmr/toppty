@@ -381,6 +381,10 @@ export function BidModule({
           {copy.identifierPrefixes}
         </p>
 
+        <p className="text-center text-[11px] leading-relaxed text-pretty text-muted-foreground">
+          {copy.checkoutAck}
+        </p>
+
         {showPreview ? (
           <ListingPreview
             draft={draft}
