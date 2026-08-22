@@ -271,6 +271,10 @@ export function BidModule({
           </button>
         </div>
 
+        <p className="text-center text-xs font-medium tracking-wide text-muted-foreground">
+          {copy.identifierPrefixes}
+        </p>
+
         <div className="flex flex-col gap-1.5">
           <label htmlFor="description" className="sr-only">
             {copy.descriptionLabel}

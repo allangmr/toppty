@@ -86,7 +86,7 @@ async function createCheckoutInner(formData: FormData): Promise<CheckoutState> {
     description: formData.get("description") || undefined,
   });
   if (!parsed.success) {
-    return { ok: false, error: "Revisa el @usuario, el monto y la descripción." };
+    return { ok: false, error: "Revisa el perfil, el monto y la descripción." };
   }
   if (!process.env.DATABASE_URL) {
     return {

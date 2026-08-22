@@ -19,7 +19,7 @@ export const FAQ_ITEMS = [
   },
   {
     q: "¿Puedo subirle al monto?",
-    a: "Sí. Cada pago nuevo se suma a tu puesto. Usa el mismo link o @usuario.",
+    a: "Sí. Cada pago nuevo se suma a tu puesto. Usa el mismo @/#/$ o link.",
   },
   {
     q: "¿Me devuelven la plata?",
@@ -27,6 +27,6 @@ export const FAQ_ITEMS = [
   },
   {
     q: "¿Qué puedo poner en la tabla?",
-    a: "Un @ de Instagram, TikTok o X, una web, un negocio, un proyecto, un perfil. Nada ilegal, nada de estafas, nada de porno, nada de odio.",
+    a: "@ pa' X, # pa' Instagram, $ pa' TikTok, o un link. Nada ilegal, nada de estafas, nada de porno, nada de odio.",
   },
 ] as const;
