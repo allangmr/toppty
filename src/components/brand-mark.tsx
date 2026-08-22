@@ -13,7 +13,7 @@ export function BrandMark({ className }: { className?: string }) {
       width={LOGO_WIDTH}
       height={LOGO_HEIGHT}
       decoding="async"
-      className={cn("h-8 w-auto sm:h-9", className)}
+      className={cn("h-[3.125rem] w-auto", className)}
       aria-hidden="true"
     />
   );

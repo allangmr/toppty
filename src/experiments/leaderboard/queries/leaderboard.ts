@@ -66,24 +66,36 @@ export async function getTrending(
   if (ranked.length === 0) return [];
   const db = getDb();
   const since = new Date(Date.now() - leaderboardConfig.trendingWindowMs);
-  const rows = await db
-    .select({
-      listingId: clicks.listingId,
-      count: sql<number>`count(*)::int`,
-    })
-    .from(clicks)
-    .innerJoin(listings, eq(clicks.listingId, listings.id))
-    .where(
-      and(
-        gte(clicks.createdAt, since),
-        eq(listings.experimentId, experimentId),
-        eq(listings.moderationStatus, "active"),
-        gt(listings.totalBidCents, 0),
-      ),
-    )
+  const activeListingFilter = and(
+    eq(listings.experimentId, experimentId),
+    eq(listings.moderationStatus, "active"),
+    gt(listings.totalBidCents, 0),
+  );
+
+  const selectClickStats = () =>
+    db
+      .select({
+        listingId: clicks.listingId,
+        count: sql<number>`count(*)::int`,
+        lastClickAt: sql<Date>`max(${clicks.createdAt})`,
+      })
+      .from(clicks)
+      .innerJoin(listings, eq(clicks.listingId, listings.id));
+
+  let rows = await selectClickStats()
+    .where(and(gte(clicks.createdAt, since), activeListingFilter))
     .groupBy(clicks.listingId)
     .orderBy(desc(sql`count(*)`))
     .limit(5);
+
+  // No clicks in the 24h window: fall back to the most recently clicked listings.
+  if (rows.length === 0) {
+    rows = await selectClickStats()
+      .where(activeListingFilter)
+      .groupBy(clicks.listingId)
+      .orderBy(desc(sql`max(${clicks.createdAt})`))
+      .limit(5);
+  }
 
   const byId = new Map(ranked.map((item) => [item.id, item]));
   return rows
