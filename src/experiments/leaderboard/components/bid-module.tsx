@@ -9,7 +9,12 @@ import {
   type ReactNode,
 } from "react";
 import { useRouter } from "next/navigation";
-import { GlobeIcon } from "@/components/icons";
+import {
+  GlobeIcon,
+  InstagramIcon,
+  TikTokIcon,
+  XIcon,
+} from "@/components/icons";
 import { trackClient } from "@/components/track-client";
 import { centsToDollars, dollarsToCents, formatUsd } from "@/lib/utils";
 import {
@@ -18,11 +23,79 @@ import {
   type CheckoutState,
 } from "../actions/create-checkout";
 import { copy } from "../copy";
+import { faviconUrlForDomain, parseIdentity } from "../identity";
 import { estimateRank } from "../ranking";
-import type { RankedListing } from "../types";
+import type { RankedListing, SocialNetwork } from "../types";
 import { useBid } from "./bid-context";
 
 const initialState: CheckoutState | null = null;
+const DESCRIPTION_MAX = 140;
+
+function SocialPreviewIcon({
+  network,
+  className,
+}: {
+  network: SocialNetwork;
+  className?: string;
+}) {
+  if (network === "instagram") return <InstagramIcon className={className} />;
+  if (network === "tiktok") return <TikTokIcon className={className} />;
+  return <XIcon className={className} />;
+}
+
+function IdentityPreviewIcon({ identifier }: { identifier: string }) {
+  const [brokenFaviconUrl, setBrokenFaviconUrl] = useState<string | null>(null);
+
+  const preview = useMemo(() => {
+    const trimmed = identifier.trim();
+    if (!trimmed) return { kind: "empty" as const };
+
+    const parsed = parseIdentity(trimmed);
+    if (!parsed.ok) return { kind: "fallback" as const };
+
+    if (
+      parsed.identity.identifierType === "social" &&
+      parsed.identity.socialNetwork
+    ) {
+      return {
+        kind: "social" as const,
+        network: parsed.identity.socialNetwork,
+      };
+    }
+
+    const faviconUrl = faviconUrlForDomain(parsed.identity.displayName);
+    if (!faviconUrl) return { kind: "fallback" as const };
+    return { kind: "website" as const, faviconUrl };
+  }, [identifier]);
+
+  if (preview.kind === "social") {
+    return (
+      <SocialPreviewIcon
+        network={preview.network}
+        className="size-3.5 text-foreground"
+      />
+    );
+  }
+
+  if (
+    preview.kind === "website" &&
+    preview.faviconUrl !== brokenFaviconUrl
+  ) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element -- remote favicons vary by host
+      <img
+        src={preview.faviconUrl}
+        alt=""
+        width={14}
+        height={14}
+        className="size-3.5 rounded-sm"
+        onError={() => setBrokenFaviconUrl(preview.faviconUrl)}
+      />
+    );
+  }
+
+  return <GlobeIcon className="size-3.5" />;
+}
 
 export function BidModule({
   takeFirstCents,
@@ -38,6 +111,7 @@ export function BidModule({
   const router = useRouter();
   const { amountDollars, setAmountDollars } = useBid();
   const [identifier, setIdentifier] = useState("");
+  const [description, setDescription] = useState("");
   const [lookup, setLookup] = useState<string | null>(null);
   const [started, setStarted] = useState(false);
   const [state, action, pending] = useActionState(createCheckout, initialState);
@@ -171,7 +245,7 @@ export function BidModule({
         <div className="flex flex-col items-stretch gap-2 md:flex-row md:items-center">
           <div className="relative min-w-0 flex-1">
             <span className="pointer-events-none absolute top-1/2 left-2.5 -translate-y-1/2 text-muted-foreground">
-              <GlobeIcon className="size-3.5" />
+              <IdentityPreviewIcon identifier={identifier} />
             </span>
             <input
               id="identifier"
@@ -195,6 +269,35 @@ export function BidModule({
           >
             {pending ? copy.openingPay : copy.submit}
           </button>
+        </div>
+
+        <p className="text-center text-xs font-medium tracking-wide text-muted-foreground">
+          {copy.identifierPrefixes}
+        </p>
+
+        <div className="flex flex-col gap-1.5">
+          <label htmlFor="description" className="sr-only">
+            {copy.descriptionLabel}
+          </label>
+          <textarea
+            id="description"
+            name="description"
+            value={description}
+            onFocus={markStarted}
+            onChange={(event) =>
+              setDescription(event.target.value.slice(0, DESCRIPTION_MAX))
+            }
+            placeholder={copy.descriptionPlaceholder}
+            maxLength={DESCRIPTION_MAX}
+            rows={2}
+            className="min-h-[4.5rem] w-full resize-y rounded-xl border border-input bg-transparent px-3 py-2.5 text-base outline-none transition-colors placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+          />
+          <p className="text-center text-xs text-muted-foreground">
+            {copy.descriptionHint}
+            {description.length > 0
+              ? ` · ${description.length}/${DESCRIPTION_MAX}`
+              : ""}
+          </p>
         </div>
 
         <p className="text-center text-xs leading-relaxed text-pretty text-muted-foreground">

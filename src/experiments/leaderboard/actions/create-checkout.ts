@@ -15,6 +15,12 @@ import { fulfillPaidBid } from "./fulfill-bid";
 const inputSchema = z.object({
   identifier: z.string().trim().min(1).max(200),
   amountDollars: z.coerce.number().int().min(1).max(100000),
+  description: z
+    .string()
+    .trim()
+    .max(140)
+    .optional()
+    .transform((value) => (value ? value : undefined)),
 });
 
 export type CheckoutState = {
@@ -77,9 +83,10 @@ async function createCheckoutInner(formData: FormData): Promise<CheckoutState> {
   const parsed = inputSchema.safeParse({
     identifier: formData.get("identifier"),
     amountDollars: formData.get("amountDollars"),
+    description: formData.get("description") || undefined,
   });
   if (!parsed.success) {
-    return { ok: false, error: "Revisa el @usuario y el monto." };
+    return { ok: false, error: "Revisa el perfil, el monto y la descripción." };
   }
   if (!process.env.DATABASE_URL) {
     return {
@@ -134,6 +141,8 @@ async function createCheckoutInner(formData: FormData): Promise<CheckoutState> {
     return { ok: false, error: "Ese perfil no ta disponible." };
   }
 
+  const userDescription = parsed.data.description ?? null;
+
   let listingId = existing?.id;
   if (!listingId) {
     const allSlugs = await db.select({ slug: listings.slug }).from(listings);
@@ -142,11 +151,12 @@ async function createCheckoutInner(formData: FormData): Promise<CheckoutState> {
       new Set(allSlugs.map((row) => row.slug)),
     );
 
-    let description: string | null = null;
+    let description: string | null = userDescription;
     let imageUrl: string | null = null;
     if (identity.identity.identifierType === "website") {
       const meta = await fetchWebsiteMeta(identity.identity.destinationUrl);
-      description = meta?.description || meta?.title || null;
+      description =
+        userDescription || meta?.description || meta?.title || null;
       imageUrl = meta?.imageUrl || null;
     }
 
@@ -164,6 +174,11 @@ async function createCheckoutInner(formData: FormData): Promise<CheckoutState> {
       description,
       imageUrl,
     });
+  } else if (userDescription) {
+    await db
+      .update(listings)
+      .set({ description: userDescription })
+      .where(eq(listings.id, listingId));
   }
 
   const bidId = createId("bid");

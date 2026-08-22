@@ -7,6 +7,19 @@ import type { ParsedIdentity, SocialNetwork } from "./types";
 
 const HANDLE_RE = /^[a-zA-Z0-9._-]{1,30}$/;
 
+/** App prefix → network. Full profile URLs still work by domain. */
+const HANDLE_PREFIX: Record<string, SocialNetwork> = {
+  "@": "x",
+  "#": "instagram",
+  $: "tiktok",
+};
+
+const DISPLAY_PREFIX: Record<SocialNetwork, string> = {
+  x: "@",
+  instagram: "#",
+  tiktok: "$",
+};
+
 const SOCIAL_HOSTS: Record<string, SocialNetwork> = {
   "instagram.com": "instagram",
   "www.instagram.com": "instagram",
@@ -30,17 +43,22 @@ export type IdentityResult =
   | { ok: false; error: string };
 
 function cleanHandle(value: string) {
-  return value.trim().replace(/^@/, "").replace(/\/+$/, "").toLowerCase();
+  return value
+    .trim()
+    .replace(/^[@#$]/, "")
+    .replace(/\/+$/, "")
+    .toLowerCase();
 }
 
 function asSocial(network: SocialNetwork, handle: string): ParsedIdentity {
   const value = cleanHandle(handle);
+  const prefix = DISPLAY_PREFIX[network];
   return {
     identifierType: "social",
-    identifier: `@${value}`,
+    identifier: `${prefix}${value}`,
     normalizedIdentifier: `${network}:${value}`,
     socialNetwork: network,
-    displayName: `@${value}`,
+    displayName: `${prefix}${value}`,
     destinationUrl: SOCIAL_DESTINATION[network](value),
     slugBase: value,
   };
@@ -91,7 +109,10 @@ function socialFromUrl(url: URL): ParsedIdentity | null {
 export function parseIdentity(raw: string): IdentityResult {
   const input = raw.trim();
   if (!input || input.length > 200) {
-    return { ok: false, error: "Pon un @usuario o un link válido." };
+    return {
+      ok: false,
+      error: "Pon @usuario (X), #usuario (IG), $usuario (TikTok) o un link.",
+    };
   }
 
   const lowered = input.toLowerCase();
@@ -103,31 +124,66 @@ export function parseIdentity(raw: string): IdentityResult {
     return { ok: false, error: "Ese link no es seguro." };
   }
 
-  if (input.startsWith("@") || HANDLE_RE.test(input)) {
+  const prefix = input[0]!;
+  const networkFromPrefix = HANDLE_PREFIX[prefix];
+  if (networkFromPrefix) {
     const handle = cleanHandle(input);
     if (!HANDLE_RE.test(handle)) {
-      return { ok: false, error: "Ese @usuario no se ve válido." };
+      return {
+        ok: false,
+        error: `Ese ${prefix}usuario no se ve válido.`,
+      };
     }
-    return { ok: true, identity: asSocial("instagram", handle) };
+    return { ok: true, identity: asSocial(networkFromPrefix, handle) };
   }
 
-  const withProtocol = /^https?:\/\//i.test(input) ? input : `https://${input}`;
-  if (!isSafeHttpUrl(withProtocol)) {
-    return { ok: false, error: "Ese link no es seguro." };
+  // Domains allow dots that also match HANDLE_RE — parse URLs before bare handles.
+  const looksLikeUrl =
+    /^https?:\/\//i.test(input) ||
+    input.includes("/") ||
+    /\.[a-z0-9-]{2,}$/i.test(input);
+
+  if (looksLikeUrl) {
+    const withProtocol = /^https?:\/\//i.test(input) ? input : `https://${input}`;
+    if (!isSafeHttpUrl(withProtocol)) {
+      return { ok: false, error: "Ese link no es seguro." };
+    }
+
+    try {
+      const url = new URL(withProtocol);
+      const social = socialFromUrl(url);
+      if (social) return { ok: true, identity: social };
+      return { ok: true, identity: asWebsite(url.toString()) };
+    } catch {
+      return {
+        ok: false,
+        error: "Pon @usuario (X), #usuario (IG), $usuario (TikTok) o un link.",
+      };
+    }
   }
 
-  try {
-    const url = new URL(withProtocol);
-    const social = socialFromUrl(url);
-    if (social) return { ok: true, identity: social };
-    return { ok: true, identity: asWebsite(url.toString()) };
-  } catch {
-    return { ok: false, error: "Pon un @usuario o un link válido." };
+  if (HANDLE_RE.test(input)) {
+    return {
+      ok: false,
+      error: "Falta el prefijo: @ = X, # = Instagram, $ = TikTok.",
+    };
   }
+
+  return {
+    ok: false,
+    error: "Pon @usuario (X), #usuario (IG), $usuario (TikTok) o un link.",
+  };
+}
+
+/** Client-safe favicon URL for website identity preview (Google s2). */
+export function faviconUrlForDomain(domain: string) {
+  const host = domain.trim().toLowerCase();
+  if (!host) return null;
+  return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(host)}&sz=64`;
 }
 
 export function initialsFromName(name: string) {
-  const cleaned = name.replace(/^@/, "").trim();
+  const cleaned = name.replace(/^[@#$]/, "").trim();
   if (!cleaned) return "P";
   const parts = cleaned.split(/[\s._-]+/).filter(Boolean);
   if (parts.length === 1) return parts[0]!.slice(0, 2).toUpperCase();

@@ -80,3 +80,37 @@ export function SunIcon({ className }: { className?: string }) {
     </svg>
   );
 }
+
+export function InstagramIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
+      <rect
+        x="3.5"
+        y="3.5"
+        width="17"
+        height="17"
+        rx="5"
+        stroke="currentColor"
+        strokeWidth="1.75"
+      />
+      <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="1.75" />
+      <circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" />
+    </svg>
+  );
+}
+
+export function XIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+      <path d="M17.3 3h2.8l-6.1 7 7.2 11h-5.6l-4.4-6.5L5.8 21H3l6.5-7.5L2.5 3h5.8l4 5.9L17.3 3Zm-1 16.2h1.6L7.8 4.7H6.1l10.2 14.5Z" />
+    </svg>
+  );
+}
+
+export function TikTokIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+      <path d="M14.2 3h2.3c.2 1.4.9 2.7 1.9 3.7 1 1 2.3 1.6 3.6 1.8v2.4c-1.6-.1-3.1-.6-4.4-1.5v6.3c0 3.4-2.8 6.2-6.3 6.2S5 18.9 5 15.5 7.8 9.3 11.3 9.3c.3 0 .6 0 .9.1v2.5a3.7 3.7 0 0 0-.9-.1 3.8 3.8 0 1 0 3.8 3.8V3Z" />
+    </svg>
+  );
+}

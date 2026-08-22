@@ -15,14 +15,18 @@ export const copy = {
     "Que te tumben si pueden.",
   ],
   takeNumberOne: "Coge el #1 por",
-  identifierLabel: "Tu link o @usuario",
+  identifierLabel: "@X · #IG · $TikTok o tu link",
+  identifierPrefixes: "@ X · # Instagram · $ TikTok",
   identifierHint:
-    "¿Ya ta' en la lista? Mete el mismo link o @ y súbele al monto.",
+    "¿Ya ta' en la lista? Mete el mismo @/#/$ o link y súbele al monto.",
+  descriptionLabel: "Descripción (opcional)",
+  descriptionPlaceholder: "Una línea pa' que sepan quién eres",
+  descriptionHint: "Sale debajo de tu nombre en la tabla.",
   submit: "Súbete",
   submitHint:
     "Los puestos nuevos arrancan en $1. Si pones menos que el #1 igual caes donde te alcance la plata.",
   alreadyIn:
-    "Ya ta' en la lista. Usa el mismo link o @ y súbele al monto.",
+    "Ya ta' en la lista. Usa el mismo @/#/$ o link y súbele al monto.",
   trending: "Lo que ta pegao",
   activity: "Lo que se movió",
   ranking: "La tabla",
