@@ -45,9 +45,9 @@ export function ListingPreview({
   }, [editing]);
 
   return (
-    <div className="animate-card-in overflow-hidden rounded-2xl border border-primary/20 bg-card shadow-[var(--shadow-soft)]">
+    <div className="animate-card-in glass-card overflow-hidden rounded-[20px] border border-primary/20">
       <div className="flex items-center justify-between gap-3 border-b border-border/70 bg-primary/5 px-4 py-2.5">
-        <p className="text-xs font-semibold tracking-wide text-primary uppercase">
+        <p className="font-display text-xs font-bold tracking-wide text-primary uppercase">
           {copy.previewLabel}
         </p>
         <p className="text-[11px] text-muted-foreground">{copy.previewHint}</p>

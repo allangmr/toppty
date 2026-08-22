@@ -19,8 +19,8 @@ export function ActivityFeed({
   if (visible.length === 0) return null;
 
   return (
-    <section className="flex h-full flex-col rounded-2xl bg-card px-4 pt-3.5 pb-1 shadow-[var(--shadow-soft)] md:px-5 md:pt-4">
-      <h2 className="mb-1 text-sm font-semibold tracking-[-0.02em]">
+    <section className="glass-card flex h-full flex-col rounded-[20px] px-4 pt-3.5 pb-1 md:px-5 md:pt-4">
+      <h2 className="font-display mb-1 text-sm font-bold tracking-[-0.02em]">
         <span className="inline-flex items-center gap-1.5 text-foreground">
           <span className="relative inline-flex size-1.5 shrink-0">
             <span className="absolute inline-flex size-full animate-ping rounded-full bg-primary opacity-75 motion-reduce:animate-none" />
@@ -45,10 +45,8 @@ export function ActivityFeed({
                 ? formatUsd(item.amountCents)
                 : null;
               return (
-                <li
-                  key={item.id}
-                  className={index === 0 ? undefined : "border-t border-border"}
-                >
+                <li key={item.id}>
+                  {index === 0 ? null : <div className="hairline" aria-hidden />}
                   <a
                     href={`/activity/${item.id}`}
                     className="flex items-center gap-2 py-1.5 text-xs transition-colors hover:text-primary"

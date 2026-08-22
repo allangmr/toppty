@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { DM_Sans } from "next/font/google";
+import { Bricolage_Grotesque, Inter } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { TrackPageView } from "@/components/track-page-view";
 import { copy } from "@/experiments/leaderboard/copy";
@@ -8,10 +8,19 @@ import { getAppUrl } from "@/lib/utils";
 import "@/styles/flag-pa.css";
 import "./globals.css";
 
-const dmSans = DM_Sans({
-  variable: "--font-dm-sans",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
   display: "optional",
+  preload: true,
+  adjustFontFallback: true,
+});
+
+const bricolage = Bricolage_Grotesque({
+  variable: "--font-display",
+  subsets: ["latin"],
+  weight: ["600", "700", "800"],
+  display: "swap",
   preload: true,
   adjustFontFallback: true,
 });
@@ -93,7 +102,7 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f7f9fc" },
+    { media: "(prefers-color-scheme: light)", color: "#eef1f5" },
     { media: "(prefers-color-scheme: dark)", color: "#0d121c" },
   ],
   width: "device-width",
@@ -105,7 +114,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="es-PA"
-      className={`${dmSans.variable} h-full antialiased`}
+      className={`${inter.variable} ${bricolage.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <head>

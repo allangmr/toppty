@@ -7,12 +7,12 @@ import { copy } from "@/experiments/leaderboard/copy";
 
 export function Header() {
   return (
-    <header className="w-full">
-      <div className="mx-auto flex w-full max-w-4xl items-center justify-between gap-4 px-4 pt-5 pb-4">
+    <header className="sticky top-3 z-40 w-full px-3">
+      <div className="glass-card mx-auto flex w-full max-w-4xl items-center justify-between gap-2 rounded-full py-1.5 pr-2 pl-4 sm:gap-4 sm:pl-5">
         <div className="min-w-0">
           <Link
             href="/"
-            className="inline-flex items-center gap-1.5 text-[22px] font-medium tracking-[-0.04em]"
+            className="font-display inline-flex items-center gap-1.5 text-[20px] font-bold tracking-[-0.04em] sm:text-[22px]"
           >
             <BrandMark />
             <span>
@@ -25,17 +25,17 @@ export function Header() {
               <span className="hidden sm:inline">Panamá</span>
             </span>
           </Link>
-          <p className="mt-0.5 hidden pl-[1.85rem] text-[11px] font-medium text-muted-foreground sm:block">
+          <p className="sr-only">
             <CreatorLink prefix="hecho por" />
           </p>
         </div>
-        <div className="flex items-center gap-3 sm:gap-4">
+        <div className="flex items-center gap-1 sm:gap-2">
           <nav aria-label="Principal">
-            <ul className="flex items-center gap-4 text-sm sm:gap-5">
+            <ul className="flex items-center text-sm">
               <li>
                 <Link
                   href="/#ranking"
-                  className="font-medium text-foreground transition-colors hover:text-foreground"
+                  className="rounded-full px-2.5 py-2 leading-none font-bold whitespace-nowrap text-foreground transition-colors hover:bg-muted/70 sm:px-3.5"
                 >
                   {copy.ranking}
                 </Link>
@@ -43,7 +43,7 @@ export function Header() {
               <li>
                 <Link
                   href="/#como-funciona"
-                  className="font-medium text-muted-foreground transition-colors hover:text-foreground"
+                  className="rounded-full px-2.5 py-2 leading-none font-medium whitespace-nowrap text-muted-foreground transition-colors hover:bg-muted/70 hover:text-foreground sm:px-3.5"
                 >
                   {copy.how}
                 </Link>
@@ -51,7 +51,7 @@ export function Header() {
               <li>
                 <Link
                   href="/#reglas"
-                  className="font-medium text-muted-foreground transition-colors hover:text-foreground"
+                  className="rounded-full px-2.5 py-2 leading-none font-medium whitespace-nowrap text-muted-foreground transition-colors hover:bg-muted/70 hover:text-foreground sm:px-3.5"
                 >
                   {copy.rules}
                 </Link>

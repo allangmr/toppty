@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { formatUsd, timeAgoEs } from "@/lib/utils";
 import { AdminDataTable } from "./admin-data-table";
 import { BidBadge, LoginOutcomeBadge, REPORT_LABELS, StatusBadge } from "./admin-ui";
@@ -72,7 +72,7 @@ export function ListingsTable({
   rows: AdminListingRow[];
   initialFilter?: string;
 }) {
-  const now = Date.now();
+  const [now] = useState(() => Date.now());
   const columns = useMemo(
     () => [
       {
@@ -166,7 +166,7 @@ export function ListingsTable({
 }
 
 export function PaymentsTable({ rows }: { rows: AdminBidRow[] }) {
-  const now = Date.now();
+  const [now] = useState(() => Date.now());
   const columns = useMemo(
     () => [
       {
@@ -240,7 +240,7 @@ export function PaymentsTable({ rows }: { rows: AdminBidRow[] }) {
 }
 
 export function ReportsTable({ rows }: { rows: AdminReportRow[] }) {
-  const now = Date.now();
+  const [now] = useState(() => Date.now());
   const columns = useMemo(
     () => [
       {
@@ -361,7 +361,7 @@ export type AdminLoginEventRow = {
 };
 
 export function LoginEventsTable({ rows }: { rows: AdminLoginEventRow[] }) {
-  const now = Date.now();
+  const [now] = useState(() => Date.now());
   const columns = useMemo(
     () => [
       {

@@ -43,11 +43,11 @@ function Marker({ label }: { label: string }) {
       aria-label={`Fin de ${label.toLowerCase()}`}
       className="flex items-center gap-3 px-3 py-5 md:gap-4 md:px-4 md:py-7"
     >
-      <span className="h-0.5 flex-1 rounded-full bg-primary/30" />
-      <span className="rounded-full border border-primary/25 bg-primary/10 px-2.5 py-1 text-[11px] font-semibold tracking-wide text-primary uppercase md:px-3 md:text-xs">
+      <span className="hairline flex-1" />
+      <span className="glass-card font-display rounded-full px-3 py-1 text-[11px] font-bold tracking-wide text-primary uppercase md:px-3.5 md:text-xs">
         {label}
       </span>
-      <span className="h-0.5 flex-1 rounded-full bg-primary/30" />
+      <span className="hairline flex-1" />
     </div>
   );
 }
@@ -146,13 +146,15 @@ export function LeaderboardList({
 
   if (listings.length === 0) {
     return (
-      <div className="rounded-2xl border border-border bg-card px-6 py-10 text-center shadow-[var(--shadow-soft)]">
-        <p className="text-2xl font-bold tracking-[-0.03em]">{copy.emptyTitle}</p>
+      <div className="glass-card rounded-[24px] px-6 py-10 text-center">
+        <p className="font-display text-2xl font-extrabold tracking-[-0.04em]">
+          {copy.emptyTitle}
+        </p>
         <p className="mt-2 text-muted-foreground">{copy.emptyBody}</p>
         <button
           type="button"
           onClick={() => takePlace(100)}
-          className="mt-5 inline-flex h-11 items-center justify-center rounded-full bg-primary px-5 text-sm font-bold text-primary-foreground transition-colors hover:bg-primary/80"
+          className="btn-glossy mt-5 h-11 px-6 text-sm"
         >
           {copy.emptyCta}
         </button>
