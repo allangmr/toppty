@@ -29,10 +29,6 @@ export function HomeClient({
   const [data, setData] = useState(initial);
 
   useEffect(() => {
-    setData(initial);
-  }, [initial.generatedAt]);
-
-  useEffect(() => {
     let cancelled = false;
 
     async function refresh() {
