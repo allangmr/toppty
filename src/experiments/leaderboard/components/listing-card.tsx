@@ -200,7 +200,13 @@ export function ListingCard({
         {copy.takePlace(listing.rank, formatUsd(takeCents))}
       </button>
 
-      <div className="absolute top-2 right-2 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
+      <div
+        className={cn(
+          "absolute right-2 z-20 transition-opacity duration-150",
+          "pointer-events-none opacity-0 group-hover:pointer-events-auto group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:opacity-100",
+          isTopThree ? "top-0 -translate-y-1/2" : "top-1.5",
+        )}
+      >
         <ReportButton listingId={listing.id} />
       </div>
     </div>
