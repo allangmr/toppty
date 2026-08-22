@@ -3,6 +3,7 @@
 import { trackClient } from "@/components/track-client";
 import { formatUsd, timeAgoEs, cn } from "@/lib/utils";
 import { copy } from "../copy";
+import { faviconUrlForDomain } from "../identity";
 import { amountToTakeRank } from "../ranking";
 import type { RankedListing } from "../types";
 import { ListingAvatar } from "./avatar";
@@ -91,7 +92,12 @@ export function ListingCard({
           </span>
           <ListingAvatar
             name={listing.displayName}
-            imageUrl={listing.imageUrl}
+            imageUrl={
+              listing.imageUrl ||
+              (listing.identifierType === "website"
+                ? faviconUrlForDomain(listing.displayName)
+                : null)
+            }
             size={avatarSize}
           />
         </div>

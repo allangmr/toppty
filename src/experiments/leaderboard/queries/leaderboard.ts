@@ -10,6 +10,7 @@ import {
 } from "@/core/db";
 import { formatUsd, timeAgoEs } from "@/lib/utils";
 import { leaderboardConfig } from "../config";
+import { fetchWebsiteMeta } from "../identity";
 import type {
   ActivityItem,
   HomeSnapshot,
@@ -129,7 +130,7 @@ export async function getRecentActivity(
     .leftJoin(listings, eq(activities.listingId, listings.id))
     .where(eq(activities.experimentId, experimentId))
     .orderBy(desc(activities.createdAt))
-    .limit(30);
+    .limit(20);
 
   return rows
     .filter((row) =>
@@ -137,7 +138,7 @@ export async function getRecentActivity(
         row.activity.type,
       ),
     )
-    .slice(0, 20)
+    .slice(0, 5)
     .map((row) => {
       const name = row.listing?.displayName || "Alguien";
       const previousName =
@@ -199,8 +200,47 @@ export async function getLiveStats() {
   }
 }
 
+async function healMissingWebsiteMeta(ranked: RankedListing[]) {
+  const needy = ranked
+    .filter(
+      (listing) =>
+        listing.identifierType === "website" &&
+        (!listing.description || !listing.imageUrl),
+    )
+    .slice(0, 5);
+  if (needy.length === 0) return ranked;
+
+  const db = getDb();
+  await Promise.all(
+    needy.map(async (listing) => {
+      try {
+        const meta = await fetchWebsiteMeta(listing.destinationUrl);
+        if (!meta) return;
+        const description =
+          listing.description || meta.description || meta.title || null;
+        const imageUrl = listing.imageUrl || meta.imageUrl || null;
+        if (
+          description === listing.description &&
+          imageUrl === listing.imageUrl
+        ) {
+          return;
+        }
+        await db
+          .update(listings)
+          .set({ description, imageUrl })
+          .where(eq(listings.id, listing.id));
+        listing.description = description;
+        listing.imageUrl = imageUrl;
+      } catch {
+        // Keep existing listing fields if meta refresh fails.
+      }
+    }),
+  );
+  return ranked;
+}
+
 async function loadHomeSnapshot(): Promise<HomeSnapshot> {
-  const ranked = await getRankedListings();
+  const ranked = await healMissingWebsiteMeta(await getRankedListings());
   const [trending, activity, stats] = await Promise.all([
     getTrending(ranked),
     getRecentActivity(),

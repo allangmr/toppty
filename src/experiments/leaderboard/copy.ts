@@ -19,9 +19,6 @@ export const copy = {
   identifierPrefixes: "@ X · # Instagram · $ TikTok",
   identifierHint:
     "¿Ya ta' en la lista? Mete el mismo @/#/$ o link y súbele al monto.",
-  descriptionLabel: "Descripción (opcional)",
-  descriptionPlaceholder: "Una línea pa' que sepan quién eres",
-  descriptionHint: "Sale debajo de tu nombre en la tabla.",
   submit: "Súbete",
   submitHint:
     "Los puestos nuevos arrancan en $1. Si pones menos que el #1 igual caes donde te alcance la plata.",

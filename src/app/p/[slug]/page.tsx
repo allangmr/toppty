@@ -6,6 +6,7 @@ import { Footer } from "@/components/footer";
 import { ListingAvatar } from "@/experiments/leaderboard/components/avatar";
 import { copy } from "@/experiments/leaderboard/copy";
 import { leaderboardConfig } from "@/experiments/leaderboard/config";
+import { faviconUrlForDomain } from "@/experiments/leaderboard/identity";
 import { JsonLd } from "@/components/json-ld";
 import { getCachedListingBySlug } from "@/experiments/leaderboard/queries/leaderboard";
 import { listingJsonLd } from "@/experiments/leaderboard/seo";
@@ -73,7 +74,12 @@ export default async function ListingPage({
         <div className="flex items-center gap-4">
           <ListingAvatar
             name={listing.displayName}
-            imageUrl={listing.imageUrl}
+            imageUrl={
+              listing.imageUrl ||
+              (listing.identifierType === "website"
+                ? faviconUrlForDomain(listing.displayName)
+                : null)
+            }
             size="lg"
           />
           <div>
