@@ -44,6 +44,18 @@ export async function createCheckout(
   _prev: CheckoutState | null,
   formData: FormData,
 ): Promise<CheckoutState> {
+  try {
+    return await createCheckoutInner(formData);
+  } catch (error) {
+    console.error("create_checkout_failed", error);
+    return {
+      ok: false,
+      error: "Algo falló al abrir el pago. Inténtalo de una.",
+    };
+  }
+}
+
+async function createCheckoutInner(formData: FormData): Promise<CheckoutState> {
   const parsed = inputSchema.safeParse({
     identifier: formData.get("identifier"),
     amountDollars: formData.get("amountDollars"),
@@ -186,7 +198,8 @@ export async function createCheckout(
       .where(eq(bids.id, bidId));
 
     return { ok: true, url: checkout.url };
-  } catch {
+  } catch (error) {
+    console.error("paypal_checkout_failed", error);
     return { ok: false, error: "No se pudo abrir PayPal. Intenta de nuevo." };
   }
 }
@@ -194,24 +207,7 @@ export async function createCheckout(
 export async function lookupIdentity(identifier: string) {
   const identity = parseIdentity(identifier);
   if (!identity.ok) return { ok: false as const, error: identity.error };
-  const db = getDb();
-  const [existing] = await db
-    .select({
-      slug: listings.slug,
-      displayName: listings.displayName,
-      totalBidCents: listings.totalBidCents,
-      moderationStatus: listings.moderationStatus,
-    })
-    .from(listings)
-    .where(
-      and(
-        eq(listings.experimentId, leaderboardConfig.experimentId),
-        eq(listings.normalizedIdentifier, identity.identity.normalizedIdentifier),
-      ),
-    )
-    .limit(1);
-
-  if (!existing || existing.moderationStatus === "removed") {
+  if (!process.env.DATABASE_URL) {
     return {
       ok: true as const,
       exists: false as const,
@@ -219,11 +215,44 @@ export async function lookupIdentity(identifier: string) {
     };
   }
 
-  return {
-    ok: true as const,
-    exists: existing.totalBidCents > 0,
-    displayName: existing.displayName,
-    slug: existing.slug,
-    totalBidCents: existing.totalBidCents,
-  };
+  try {
+    const db = getDb();
+    const [existing] = await db
+      .select({
+        slug: listings.slug,
+        displayName: listings.displayName,
+        totalBidCents: listings.totalBidCents,
+        moderationStatus: listings.moderationStatus,
+      })
+      .from(listings)
+      .where(
+        and(
+          eq(listings.experimentId, leaderboardConfig.experimentId),
+          eq(
+            listings.normalizedIdentifier,
+            identity.identity.normalizedIdentifier,
+          ),
+        ),
+      )
+      .limit(1);
+
+    if (!existing || existing.moderationStatus === "removed") {
+      return {
+        ok: true as const,
+        exists: false as const,
+        displayName: identity.identity.displayName,
+      };
+    }
+
+    return {
+      ok: true as const,
+      exists: existing.totalBidCents > 0,
+      displayName: existing.displayName,
+      slug: existing.slug,
+      totalBidCents: existing.totalBidCents,
+    };
+  } catch (error) {
+    console.error("lookup_identity_failed", error);
+    return { ok: false as const, error: "No se pudo revisar ese link ahora." };
+  }
 }

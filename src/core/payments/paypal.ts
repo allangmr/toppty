@@ -180,7 +180,7 @@ export async function createPaypalCheckout(input: {
         paypal: {
           experience_context: {
             brand_name: "TopPTY.lol",
-            locale: "es-PA",
+            locale: "es-XC",
             landing_page: "LOGIN",
             user_action: "PAY_NOW",
             shipping_preference: "NO_SHIPPING",
