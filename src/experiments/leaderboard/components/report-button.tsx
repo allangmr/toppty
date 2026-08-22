@@ -17,7 +17,6 @@ const REASONS = [
 export function ReportButton({ listingId }: { listingId: string }) {
   const titleId = useId();
   const panelRef = useRef<HTMLDivElement>(null);
-  const [mounted, setMounted] = useState(false);
   const [open, setOpen] = useState(false);
   const [pending, setPending] = useState(false);
   const [reason, setReason] =
@@ -25,10 +24,6 @@ export function ReportButton({ listingId }: { listingId: string }) {
   const [details, setDetails] = useState("");
   const [done, setDone] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   useEffect(() => {
     if (!open) return;
@@ -83,7 +78,7 @@ export function ReportButton({ listingId }: { listingId: string }) {
   }
 
   const dialog =
-    open && mounted
+    open && typeof document !== "undefined"
       ? createPortal(
           <div
             className="fixed inset-0 z-[100] flex items-end justify-center p-4 sm:items-center"
