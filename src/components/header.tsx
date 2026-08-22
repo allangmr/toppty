@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { BrandMark } from "@/components/brand-mark";
 import { CreatorLink } from "@/components/creator-link";
 import { PanamaFlag } from "@/components/panama-flag";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -14,8 +13,11 @@ export function Header() {
             href="/"
             className="font-display flex items-center gap-2 leading-none"
           >
-            <BrandMark className="block h-9 sm:h-10" />
-            <span className="sr-only">toppty.lol</span>
+            <span className="font-display text-[20px] font-bold tracking-[-0.04em] sm:text-[22px]">
+              toppty
+              <span className="text-flag-red">.</span>
+              lol
+            </span>
             <span className="flex items-center gap-1.5 text-xs font-medium leading-none text-muted-foreground">
               <PanamaFlag className="h-3 w-4 leading-none" />
               <span className="hidden sm:inline">Panamá</span>
