@@ -339,11 +339,7 @@ export function BidModule({
         <input type="hidden" name="amountDollars" value={amountDollars} />
         <input type="hidden" name="displayName" value={draft.displayName} />
         <input type="hidden" name="description" value={draft.description} />
-        <input
-          type="hidden"
-          name="imageUrl"
-          value={draft.identityType === "website" ? draft.imageUrl : ""}
-        />
+        <input type="hidden" name="imageUrl" value={draft.imageUrl} />
         <div className="flex flex-col items-stretch gap-2 md:flex-row md:items-center">
           <div className="relative min-w-0 flex-1">
             <span className="pointer-events-none absolute top-1/2 left-2.5 -translate-y-1/2 text-muted-foreground">

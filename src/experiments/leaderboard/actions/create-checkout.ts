@@ -117,10 +117,7 @@ async function createCheckoutInner(formData: FormData): Promise<CheckoutState> {
   const userDisplayName = parsed.data.displayName?.slice(0, 80) || null;
   const userDescription = parsed.data.description?.slice(0, 140) || null;
   let userImageUrl: string | null = null;
-  if (
-    identity.identity.identifierType === "website" &&
-    parsed.data.imageUrl
-  ) {
+  if (parsed.data.imageUrl) {
     if (!isSafeHttpUrl(parsed.data.imageUrl)) {
       return { ok: false, error: "Esa URL de logo no es segura." };
     }
@@ -174,8 +171,7 @@ async function createCheckoutInner(formData: FormData): Promise<CheckoutState> {
     );
 
     let description: string | null = userDescription;
-    let imageUrl: string | null =
-      identity.identity.identifierType === "website" ? userImageUrl : null;
+    let imageUrl: string | null = userImageUrl;
     let displayName =
       userDisplayName || identity.identity.displayName;
 
@@ -210,7 +206,7 @@ async function createCheckoutInner(formData: FormData): Promise<CheckoutState> {
     } = {};
     if (userDisplayName) patch.displayName = userDisplayName;
     if (userDescription) patch.description = userDescription;
-    if (identity.identity.identifierType === "website" && userImageUrl) {
+    if (userImageUrl) {
       patch.imageUrl = userImageUrl;
     } else if (
       identity.identity.identifierType === "website" &&

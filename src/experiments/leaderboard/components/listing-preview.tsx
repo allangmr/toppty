@@ -44,8 +44,6 @@ export function ListingPreview({
     if (editing === "logo") logoRef.current?.focus();
   }, [editing]);
 
-  const canEditLogo = draft.identityType === "website";
-
   return (
     <div className="animate-card-in overflow-hidden rounded-2xl border border-primary/20 bg-card shadow-[var(--shadow-soft)]">
       <div className="flex items-center justify-between gap-3 border-b border-border/70 bg-primary/5 px-4 py-2.5">
@@ -69,25 +67,19 @@ export function ListingPreview({
             <div className="group/logo relative">
               <ListingAvatar
                 name={draft.displayName || "PTY"}
-                imageUrl={
-                  draft.identityType === "website"
-                    ? draft.imageUrl || null
-                    : null
-                }
+                imageUrl={draft.imageUrl || null}
                 socialNetwork={draft.socialNetwork}
                 size="md"
               />
-              {canEditLogo ? (
-                <button
-                  type="button"
-                  onClick={() => setEditing("logo")}
-                  className="absolute -right-1 -bottom-1 inline-flex size-5 items-center justify-center rounded-full bg-foreground text-background shadow-sm transition-transform hover:scale-105"
-                  aria-label={copy.previewEditLogo}
-                  title={copy.previewEditLogo}
-                >
-                  <PencilIcon className="size-2.5" />
-                </button>
-              ) : null}
+              <button
+                type="button"
+                onClick={() => setEditing("logo")}
+                className="absolute -right-1 -bottom-1 inline-flex size-5 items-center justify-center rounded-full bg-foreground text-background shadow-sm transition-transform hover:scale-105"
+                aria-label={copy.previewEditLogo}
+                title={copy.previewEditLogo}
+              >
+                <PencilIcon className="size-2.5" />
+              </button>
             </div>
           </div>
 
@@ -182,7 +174,7 @@ export function ListingPreview({
           </div>
         </div>
 
-        {editing === "logo" && canEditLogo ? (
+        {editing === "logo" ? (
           <div className="mt-3 rounded-xl border border-border bg-muted/40 p-3">
             <label
               htmlFor={logoId}
@@ -202,7 +194,11 @@ export function ListingPreview({
                   setEditing(null);
                 }
               }}
-              placeholder="https://…"
+              placeholder={
+                draft.identityType === "social"
+                  ? "https://… (vacío = logo de la red)"
+                  : "https://…"
+              }
               className="h-10 w-full rounded-lg border border-input bg-transparent px-3 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
             />
           </div>
