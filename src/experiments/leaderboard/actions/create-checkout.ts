@@ -54,10 +54,17 @@ export async function createCheckout(
 
 function humanCheckoutError(error: unknown) {
   const message = error instanceof Error ? error.message : String(error);
-  if (/relation .+ does not exist/i.test(message) || /42P01/.test(message)) {
-    return "Falta migrar la base (npm run db:push).";
+  if (
+    /relation .+ does not exist/i.test(message) ||
+    /column .+ of relation .+ does not exist/i.test(message) ||
+    /42P01|42703/.test(message)
+  ) {
+    return "Falta migrar la base (npm run db:push). Faltan columnas de PayPal en bids.";
   }
-  if (/PAYPAL_|PayPal/i.test(message)) {
+  if (/PayPal auth failed|invalid_client|CLIENT_ID|CLIENT_SECRET/i.test(message)) {
+    return "PayPal no aceptó CLIENT_ID/SECRET. Usa las keys Sandbox si PAYPAL_ENV=sandbox (sin espacios).";
+  }
+  if (/PayPal/i.test(message)) {
     return "PayPal rechazó el pago. Revisa CLIENT_ID/SECRET y PAYPAL_ENV.";
   }
   if (/ECONNREFUSED|ENOTFOUND|connect/i.test(message)) {

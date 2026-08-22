@@ -30,10 +30,13 @@ type TokenCache = {
 
 let tokenCache: TokenCache | null = null;
 
+function env(name: string) {
+  const value = process.env[name]?.trim();
+  return value ? value : undefined;
+}
+
 export function paypalEnabled() {
-  return Boolean(
-    process.env.PAYPAL_CLIENT_ID && process.env.PAYPAL_CLIENT_SECRET,
-  );
+  return Boolean(env("PAYPAL_CLIENT_ID") && env("PAYPAL_CLIENT_SECRET"));
 }
 
 export function canSkipPaypal() {
@@ -44,7 +47,7 @@ export function canSkipPaypal() {
 }
 
 export function paypalApiBase() {
-  return process.env.PAYPAL_ENV === "live"
+  return env("PAYPAL_ENV") === "live"
     ? "https://api-m.paypal.com"
     : "https://api-m.sandbox.paypal.com";
 }
@@ -88,8 +91,8 @@ async function paypalAccessToken() {
     return tokenCache.accessToken;
   }
 
-  const clientId = process.env.PAYPAL_CLIENT_ID;
-  const secret = process.env.PAYPAL_CLIENT_SECRET;
+  const clientId = env("PAYPAL_CLIENT_ID");
+  const secret = env("PAYPAL_CLIENT_SECRET");
   if (!clientId || !secret) {
     throw new Error("PAYPAL_CLIENT_ID and PAYPAL_CLIENT_SECRET are required");
   }
@@ -121,6 +124,30 @@ async function paypalAccessToken() {
     expiresAt: Date.now() + json.expires_in * 1000,
   };
   return tokenCache.accessToken;
+}
+
+/** Lightweight credential check for /api/health (does not expose secrets). */
+export async function probePaypalAuth() {
+  if (!paypalEnabled()) {
+    return { ok: false as const, reason: "missing_credentials" };
+  }
+  try {
+    await paypalAccessToken();
+    return {
+      ok: true as const,
+      env: env("PAYPAL_ENV") === "live" ? "live" : "sandbox",
+      api: paypalApiBase(),
+    };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "unknown";
+    return {
+      ok: false as const,
+      reason: "auth_failed",
+      detail: message.slice(0, 180),
+      env: env("PAYPAL_ENV") === "live" ? "live" : "sandbox",
+      api: paypalApiBase(),
+    };
+  }
 }
 
 async function paypalRequest<T>(
@@ -239,7 +266,7 @@ function paypalCertUrlIsSafe(url: string) {
 }
 
 export async function verifyPaypalWebhook(request: Request, rawBody: string) {
-  const webhookId = process.env.PAYPAL_WEBHOOK_ID;
+  const webhookId = env("PAYPAL_WEBHOOK_ID");
   if (!webhookId) {
     throw new Error("PAYPAL_WEBHOOK_ID is not set");
   }
