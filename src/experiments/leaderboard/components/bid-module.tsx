@@ -51,7 +51,15 @@ export function BidModule({
   );
 
   useEffect(() => {
-    if (state?.ok) router.push(state.url);
+    if (!state?.ok) return;
+    // PayPal (and any absolute checkout URL) must be a full browser navigation.
+    // router.push() on an external host can trip the App Router error boundary.
+    const url = state.url;
+    if (/^https?:\/\//i.test(url)) {
+      window.location.assign(url);
+      return;
+    }
+    router.push(url);
   }, [router, state]);
 
   useEffect(() => {
