@@ -1,0 +1,18 @@
+/* Slim flag-icons surface: only Panama (fi-pa) from lipis/flag-icons. */
+.fi {
+  position: relative;
+  display: inline-block;
+  width: 1.333333em;
+  line-height: 1em;
+  background-size: contain;
+  background-position: 50%;
+  background-repeat: no-repeat;
+}
+
+.fi:before {
+  content: "\00a0";
+}
+
+.fi-pa {
+  background-image: url("flag-icons/flags/4x3/pa.svg");
+}
