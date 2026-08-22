@@ -120,7 +120,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         </a>
         {children}
         <TrackPageView />
-        {process.env.VERCEL ? <Analytics /> : null}
+        <Analytics />
       </body>
     </html>
   );
