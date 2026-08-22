@@ -52,7 +52,11 @@ export const copy = {
   newNumberOne: "Nuevo #1 en PTY",
   reported: "Listo. Lo vemos.",
   paymentsFinal:
-    "El pago es de una y no se devuelve, salvo donde la ley lo pida. Estás comprando un puesto en la tabla, no una inversión ni un chance.",
+    "El pago es de una y no se devuelve, salvo donde la ley lo pida. Si removemos tu puesto por romper las reglas, tampoco hay devolución. Estás comprando un puesto en la tabla, no una inversión ni un chance.",
+  listingAllowed:
+    "@ pa' X, # pa' Instagram, $ pa' TikTok, o un link limpio. No se permite porno ni contenido adulto, estafas, phishing, malware, ni sitios marcados como no seguros. Eso se remueve de una y no hay devolución.",
+  listingProhibited:
+    "Nada de sitios pornográficos o NSFW, nada de estafas ni engaños, nada de phishing/malware, y nada de links que Chrome u otros marquen como no seguros. Si entra, lo sacamos. Plata pagada: no se devuelve.",
   showMore: "Ver to'o",
   showLess: "Ver menos",
   pagePrev: "Pa' atrás",
