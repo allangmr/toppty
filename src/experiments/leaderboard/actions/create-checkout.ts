@@ -7,7 +7,7 @@ import { trackEvent } from "@/core/analytics/track";
 import { bids, getDb, listings } from "@/core/db";
 import { canSkipPaypal, createPaypalCheckout, paypalEnabled } from "@/core/payments/paypal";
 import { fingerprintFromHeaders } from "@/core/security/fingerprint";
-import { getAppUrl, createId, dollarsToCents } from "@/lib/utils";
+import { getRequestAppUrl, createId, dollarsToCents } from "@/lib/utils";
 import { leaderboardConfig } from "../config";
 import { fetchWebsiteMeta, parseIdentity } from "../identity";
 import { fulfillPaidBid } from "./fulfill-bid";
@@ -48,11 +48,22 @@ export async function createCheckout(
     return await createCheckoutInner(formData);
   } catch (error) {
     console.error("create_checkout_failed", error);
-    return {
-      ok: false,
-      error: "Algo falló al abrir el pago. Inténtalo de una.",
-    };
+    return { ok: false, error: humanCheckoutError(error) };
   }
+}
+
+function humanCheckoutError(error: unknown) {
+  const message = error instanceof Error ? error.message : String(error);
+  if (/relation .+ does not exist/i.test(message) || /42P01/.test(message)) {
+    return "Falta migrar la base (npm run db:push).";
+  }
+  if (/PAYPAL_|PayPal/i.test(message)) {
+    return "PayPal rechazó el pago. Revisa CLIENT_ID/SECRET y PAYPAL_ENV.";
+  }
+  if (/ECONNREFUSED|ENOTFOUND|connect/i.test(message)) {
+    return "No hay conexión con la base de datos.";
+  }
+  return "Algo falló al abrir el pago. Inténtalo de una.";
 }
 
 async function createCheckoutInner(formData: FormData): Promise<CheckoutState> {
@@ -169,7 +180,7 @@ async function createCheckoutInner(formData: FormData): Promise<CheckoutState> {
 
   const displayName =
     existing?.displayName || identity.identity.displayName;
-  const appUrl = getAppUrl();
+  const appUrl = getRequestAppUrl(headerList);
   const successUrl = `${appUrl}/checkout/success?bid=${bidId}`;
   const cancelUrl = `${appUrl}/checkout/cancel`;
 
@@ -200,7 +211,7 @@ async function createCheckoutInner(formData: FormData): Promise<CheckoutState> {
     return { ok: true, url: checkout.url };
   } catch (error) {
     console.error("paypal_checkout_failed", error);
-    return { ok: false, error: "No se pudo abrir PayPal. Intenta de nuevo." };
+    return { ok: false, error: humanCheckoutError(error) };
   }
 }
 
