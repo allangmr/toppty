@@ -287,8 +287,8 @@ export function BidModule({
   return (
     <section id="subir" className="scroll-mt-6">
       <h1 className="font-display flex flex-wrap items-center justify-center gap-x-2 text-center text-[30px] font-extrabold tracking-[-0.05em] md:text-[46px]">
-        {claim}
-        <span className="inline-flex items-center gap-2">
+        <span key="claim">{claim}</span>
+        <span key="amount" className="inline-flex items-center gap-2">
           <button
             type="button"
             onClick={() => {

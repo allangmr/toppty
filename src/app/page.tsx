@@ -22,7 +22,7 @@ export default async function Home() {
       >
         <HomeClient
           initial={snapshot}
-          claim={<span>{copy.takeNumberOne}</span>}
+          claim={copy.takeNumberOne}
           intro={<ClaimIntro />}
         />
         <Faq />
