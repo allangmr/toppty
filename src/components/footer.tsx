@@ -28,14 +28,6 @@ export function Footer() {
           </a>
           .
         </p>
-        <p>
-          <a
-            href="/admin"
-            className="underline-offset-2 transition-colors hover:text-foreground hover:underline"
-          >
-            Admin
-          </a>
-        </p>
       </div>
     </footer>
   );
