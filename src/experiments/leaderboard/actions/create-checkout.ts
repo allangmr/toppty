@@ -27,7 +27,7 @@ const inputSchema = z.object({
   amountDollars: z.coerce.number().int().min(1).max(100000),
   displayName: optionalText(80),
   description: optionalText(140),
-  imageUrl: optionalText(500),
+  imageUrl: optionalText(2048),
 });
 
 export type CheckoutState = {
@@ -87,12 +87,17 @@ function humanCheckoutError(error: unknown) {
 }
 
 async function createCheckoutInner(formData: FormData): Promise<CheckoutState> {
+  const readText = (key: string) => {
+    const value = formData.get(key);
+    return typeof value === "string" ? value : undefined;
+  };
+
   const parsed = inputSchema.safeParse({
-    identifier: formData.get("identifier"),
-    amountDollars: formData.get("amountDollars"),
-    displayName: formData.get("displayName") || undefined,
-    description: formData.get("description") || undefined,
-    imageUrl: formData.get("imageUrl") || undefined,
+    identifier: readText("identifier"),
+    amountDollars: readText("amountDollars"),
+    displayName: readText("displayName"),
+    description: readText("description"),
+    imageUrl: readText("imageUrl"),
   });
   if (!parsed.success) {
     return { ok: false, error: "Revisa el perfil, el monto y el preview." };
@@ -124,6 +129,14 @@ async function createCheckoutInner(formData: FormData): Promise<CheckoutState> {
     }
     userImageUrl = parsed.data.imageUrl;
   }
+
+  // Custom preview fields must win over identity defaults (@handle / network glyph).
+  console.info("checkout_preview_fields", {
+    identifier: parsed.data.identifier,
+    userDisplayName,
+    userDescription,
+    hasImageUrl: Boolean(userImageUrl),
+  });
 
   const headerList = await headers();
   const fingerprint = fingerprintFromHeaders(headerList);
