@@ -42,8 +42,15 @@ export function timeAgoEs(date: Date, now = Date.now()) {
 }
 
 export function getAppUrl() {
-  return (
-    process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, "") ||
-    "http://localhost:3000"
-  );
+  const fallback = "http://localhost:3000";
+  const raw = process.env.NEXT_PUBLIC_APP_URL?.trim().replace(/\/$/, "");
+  if (!raw || raw === "undefined" || raw === "null") return fallback;
+
+  try {
+    const url = new URL(raw);
+    if (url.protocol !== "http:" && url.protocol !== "https:") return fallback;
+    return url.origin;
+  } catch {
+    return fallback;
+  }
 }
