@@ -9,15 +9,15 @@ export function Header() {
   return (
     <header className="sticky top-3 z-40 w-full px-3">
       <div className="glass-card mx-auto flex w-full max-w-4xl items-center justify-between gap-2 rounded-full py-1.5 pr-2 pl-4 sm:gap-4 sm:pl-5">
-        <div className="min-w-0">
+        <div className="flex min-w-0 items-center">
           <Link
             href="/"
-            className="font-display inline-flex items-center gap-2 text-[20px] font-bold tracking-[-0.04em] sm:text-[22px]"
+            className="font-display flex items-center gap-2 leading-none"
           >
-            <BrandMark className="h-9 sm:h-10" />
+            <BrandMark className="block h-9 sm:h-10" />
             <span className="sr-only">toppty.lol</span>
-            <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
-              <PanamaFlag className="h-3 w-4" />
+            <span className="flex items-center gap-1.5 text-xs font-medium leading-none text-muted-foreground">
+              <PanamaFlag className="h-3 w-4 leading-none" />
               <span className="hidden sm:inline">Panamá</span>
             </span>
           </Link>

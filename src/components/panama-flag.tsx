@@ -5,7 +5,7 @@ export function PanamaFlag({ className }: { className?: string }) {
   return (
     <span
       className={cn(
-        "fi fi-pa shrink-0 overflow-hidden rounded-[1px] align-[-0.12em] ring-1 ring-black/10 dark:ring-white/15",
+        "fi fi-pa block shrink-0 overflow-hidden rounded-[1px] leading-none ring-1 ring-black/10 dark:ring-white/15",
         className,
       )}
       role="img"
