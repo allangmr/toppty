@@ -100,6 +100,8 @@ export default async function ListingPage({
         ) : null}
         <a
           href={`/go/${listing.slug}`}
+          target="_blank"
+          rel="noopener noreferrer"
           className="inline-flex h-11 items-center justify-center rounded-full border border-border px-4 text-center text-sm font-medium transition-colors hover:bg-muted"
         >
           Ir pa&apos;l perfil

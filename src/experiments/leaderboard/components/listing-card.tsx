@@ -63,6 +63,8 @@ export function ListingCard({
     >
       <a
         href={`/go/${listing.slug}`}
+        target="_blank"
+        rel="noopener noreferrer"
         className={cn(
           "flex h-full items-center gap-2 transition-colors hover:text-primary md:gap-3",
           isTopThree && "motion-lift",
