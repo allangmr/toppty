@@ -56,16 +56,19 @@ export async function fulfillPaidBid(input: {
       .limit(1);
 
     if (!listing) return { ok: false as const, reason: "missing-listing" };
-    if (listing.moderationStatus === "removed") {
-      return { ok: false as const, reason: "removed" };
-    }
 
+    const recreatingRemoved = listing.moderationStatus === "removed";
     const before = await rankedInTx(tx, listing.experimentId);
-    const previousRank = rankOf(before, listing.id);
+    const previousRank = recreatingRemoved
+      ? null
+      : rankOf(before, listing.id);
     const previousNumberOne = before[0] ?? null;
     const wasNewListing = previousRank === null;
     const now = new Date();
-    const newTotal = listing.totalBidCents + bid.amountCents;
+    // Removed profiles restart from this payment only (no old rank power).
+    const newTotal = recreatingRemoved
+      ? bid.amountCents
+      : listing.totalBidCents + bid.amountCents;
 
     await tx
       .update(bids)
@@ -80,7 +83,9 @@ export async function fulfillPaidBid(input: {
       .update(listings)
       .set({
         totalBidCents: newTotal,
-        firstPaidAt: listing.firstPaidAt ?? now,
+        firstPaidAt: recreatingRemoved
+          ? now
+          : (listing.firstPaidAt ?? now),
         lastPaidAt: now,
         updatedAt: now,
         moderationStatus:

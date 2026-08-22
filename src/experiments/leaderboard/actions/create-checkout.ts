@@ -155,9 +155,8 @@ async function createCheckoutInner(formData: FormData): Promise<CheckoutState> {
     )
     .limit(1);
 
-  if (existing?.moderationStatus === "removed") {
-    return { ok: false, error: "Ese perfil no ta disponible." };
-  }
+  // Removed listings can be recreated by paying again (fulfilled as a fresh start).
+  // Hidden listings stay payable but remain hidden until an admin restores them.
 
   let listingId = existing?.id;
   let displayNameForPaypal =
