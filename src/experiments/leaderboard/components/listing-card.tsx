@@ -8,6 +8,7 @@ import { amountToTakeRank } from "../ranking";
 import type { RankedListing } from "../types";
 import { ListingAvatar } from "./avatar";
 import { useBid } from "./bid-context";
+import { ListingGoLink } from "./listing-go-link";
 import { ReportButton } from "./report-button";
 
 /** Gentle shrink for ranks 4+; never below a readable floor. */
@@ -61,16 +62,14 @@ export function ListingCard({
           : undefined
       }
     >
-      <a
-        href={`/go/${listing.slug}`}
-        target="_blank"
-        rel="noopener noreferrer"
+      <ListingGoLink
+        slug={listing.slug}
         className={cn(
           "flex h-full items-center gap-2 transition-colors hover:text-primary md:gap-3",
           isTopThree && "motion-lift",
           isFirst ? "py-3 md:py-4" : isSecond ? "py-2.5 md:py-3.5" : isThird ? "py-2 md:py-3" : "py-1.5 md:py-2",
         )}
-        onClick={() =>
+        onNavigate={() =>
           trackClient("listing_clicked", {
             slug: listing.slug,
             rank: listing.rank,
@@ -183,7 +182,7 @@ export function ListingCard({
             </span>
           </p>
         </div>
-      </a>
+      </ListingGoLink>
 
       <button
         type="button"

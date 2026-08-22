@@ -13,6 +13,7 @@ import { listingJsonLd } from "@/experiments/leaderboard/seo";
 import { listingUrl } from "@/core/social/share";
 import { formatUsd } from "@/lib/utils";
 import { BidCta } from "./bid-cta";
+import { ListingGoLink } from "@/experiments/leaderboard/components/listing-go-link";
 
 export const revalidate = 60;
 
@@ -98,14 +99,12 @@ export default async function ListingPage({
         {listing.description ? (
           <p className="max-w-2xl text-muted-foreground">{listing.description}</p>
         ) : null}
-        <a
-          href={`/go/${listing.slug}`}
-          target="_blank"
-          rel="noopener noreferrer"
+        <ListingGoLink
+          slug={listing.slug}
           className="inline-flex h-11 items-center justify-center rounded-full border border-border px-4 text-center text-sm font-medium transition-colors hover:bg-muted"
         >
           Ir pa&apos;l perfil
-        </a>
+        </ListingGoLink>
         <BidCta rank={listing.rank} amountCents={takeCents} />
         <Link
           href="/"
