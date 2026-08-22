@@ -3,6 +3,7 @@
 import {
   useActionState,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -131,6 +132,7 @@ export function BidModule({
   const [state, action, pending] = useActionState(createCheckout, initialState);
   const lastAmount = useRef(amountDollars);
   const metaRequest = useRef(0);
+  const draftRef = useRef<ListingDraft | null>(null);
 
   const amountCents = dollarsToCents(amountDollars);
   const takeFirstDollars = centsToDollars(takeFirstCents);
@@ -186,6 +188,10 @@ export function BidModule({
       imageUrl: overrides.imageUrl ?? fallbackImage,
     };
   }, [identifier, autoMeta, overrides, parsedIdentity]);
+
+  useLayoutEffect(() => {
+    draftRef.current = draft;
+  }, [draft]);
 
   useEffect(() => {
     if (!state?.ok) return;
@@ -335,54 +341,61 @@ export function BidModule({
 
       {intro}
 
-      <form action={action} className="mt-4 flex flex-col gap-3">
+      <form
+        action={action}
+        className="mt-4 flex flex-col gap-3"
+        onSubmit={(event) => {
+          // Flush in-progress preview edits before FormData is collected.
+          const active = document.activeElement;
+          if (active instanceof HTMLElement) active.blur();
+
+          const latest = draftRef.current;
+          if (!latest) return;
+          const form = event.currentTarget;
+          for (const [name, value] of [
+            ["displayName", latest.displayName],
+            ["description", latest.description],
+            ["imageUrl", latest.imageUrl],
+          ] as const) {
+            const field = form.elements.namedItem(name);
+            if (field instanceof HTMLInputElement) field.value = value;
+          }
+        }}
+      >
         <input type="hidden" name="amountDollars" value={amountDollars} />
         <input type="hidden" name="displayName" value={draft.displayName} />
         <input type="hidden" name="description" value={draft.description} />
         <input type="hidden" name="imageUrl" value={draft.imageUrl} />
-        <div className="glass-card flex flex-col items-stretch gap-2 rounded-[22px] p-1.5 md:flex-row md:items-center">
-          <div className="relative min-w-0 flex-1">
-            <span className="pointer-events-none absolute top-1/2 left-3.5 -translate-y-1/2 text-muted-foreground">
-              <IdentityPreviewIcon identifier={identifier} />
-            </span>
-            <input
-              id="identifier"
-              name="identifier"
-              value={identifier}
-              onFocus={markStarted}
-              onChange={(event) => {
-                markStarted();
-                const next = event.target.value;
-                setIdentifier(next);
-                setOverrides({});
-                setAutoMeta(null);
-                if (next.trim()) setMetaLoading(true);
-                else setMetaLoading(false);
-              }}
-              onBlur={() => void onIdentifierBlur()}
-              placeholder={copy.identifierLabel}
-              aria-label={copy.identifierLabel}
-              autoComplete="off"
-              spellCheck={false}
-              required
-              className="h-11 w-full min-w-0 rounded-full bg-transparent py-1 pr-3 pl-11 text-base outline-none transition-shadow placeholder:text-muted-foreground focus-visible:ring-3 focus-visible:ring-ring/40"
-            />
-          </div>
-          <button
-            type="submit"
-            disabled={pending || !identifier.trim() || !parsedIdentity}
-            className="btn-glossy h-11 w-full shrink-0 cursor-pointer px-6 text-sm tracking-[-0.01em] md:w-auto"
-          >
-            {pending ? copy.openingPay : copy.submit}
-          </button>
+        <div className="glass-card relative min-w-0 rounded-[22px] px-1.5">
+          <span className="pointer-events-none absolute top-1/2 left-3.5 -translate-y-1/2 text-muted-foreground">
+            <IdentityPreviewIcon identifier={identifier} />
+          </span>
+          <input
+            id="identifier"
+            name="identifier"
+            value={identifier}
+            onFocus={markStarted}
+            onChange={(event) => {
+              markStarted();
+              const next = event.target.value;
+              setIdentifier(next);
+              setOverrides({});
+              setAutoMeta(null);
+              if (next.trim()) setMetaLoading(true);
+              else setMetaLoading(false);
+            }}
+            onBlur={() => void onIdentifierBlur()}
+            placeholder={copy.identifierLabel}
+            aria-label={copy.identifierLabel}
+            autoComplete="off"
+            spellCheck={false}
+            required
+            className="h-11 w-full min-w-0 rounded-full bg-transparent py-1 pr-3 pl-11 text-base outline-none transition-shadow placeholder:text-muted-foreground focus-visible:ring-3 focus-visible:ring-ring/40"
+          />
         </div>
 
         <p className="text-center text-xs font-medium tracking-wide text-muted-foreground">
           {copy.identifierPrefixes}
-        </p>
-
-        <p className="text-center text-[11px] leading-relaxed text-pretty text-muted-foreground">
-          {copy.checkoutAck}
         </p>
 
         {showPreview ? (
@@ -394,6 +407,18 @@ export function BidModule({
             loading={metaLoading}
           />
         ) : null}
+
+        <button
+          type="submit"
+          disabled={pending || !identifier.trim() || !parsedIdentity}
+          className="btn-glossy h-11 w-full cursor-pointer px-6 text-sm tracking-[-0.01em]"
+        >
+          {pending ? copy.openingPay : copy.submit}
+        </button>
+
+        <p className="text-center text-[11px] leading-relaxed text-pretty text-muted-foreground">
+          {copy.checkoutAck}
+        </p>
 
         <p className="text-center text-xs leading-relaxed text-pretty text-muted-foreground">
           {copy.identifierHint}

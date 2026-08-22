@@ -33,6 +33,7 @@ export const copy = {
   alreadyIn:
     "Ya ta' en la lista. Usa el mismo @/#/$ o link y súbele al monto.",
   trending: "Lo que ta pegao",
+  trendingEmpty: "Nadie ta pegao todavía. Dale click a alguien en la tabla.",
   activity: "Lo que se movió",
   ranking: "La tabla",
   how: "Cómo va la cosa",
