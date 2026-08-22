@@ -54,3 +54,23 @@ export function getAppUrl() {
     return fallback;
   }
 }
+
+/** Prefer the live request host (www vs apex) for PayPal return URLs. */
+export function getRequestAppUrl(headerList: Headers) {
+  const host =
+    headerList.get("x-forwarded-host")?.split(",")[0]?.trim() ||
+    headerList.get("host")?.trim();
+  const proto =
+    headerList.get("x-forwarded-proto")?.split(",")[0]?.trim() || "https";
+  if (host) {
+    try {
+      const url = new URL(`${proto}://${host}`);
+      if (url.protocol === "http:" || url.protocol === "https:") {
+        return url.origin;
+      }
+    } catch {
+      // fall through
+    }
+  }
+  return getAppUrl();
+}

@@ -106,7 +106,10 @@ async function paypalAccessToken() {
   });
 
   if (!response.ok) {
-    throw new Error(`PayPal auth failed (${response.status})`);
+    const body = await response.text().catch(() => "");
+    throw new Error(
+      `PayPal auth failed (${response.status})${body ? `: ${body.slice(0, 200)}` : ""}`,
+    );
   }
 
   const json = (await response.json()) as {
@@ -160,6 +163,7 @@ export async function createPaypalCheckout(input: {
   successUrl: string;
   cancelUrl: string;
 }) {
+  // application_context is the widely supported Orders shape for merchant apps.
   const order = await paypalRequest<PaypalOrder>("/v2/checkout/orders", {
     method: "POST",
     prefer: "return=representation",
@@ -176,18 +180,14 @@ export async function createPaypalCheckout(input: {
           },
         },
       ],
-      payment_source: {
-        paypal: {
-          experience_context: {
-            brand_name: "TopPTY.lol",
-            locale: "es-XC",
-            landing_page: "LOGIN",
-            user_action: "PAY_NOW",
-            shipping_preference: "NO_SHIPPING",
-            return_url: input.successUrl,
-            cancel_url: input.cancelUrl,
-          },
-        },
+      application_context: {
+        brand_name: "TopPTY.lol",
+        locale: "es-XC",
+        landing_page: "LOGIN",
+        user_action: "PAY_NOW",
+        shipping_preference: "NO_SHIPPING",
+        return_url: input.successUrl,
+        cancel_url: input.cancelUrl,
       },
     }),
   });
