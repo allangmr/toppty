@@ -1,5 +1,9 @@
-import { bids, getDb, listings, analyticsEvents } from "@/core/db";
-import { paypalEnabled, paypalApiBase } from "@/core/payments/paypal";
+import { analyticsEvents, bids, getDb, listings } from "@/core/db";
+import {
+  paypalApiBase,
+  paypalEnabled,
+  probePaypalAuth,
+} from "@/core/payments/paypal";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -9,7 +13,7 @@ export async function GET() {
     ok: true,
     appUrl: process.env.NEXT_PUBLIC_APP_URL || null,
     paypalConfigured: paypalEnabled(),
-    paypalEnv: process.env.PAYPAL_ENV || null,
+    paypalEnv: process.env.PAYPAL_ENV?.trim() || null,
     paypalApi: paypalEnabled() ? paypalApiBase() : null,
     databaseConfigured: Boolean(process.env.DATABASE_URL),
   };
@@ -35,6 +39,13 @@ export async function GET() {
     checks.tables = tables;
     checks.databaseError =
       error instanceof Error ? error.message.slice(0, 240) : "unknown";
+    return Response.json(checks, { status: 503 });
+  }
+
+  const paypalAuth = await probePaypalAuth();
+  checks.paypalAuth = paypalAuth;
+  if (!paypalAuth.ok) {
+    checks.ok = false;
     return Response.json(checks, { status: 503 });
   }
 
