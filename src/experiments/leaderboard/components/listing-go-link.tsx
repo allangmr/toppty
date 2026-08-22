@@ -27,8 +27,7 @@ export function ListingGoLink({
       return;
     }
     event.preventDefault();
-    const tab = window.open(href, "_blank", "noopener,noreferrer");
-    if (!tab) window.location.assign(href);
+    window.open(href, "_blank", "noopener,noreferrer");
   }
 
   return (
