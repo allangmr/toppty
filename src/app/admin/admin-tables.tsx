@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useMemo } from "react";
 import { formatUsd, timeAgoEs } from "@/lib/utils";
 import { AdminDataTable } from "./admin-data-table";
-import { BidBadge, REPORT_LABELS, StatusBadge } from "./admin-ui";
+import { BidBadge, LoginOutcomeBadge, REPORT_LABELS, StatusBadge } from "./admin-ui";
 import { ListingActions } from "./listing-actions";
 
 export type AdminListingRow = {
@@ -340,6 +340,78 @@ export function ReportsTable({ rows }: { rows: AdminReportRow[] }) {
       }
       emptyTitle="Sin reportes"
       emptyBody="Si alguien denuncia un perfil, lo ves aquí para ocultarlo o borrarlo."
+    />
+  );
+}
+
+const LOGIN_FILTERS = [
+  { id: "todos", label: "Todos" },
+  { id: "bad_password", label: "Clave mala" },
+  { id: "captcha_fail", label: "Captcha" },
+  { id: "locked", label: "Bloqueados" },
+  { id: "success", label: "Entradas" },
+];
+
+export type AdminLoginEventRow = {
+  id: string;
+  ip: string;
+  userAgent: string | null;
+  outcome: string;
+  createdAt: string;
+};
+
+export function LoginEventsTable({ rows }: { rows: AdminLoginEventRow[] }) {
+  const now = Date.now();
+  const columns = useMemo(
+    () => [
+      {
+        header: "Cuándo",
+        cell: (row: AdminLoginEventRow) => (
+          <span
+            className="text-muted-foreground"
+            title={new Date(row.createdAt).toLocaleString("es-PA")}
+          >
+            {timeAgoEs(new Date(row.createdAt), now)}
+          </span>
+        ),
+      },
+      {
+        header: "IP",
+        cell: (row: AdminLoginEventRow) => (
+          <span className="font-mono text-xs">{row.ip}</span>
+        ),
+      },
+      {
+        header: "Resultado",
+        cell: (row: AdminLoginEventRow) => (
+          <LoginOutcomeBadge outcome={row.outcome} />
+        ),
+      },
+      {
+        header: "Navegador",
+        cell: (row: AdminLoginEventRow) => (
+          <p className="max-w-[320px] truncate text-xs text-muted-foreground">
+            {row.userAgent || "—"}
+          </p>
+        ),
+      },
+    ],
+    [now],
+  );
+
+  return (
+    <AdminDataTable
+      rows={rows}
+      columns={columns}
+      getKey={(row) => row.id}
+      searchPlaceholder="Buscar por IP o navegador"
+      searchText={(row) => `${row.ip} ${row.userAgent ?? ""} ${row.outcome}`}
+      filters={LOGIN_FILTERS}
+      filterMatch={(row, filter) =>
+        filter === "todos" ? true : row.outcome === filter
+      }
+      emptyTitle="Sin intentos todavía"
+      emptyBody="Cuando alguien pruebe el login del admin, el intento queda aquí."
     />
   );
 }

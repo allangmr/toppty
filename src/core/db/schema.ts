@@ -187,6 +187,32 @@ export const adminLoginAttempts = pgTable(
   ],
 );
 
+export const adminLoginOutcomeEnum = pgEnum("admin_login_outcome", [
+  "success",
+  "bad_password",
+  "captcha_fail",
+  "locked",
+]);
+
+export const adminLoginEvents = pgTable(
+  "admin_login_events",
+  {
+    id: text("id").primaryKey(),
+    ip: text("ip").notNull(),
+    userAgent: text("user_agent"),
+    fingerprintHash: text("fingerprint_hash").notNull(),
+    outcome: adminLoginOutcomeEnum("outcome").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (table) => [
+    index("admin_login_events_created_idx").on(table.createdAt),
+    index("admin_login_events_ip_idx").on(table.ip),
+    index("admin_login_events_outcome_idx").on(table.outcome),
+  ],
+);
+
 export const analyticsEvents = pgTable(
   "analytics_events",
   {

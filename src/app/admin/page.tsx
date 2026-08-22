@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { desc, eq, sql } from "drizzle-orm";
+import { and, desc, eq, gte, ne, sql } from "drizzle-orm";
 import {
+  adminLoginEvents,
   analyticsEvents,
   bids,
   getDb,
@@ -11,17 +12,19 @@ import { cn, formatUsd } from "@/lib/utils";
 import { AdminHeader } from "./admin-header";
 import {
   ListingsTable,
+  LoginEventsTable,
   PaymentsTable,
   ReportsTable,
 } from "./admin-tables";
 
 export const dynamic = "force-dynamic";
 
-type Section = "listings" | "pagos" | "reportes";
+type Section = "listings" | "pagos" | "reportes" | "acceso";
 type Estado = "todos" | "activos" | "ocultos";
 
 function parseSection(value?: string): Section {
-  if (value === "pagos" || value === "reportes") return value;
+  if (value === "pagos" || value === "reportes" || value === "acceso")
+    return value;
   return "listings";
 }
 
@@ -103,6 +106,32 @@ export default async function AdminPage({
     db.select({ n: sql<number>`count(*)::int` }).from(reports),
   ]);
 
+  let loginEventRows: (typeof adminLoginEvents.$inferSelect)[] = [];
+  let failedLastDay = 0;
+  try {
+    const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    const [events, [failed]] = await Promise.all([
+      db
+        .select()
+        .from(adminLoginEvents)
+        .orderBy(desc(adminLoginEvents.createdAt))
+        .limit(500),
+      db
+        .select({ n: sql<number>`count(*)::int` })
+        .from(adminLoginEvents)
+        .where(
+          and(
+            gte(adminLoginEvents.createdAt, since),
+            ne(adminLoginEvents.outcome, "success"),
+          ),
+        ),
+    ]);
+    loginEventRows = events;
+    failedLastDay = failed?.n ?? 0;
+  } catch (error) {
+    console.error("admin_login_events_query_failed", error);
+  }
+
   const countByStatus = Object.fromEntries(
     statusCounts.map((row) => [row.status, row.n]),
   );
@@ -126,7 +155,7 @@ export default async function AdminPage({
           </p>
         </div>
 
-        <section className="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-5">
+        <section className="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-3">
           <Stat
             href="/admin?seccion=listings&estado=activos"
             label="Activos"
@@ -157,6 +186,14 @@ export default async function AdminPage({
             active={section === "reportes"}
             alert={(reportCount?.n ?? 0) > 0}
           />
+          <Stat
+            href="/admin?seccion=acceso"
+            label="Intentos login"
+            value={failedLastDay}
+            hint="Fallos últimas 24h"
+            active={section === "acceso"}
+            alert={failedLastDay > 0}
+          />
         </section>
 
         <nav
@@ -180,6 +217,12 @@ export default async function AdminPage({
             active={section === "reportes"}
             label="Reportes"
             count={reportCount?.n ?? 0}
+          />
+          <SectionTab
+            href="/admin?seccion=acceso"
+            active={section === "acceso"}
+            label="Acceso"
+            count={failedLastDay}
           />
         </nav>
 
@@ -223,6 +266,27 @@ export default async function AdminPage({
                   paypalCaptureId: bid.paypalCaptureId,
                   listingName: listing?.displayName ?? null,
                   listingSlug: listing?.slug ?? null,
+                }))}
+              />
+            </>
+          ) : null}
+
+          {section === "acceso" ? (
+            <>
+              <h2 className="mb-4 text-lg font-semibold tracking-[-0.03em]">
+                Intentos de login
+              </h2>
+              <p className="mb-4 text-sm text-muted-foreground">
+                Historial de quién tocó el admin: IP, resultado y navegador. Si
+                ves muchas IPs distintas con clave mala, conviene captcha + WAF.
+              </p>
+              <LoginEventsTable
+                rows={loginEventRows.map((row) => ({
+                  id: row.id,
+                  ip: row.ip,
+                  userAgent: row.userAgent,
+                  outcome: row.outcome,
+                  createdAt: row.createdAt.toISOString(),
                 }))}
               />
             </>

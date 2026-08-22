@@ -13,6 +13,7 @@ import {
   registerAdminLoginFailure,
 } from "@/core/admin/lockout";
 import { fingerprintFromHeaders } from "@/core/security/fingerprint";
+import { logAdminLoginEvent } from "@/core/admin/login-events";
 import { AdminLoginForm } from "./login-form";
 
 export const dynamic = "force-dynamic";
@@ -24,6 +25,7 @@ async function login(formData: FormData) {
   const fingerprint = fingerprintFromHeaders(headerList);
   const lock = await getAdminLockStatus(fingerprint);
   if (lock.locked) {
+    await logAdminLoginEvent(headerList, "locked");
     redirect("/admin/login?error=locked");
   }
 
@@ -35,6 +37,10 @@ async function login(formData: FormData) {
   const captchaOk = await verifyHCaptchaToken(captchaToken || null);
   if (!captchaOk) {
     const result = await registerAdminLoginFailure(fingerprint);
+    await logAdminLoginEvent(
+      headerList,
+      result.locked ? "locked" : "captcha_fail",
+    );
     redirect(
       result.locked ? "/admin/login?error=locked" : "/admin/login?error=captcha",
     );
@@ -43,12 +49,17 @@ async function login(formData: FormData) {
   const password = String(formData.get("password") || "");
   if (!passwordsMatch(password)) {
     const result = await registerAdminLoginFailure(fingerprint);
+    await logAdminLoginEvent(
+      headerList,
+      result.locked ? "locked" : "bad_password",
+    );
     redirect(
       result.locked ? "/admin/login?error=locked" : "/admin/login?error=1",
     );
   }
 
   await clearAdminLoginFailures(fingerprint);
+  await logAdminLoginEvent(headerList, "success");
 
   const store = await cookies();
   store.set(ADMIN_COOKIE, await signAdminCookie(), {

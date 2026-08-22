@@ -54,6 +54,29 @@ export function BidBadge({ status }: { status: string }) {
   );
 }
 
+export const LOGIN_OUTCOME_LABELS: Record<string, string> = {
+  success: "Entró",
+  bad_password: "Clave mala",
+  captcha_fail: "Captcha",
+  locked: "Bloqueado",
+};
+
+export function LoginOutcomeBadge({ outcome }: { outcome: string }) {
+  return (
+    <span
+      className={cn(
+        "inline-flex rounded-full px-2 py-0.5 text-[11px] font-semibold",
+        outcome === "success" && "bg-live/12 text-live",
+        outcome === "bad_password" && "bg-destructive/10 text-destructive",
+        outcome === "captcha_fail" && "bg-primary/10 text-primary",
+        outcome === "locked" && "bg-flag-red/10 text-destructive",
+      )}
+    >
+      {LOGIN_OUTCOME_LABELS[outcome] ?? outcome}
+    </span>
+  );
+}
+
 export function EmptyState({ title, body }: { title: string; body: string }) {
   return (
     <div className="rounded-2xl border border-dashed border-border bg-card/60 px-6 py-12 text-center">
