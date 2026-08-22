@@ -6,7 +6,7 @@ import {
   fingerprintFromHeaders,
   getUserAgent,
 } from "@/core/security/fingerprint";
-import { isSafeHttpUrl } from "@/core/security/urls";
+import { isSafeHttpUrl, withUtmSource } from "@/core/security/urls";
 import { leaderboardConfig } from "@/experiments/leaderboard/config";
 import { createId } from "@/lib/utils";
 
@@ -28,7 +28,13 @@ export async function GET(
     if (!listing || !isSafeHttpUrl(listing.destinationUrl)) {
       return new Response("Ese perfil no ta en la tabla.", { status: 404 });
     }
-    return Response.redirect(listing.destinationUrl, 302);
+    return Response.redirect(
+      withUtmSource(
+        listing.destinationUrl,
+        leaderboardConfig.outboundUtmSource,
+      ),
+      302,
+    );
   }
 
   const db = getDb();
@@ -89,5 +95,8 @@ export async function GET(
     }
   }
 
-  return Response.redirect(listing.destinationUrl, 302);
+  return Response.redirect(
+    withUtmSource(listing.destinationUrl, leaderboardConfig.outboundUtmSource),
+    302,
+  );
 }
