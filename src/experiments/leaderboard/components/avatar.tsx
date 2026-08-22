@@ -1,13 +1,33 @@
+import {
+  InstagramIcon,
+  TikTokIcon,
+  XIcon,
+} from "@/components/icons";
 import { avatarHue, initialsFromName } from "../identity";
+import type { SocialNetwork } from "../types";
 import { cn } from "@/lib/utils";
+
+function SocialGlyph({
+  network,
+  className,
+}: {
+  network: SocialNetwork;
+  className?: string;
+}) {
+  if (network === "instagram") return <InstagramIcon className={className} />;
+  if (network === "tiktok") return <TikTokIcon className={className} />;
+  return <XIcon className={className} />;
+}
 
 export function ListingAvatar({
   name,
   imageUrl,
+  socialNetwork,
   size = "md",
 }: {
   name: string;
   imageUrl?: string | null;
+  socialNetwork?: SocialNetwork | null;
   size?: "xs" | "sm" | "md" | "lg" | "xl";
 }) {
   const dim =
@@ -20,7 +40,31 @@ export function ListingAvatar({
           : size === "xs"
             ? "size-5 text-[10px]"
             : "size-10 text-sm md:size-12 md:text-base";
+  const icon =
+    size === "xl"
+      ? "size-7"
+      : size === "lg"
+        ? "size-6"
+        : size === "sm"
+          ? "size-3.5"
+          : size === "xs"
+            ? "size-2.5"
+            : "size-5";
   const hue = avatarHue(name);
+
+  if (socialNetwork) {
+    return (
+      <div
+        className={cn(
+          dim,
+          "flex shrink-0 items-center justify-center rounded-md bg-foreground text-background",
+        )}
+        aria-hidden
+      >
+        <SocialGlyph network={socialNetwork} className={icon} />
+      </div>
+    );
+  }
 
   if (imageUrl) {
     return (

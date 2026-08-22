@@ -114,3 +114,17 @@ export function TikTokIcon({ className }: { className?: string }) {
     </svg>
   );
 }
+
+export function PencilIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
+      <path
+        d="m14.1 5.1 4.8 4.8M4 20l.8-4.4L16.3 4.1a1.7 1.7 0 0 1 2.4 0l1.2 1.2a1.7 1.7 0 0 1 0 2.4L8.4 19.2 4 20Z"
+        stroke="currentColor"
+        strokeWidth="1.75"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}

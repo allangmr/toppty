@@ -22,13 +22,29 @@ import {
   lookupIdentity,
   type CheckoutState,
 } from "../actions/create-checkout";
+import {
+  previewListingMeta,
+  type ListingPreviewMeta,
+} from "../actions/preview-listing-meta";
 import { copy } from "../copy";
 import { faviconUrlForDomain, parseIdentity } from "../identity";
 import { estimateRank } from "../ranking";
 import type { RankedListing, SocialNetwork } from "../types";
 import { useBid } from "./bid-context";
+import {
+  ListingPreview,
+  type ListingDraft,
+} from "./listing-preview";
 
 const initialState: CheckoutState | null = null;
+
+type AutoMeta = Extract<ListingPreviewMeta, { ok: true }>;
+
+type DraftOverrides = {
+  displayName?: string;
+  description?: string;
+  imageUrl?: string;
+};
 
 function SocialPreviewIcon({
   network,
@@ -76,10 +92,7 @@ function IdentityPreviewIcon({ identifier }: { identifier: string }) {
     );
   }
 
-  if (
-    preview.kind === "website" &&
-    preview.faviconUrl !== brokenFaviconUrl
-  ) {
+  if (preview.kind === "website" && preview.faviconUrl !== brokenFaviconUrl) {
     return (
       // eslint-disable-next-line @next/next/no-img-element -- remote favicons vary by host
       <img
@@ -112,8 +125,12 @@ export function BidModule({
   const [identifier, setIdentifier] = useState("");
   const [lookup, setLookup] = useState<string | null>(null);
   const [started, setStarted] = useState(false);
+  const [autoMeta, setAutoMeta] = useState<AutoMeta | null>(null);
+  const [overrides, setOverrides] = useState<DraftOverrides>({});
+  const [metaLoading, setMetaLoading] = useState(false);
   const [state, action, pending] = useActionState(createCheckout, initialState);
   const lastAmount = useRef(amountDollars);
+  const metaRequest = useRef(0);
 
   const amountCents = dollarsToCents(amountDollars);
   const takeFirstDollars = centsToDollars(takeFirstCents);
@@ -122,10 +139,56 @@ export function BidModule({
     [amountCents, listings],
   );
 
+  const parsedIdentity = useMemo(() => {
+    const trimmed = identifier.trim();
+    if (!trimmed) return null;
+    const result = parseIdentity(trimmed);
+    return result.ok ? result.identity : null;
+  }, [identifier]);
+
+  const showPreview = Boolean(identifier.trim());
+
+  const draft: ListingDraft = useMemo(() => {
+    const trimmed = identifier.trim();
+    if (!trimmed) {
+      return {
+        displayName: "",
+        description: "",
+        imageUrl: "",
+        identityType: null,
+        socialNetwork: null,
+      };
+    }
+
+    const identityType =
+      autoMeta?.identityType ?? parsedIdentity?.identifierType ?? null;
+    const socialNetwork =
+      autoMeta?.socialNetwork ?? parsedIdentity?.socialNetwork ?? null;
+    const fallbackName =
+      autoMeta?.displayName ||
+      parsedIdentity?.displayName ||
+      trimmed;
+    const fallbackImage =
+      identityType === "website"
+        ? autoMeta?.imageUrl ||
+          faviconUrlForDomain(
+            parsedIdentity?.displayName ||
+              (fallbackName.includes(".") ? fallbackName : trimmed),
+          ) ||
+          ""
+        : "";
+
+    return {
+      identityType,
+      socialNetwork,
+      displayName: overrides.displayName ?? fallbackName,
+      description: overrides.description ?? autoMeta?.description ?? "",
+      imageUrl: overrides.imageUrl ?? fallbackImage,
+    };
+  }, [identifier, autoMeta, overrides, parsedIdentity]);
+
   useEffect(() => {
     if (!state?.ok) return;
-    // PayPal (and any absolute checkout URL) must be a full browser navigation.
-    // router.push() on an external host can trip the App Router error boundary.
     const url = state.url;
     if (/^https?:\/\//i.test(url)) {
       window.location.assign(url);
@@ -143,6 +206,27 @@ export function BidModule({
     return () => window.clearTimeout(handle);
   }, [amountDollars]);
 
+  useEffect(() => {
+    const trimmed = identifier.trim();
+    if (!trimmed) return;
+
+    const requestId = ++metaRequest.current;
+    const timer = window.setTimeout(() => {
+      void (async () => {
+        try {
+          const result = await previewListingMeta(trimmed);
+          if (requestId !== metaRequest.current) return;
+          if (result.ok) setAutoMeta(result);
+          else setAutoMeta(null);
+        } finally {
+          if (requestId === metaRequest.current) setMetaLoading(false);
+        }
+      })();
+    }, 350);
+
+    return () => window.clearTimeout(timer);
+  }, [identifier]);
+
   function bump(delta: number) {
     setAmountDollars(Math.max(1, amountDollars + delta));
   }
@@ -151,6 +235,19 @@ export function BidModule({
     if (started) return;
     setStarted(true);
     trackClient("bid_form_started");
+  }
+
+  function patchDraft(next: Partial<ListingDraft>) {
+    setOverrides((prev) => ({
+      ...prev,
+      ...(next.displayName !== undefined
+        ? { displayName: next.displayName }
+        : {}),
+      ...(next.description !== undefined
+        ? { description: next.description }
+        : {}),
+      ...(next.imageUrl !== undefined ? { imageUrl: next.imageUrl } : {}),
+    }));
   }
 
   async function onIdentifierBlur() {
@@ -240,6 +337,13 @@ export function BidModule({
 
       <form action={action} className="mt-4 flex flex-col gap-3">
         <input type="hidden" name="amountDollars" value={amountDollars} />
+        <input type="hidden" name="displayName" value={draft.displayName} />
+        <input type="hidden" name="description" value={draft.description} />
+        <input
+          type="hidden"
+          name="imageUrl"
+          value={draft.identityType === "website" ? draft.imageUrl : ""}
+        />
         <div className="flex flex-col items-stretch gap-2 md:flex-row md:items-center">
           <div className="relative min-w-0 flex-1">
             <span className="pointer-events-none absolute top-1/2 left-2.5 -translate-y-1/2 text-muted-foreground">
@@ -250,7 +354,15 @@ export function BidModule({
               name="identifier"
               value={identifier}
               onFocus={markStarted}
-              onChange={(event) => setIdentifier(event.target.value)}
+              onChange={(event) => {
+                markStarted();
+                const next = event.target.value;
+                setIdentifier(next);
+                setOverrides({});
+                setAutoMeta(null);
+                if (next.trim()) setMetaLoading(true);
+                else setMetaLoading(false);
+              }}
               onBlur={() => void onIdentifierBlur()}
               placeholder={copy.identifierLabel}
               aria-label={copy.identifierLabel}
@@ -262,7 +374,7 @@ export function BidModule({
           </div>
           <button
             type="submit"
-            disabled={pending || !identifier.trim()}
+            disabled={pending || !identifier.trim() || !parsedIdentity}
             className="motion-press inline-flex h-11 w-full shrink-0 cursor-pointer items-center justify-center rounded-full bg-primary px-5 text-sm font-bold text-primary-foreground transition-colors hover:bg-primary/80 disabled:cursor-not-allowed disabled:opacity-50 md:w-auto"
           >
             {pending ? copy.openingPay : copy.submit}
@@ -272,6 +384,16 @@ export function BidModule({
         <p className="text-center text-xs font-medium tracking-wide text-muted-foreground">
           {copy.identifierPrefixes}
         </p>
+
+        {showPreview ? (
+          <ListingPreview
+            draft={draft}
+            onChange={patchDraft}
+            estimatedRank={estimated}
+            amountCents={amountCents}
+            loading={metaLoading}
+          />
+        ) : null}
 
         <p className="text-center text-xs leading-relaxed text-pretty text-muted-foreground">
           {copy.identifierHint}

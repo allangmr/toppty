@@ -75,11 +75,14 @@ export default async function ListingPage({
           <ListingAvatar
             name={listing.displayName}
             imageUrl={
-              listing.imageUrl ||
-              (listing.identifierType === "website"
-                ? faviconUrlForDomain(listing.displayName)
-                : null)
+              listing.socialNetwork
+                ? null
+                : listing.imageUrl ||
+                  (listing.identifierType === "website"
+                    ? faviconUrlForDomain(listing.displayName)
+                    : null)
             }
+            socialNetwork={listing.socialNetwork}
             size="lg"
           />
           <div>
