@@ -47,6 +47,8 @@ export function CheckoutSuccessClient() {
 
   const paid = status?.status === "paid";
   const failed = status?.status === "failed";
+  // Cache-busting query forces a full document load past soft router cache.
+  const boardHref = `/?paid=${bidId ?? "ok"}#ranking`;
 
   return (
     <>
@@ -71,12 +73,12 @@ export function CheckoutSuccessClient() {
             ) : (
               <p className="text-muted-foreground">A ver cuánto duras ahí.</p>
             )}
-            <Link
-              href="/#ranking"
+            <a
+              href={boardHref}
               className="mt-4 inline-flex h-11 w-fit items-center justify-center rounded-full bg-primary px-5 text-sm font-bold text-primary-foreground transition-colors hover:bg-primary/80"
             >
               Ver la tabla
-            </Link>
+            </a>
           </>
         ) : failed ? (
           <>

@@ -29,17 +29,28 @@ export function HomeClient({
   const [data, setData] = useState(initial);
 
   useEffect(() => {
-    const timer = window.setInterval(async () => {
+    let cancelled = false;
+
+    async function refresh() {
       try {
         const response = await fetch("/api/live", { cache: "no-store" });
-        if (!response.ok) return;
+        if (!response.ok || cancelled) return;
         const next = (await response.json()) as HomeSnapshot;
         setData(next);
       } catch {
         // Keep last snapshot if polling fails.
       }
+    }
+
+    // Pull fresh ranks immediately (success → board used to show stale ISR).
+    void refresh();
+    const timer = window.setInterval(() => {
+      void refresh();
     }, 8000);
-    return () => window.clearInterval(timer);
+    return () => {
+      cancelled = true;
+      window.clearInterval(timer);
+    };
   }, []);
 
   return (
