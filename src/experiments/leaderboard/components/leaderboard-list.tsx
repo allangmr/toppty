@@ -1,6 +1,12 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import {
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@/components/icons";
 import { copy } from "../copy";
 import { leaderboardConfig } from "../config";
@@ -46,6 +52,56 @@ function Marker({ label }: { label: string }) {
   );
 }
 
+/** Equal-height wrapper for the top-3 podium (Outbid-style). */
+function EqualHeightRows({
+  children,
+  syncKey,
+}: {
+  children: ReactNode;
+  syncKey: string;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    const root = ref.current;
+    if (!root) return;
+
+    let scheduled = false;
+    function sync() {
+      if (scheduled || !root) return;
+      scheduled = true;
+      requestAnimationFrame(() => {
+        scheduled = false;
+        if (!root) return;
+        const rows = Array.from(root.children).filter(
+          (node): node is HTMLElement => node instanceof HTMLElement,
+        );
+        for (const row of rows) row.style.minHeight = "0px";
+        const max = Math.max(
+          0,
+          ...rows.map((row) => row.getBoundingClientRect().height),
+        );
+        for (const row of rows) {
+          row.style.minHeight = max > 0 ? `${max}px` : "";
+        }
+      });
+    }
+
+    const observer = new ResizeObserver(() => sync());
+    observer.observe(root);
+    for (const child of root.children) observer.observe(child);
+    sync();
+    return () => {
+      observer.disconnect();
+      for (const child of Array.from(root.children)) {
+        if (child instanceof HTMLElement) child.style.minHeight = "";
+      }
+    };
+  }, [syncKey]);
+
+  return <div ref={ref}>{children}</div>;
+}
+
 export function LeaderboardList({
   listings,
   nowMs,
@@ -63,6 +119,12 @@ export function LeaderboardList({
     return listings.slice(start, start + PAGE_SIZE);
   }, [listings, currentPage]);
 
+  const firstRank = visible[0]?.rank ?? 0;
+  const splitTopThree =
+    currentPage === 1 && firstRank === 1 && visible.length > 1;
+  const podium = splitTopThree ? visible.slice(0, 3) : [];
+  const rest = splitTopThree ? visible.slice(3) : visible;
+
   function goTo(next: number) {
     const clamped = Math.min(totalPages, Math.max(1, next));
     setPage(clamped);
@@ -70,6 +132,16 @@ export function LeaderboardList({
       behavior: "smooth",
       block: "start",
     });
+  }
+
+  function renderCard(listing: RankedListing) {
+    return (
+      <ListingCard
+        listing={listing}
+        listings={listings}
+        nowMs={nowMs}
+      />
+    );
   }
 
   if (listings.length === 0) {
@@ -90,12 +162,21 @@ export function LeaderboardList({
 
   return (
     <div id="leaderboard" className="scroll-mt-6">
-      {visible.map((listing) => (
+      {podium.length > 0 ? (
+        <EqualHeightRows syncKey={podium.map((item) => item.id).join("|")}>
+          {podium.map((listing) => (
+            <div key={listing.id} className="h-full">
+              {renderCard(listing)}
+            </div>
+          ))}
+        </EqualHeightRows>
+      ) : null}
+
+      {podium.length > 0 && rest.length > 0 ? <Marker label="Top 3" /> : null}
+
+      {rest.map((listing) => (
         <div key={listing.id}>
-          <ListingCard listing={listing} listings={listings} nowMs={nowMs} />
-          {listing.rank === 3 && listings.length > 3 ? (
-            <Marker label="Top 3" />
-          ) : null}
+          {renderCard(listing)}
           {listing.rank === 10 && listings.length > 10 ? (
             <Marker label="Top 10" />
           ) : null}

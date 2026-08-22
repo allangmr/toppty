@@ -14,8 +14,9 @@ export function ActivityFeed({
   nowMs: number;
 }) {
   const [expanded, setExpanded] = useState(false);
+  const visible = items.slice(0, 5);
 
-  if (items.length === 0) return null;
+  if (visible.length === 0) return null;
 
   return (
     <section className="flex h-full flex-col rounded-2xl bg-card px-4 pt-3.5 pb-1 shadow-[var(--shadow-soft)] md:px-5 md:pt-4">
@@ -37,7 +38,7 @@ export function ActivityFeed({
           }
         >
           <ul className="flex flex-1 flex-col">
-            {items.map((item, index) => {
+            {visible.map((item, index) => {
               const name = item.listingDisplayName ?? "Alguien";
               const rankLabel = item.newRank ? `#${item.newRank}` : null;
               const amountLabel = item.amountCents
@@ -74,7 +75,7 @@ export function ActivityFeed({
             })}
           </ul>
         </div>
-        {!expanded ? (
+        {visible.length > 1 && !expanded ? (
           <div className="pointer-events-none absolute inset-x-0 bottom-0 flex h-11 items-end justify-center pb-1 md:hidden">
             <div className="absolute inset-0 bg-gradient-to-t from-card from-20% via-card/80 to-transparent" />
             <button
@@ -85,7 +86,8 @@ export function ActivityFeed({
               {copy.showMore}
             </button>
           </div>
-        ) : (
+        ) : null}
+        {visible.length > 1 && expanded ? (
           <div className="flex justify-center py-2 md:hidden">
             <button
               type="button"
@@ -95,7 +97,7 @@ export function ActivityFeed({
               {copy.showLess}
             </button>
           </div>
-        )}
+        ) : null}
       </div>
     </section>
   );

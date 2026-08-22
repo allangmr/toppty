@@ -3,6 +3,7 @@
 import { trackClient } from "@/components/track-client";
 import { formatUsd, timeAgoEs, cn } from "@/lib/utils";
 import { copy } from "../copy";
+import { faviconUrlForDomain } from "../identity";
 import { amountToTakeRank } from "../ranking";
 import type { RankedListing } from "../types";
 import { ListingAvatar } from "./avatar";
@@ -91,7 +92,13 @@ export function ListingCard({
           </span>
           <ListingAvatar
             name={listing.displayName}
-            imageUrl={listing.imageUrl}
+            imageUrl={
+              listing.imageUrl ||
+              (listing.identifierType === "website"
+                ? faviconUrlForDomain(listing.displayName)
+                : null)
+            }
+            socialNetwork={listing.socialNetwork}
             size={avatarSize}
           />
         </div>
@@ -194,7 +201,13 @@ export function ListingCard({
         {copy.takePlace(listing.rank, formatUsd(takeCents))}
       </button>
 
-      <div className="absolute top-2 right-2 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
+      <div
+        className={cn(
+          "absolute right-2 z-20 transition-opacity duration-150",
+          "pointer-events-none opacity-0 group-hover:pointer-events-auto group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:opacity-100",
+          isTopThree ? "top-0 -translate-y-1/2" : "top-1.5",
+        )}
+      >
         <ReportButton listingId={listing.id} />
       </div>
     </div>
