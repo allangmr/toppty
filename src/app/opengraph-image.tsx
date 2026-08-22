@@ -42,7 +42,7 @@ export default async function Image() {
           letterSpacing: -2,
         }}
       >
-        Coge el #1
+        Conquista el #1
         <span style={{ color: "#0b4fa8" }}>en Panamá.</span>
       </div>
       <div style={{ fontSize: 26, color: "#5b6578" }}>

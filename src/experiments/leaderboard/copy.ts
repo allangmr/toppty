@@ -8,13 +8,13 @@ export const copy = {
   title: "TopPTY.lol — ¿Quién ta arriba en Panamá?",
   description:
     "La tabla de PTY. Pagas, te subes y que te tumben si pueden. Sin estafas: el que pone más, manda.",
-  hero: "Coge el #1 por",
+  hero: "Conquista el #1 por",
   punch: [
     "Coge tu puesto.",
     "Súbete en la tabla.",
     "Que te tumben si pueden.",
   ],
-  takeNumberOne: "Coge el #1 por",
+  takeNumberOne: "Conquista el #1 por",
   identifierLabel: "@X · #IG · $TikTok o tu link",
   identifierPrefixes: "@ X · # Instagram · $ TikTok",
   identifierHint:
@@ -47,8 +47,8 @@ export const copy = {
   tryAgain: "Inténtalo de una",
   openingPay: "Abriendo el pago…",
   takePlace: (rank: number, amount: string) =>
-    `coge este puesto por ${amount}`,
-  takeThisPlace: (amount: string) => `coge este puesto por ${amount}`,
+    `Conquista este puesto por ${amount}`,
+  takeThisPlace: (amount: string) => `Conquista este puesto por ${amount}`,
   newNumberOne: "Nuevo #1 en PTY",
   reported: "Listo. Lo vemos.",
   paymentsFinal:
