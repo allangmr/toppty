@@ -5,7 +5,7 @@ import { TrackPageView } from "@/components/track-page-view";
 import { copy } from "@/experiments/leaderboard/copy";
 import { leaderboardConfig } from "@/experiments/leaderboard/config";
 import { getAppUrl } from "@/lib/utils";
-import "flag-icons/css/flag-icons.min.css";
+import "@/styles/flag-pa.css";
 import "./globals.css";
 
 const dmSans = DM_Sans({
