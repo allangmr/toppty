@@ -212,7 +212,7 @@ export function ReportButton({ listingId }: { listingId: string }) {
           event.stopPropagation();
           setOpen(true);
         }}
-        className="text-xs text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
+        className="rounded-full bg-foreground px-2.5 py-0.5 text-xs font-bold whitespace-nowrap text-background shadow-sm transition-colors hover:bg-foreground/85"
       >
         Reportar
       </button>
