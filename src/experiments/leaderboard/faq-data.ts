@@ -3,30 +3,30 @@ import { copy } from "./copy";
 export const FAQ_ITEMS = [
   {
     q: "¿Qué es TopPTY?",
-    a: "Un ranking público de Panamá. Pagas, subes, y el que pone más se queda más arriba. Así de directo.",
+    a: "La tabla pública de Panamá. Pagas, te subes, y el que pone más se queda más arriba. Así de directo, sin estafas.",
   },
   {
-    q: "¿Cómo funciona el ranking?",
-    a: "El monto pagado manda. Más plata, más alto. Si dos personas ponen lo mismo, se queda arriba quien pagó primero.",
+    q: "¿Cómo ta la vaina?",
+    a: "La plata manda. Más monto, más alto. Si dos ponen lo mismo, se queda arriba el que pagó primero.",
   },
   {
     q: "¿Tengo que pagar por el #1?",
-    a: "No. Pon el monto que quieras desde $1 y caes en el puesto que ese monto alcance.",
+    a: "No. Desde $1 caes en el puesto que te alcance. El #1 es pa' el que ponga más.",
   },
   {
-    q: "¿Qué pasa si alguien me supera?",
-    a: "Te tumbaron. Sigues en el ranking, más abajo. Puedes volver a pagar para subir.",
+    q: "¿Qué pasa si alguien me tumba?",
+    a: "Te tumbaron. Sigues en la tabla, más abajo. Puedes volver a pagar y subir de una.",
   },
   {
-    q: "¿Puedo subir mi apuesta?",
-    a: "Puedes subir tu monto. Cada pago nuevo se suma al total de tu puesto. Usa el mismo link o @usuario.",
+    q: "¿Puedo subirle al monto?",
+    a: "Sí. Cada pago nuevo se suma a tu puesto. Usa el mismo link o @usuario.",
   },
   {
-    q: "¿Me devuelven el dinero?",
+    q: "¿Me devuelven la plata?",
     a: copy.paymentsFinal,
   },
   {
-    q: "¿Qué puedo poner en el ranking?",
+    q: "¿Qué puedo poner en la tabla?",
     a: "Un @ de Instagram, TikTok o X, una web, un negocio, un proyecto, un perfil. Nada ilegal, nada de estafas, nada de porno, nada de odio.",
   },
 ] as const;

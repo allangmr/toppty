@@ -63,7 +63,7 @@ export default async function Image({
           lol
         </div>
         <div style={{ color: isTakeover ? "#e57255" : "#67625d" }}>
-          {isTakeover ? "Nuevo #1 en Panamá" : "Movimiento"}
+          {isTakeover ? "Nuevo #1 en PTY" : "Lo que se movió"}
         </div>
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>

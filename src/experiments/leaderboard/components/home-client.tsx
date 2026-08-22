@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { useEffect, useState, type ReactNode } from "react";
+import { copy } from "../copy";
 import type { HomeSnapshot } from "../types";
 import { ActivityFeed } from "./activity-feed";
 import { BidModule } from "./bid-module";
@@ -76,7 +77,7 @@ export function HomeClient({
           aria-labelledby="ranking-heading"
         >
           <h2 id="ranking-heading" className="sr-only">
-            Ranking
+            {copy.ranking}
           </h2>
           <LeaderboardList
             listings={data.listings}

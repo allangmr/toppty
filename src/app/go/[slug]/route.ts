@@ -19,14 +19,14 @@ export async function GET(
   const { slug } = await context.params;
   if (!process.env.DATABASE_URL) {
     if (process.env.NODE_ENV === "production") {
-      return new Response("No está en el ranking.", { status: 404 });
+      return new Response("Ese perfil no ta en la tabla.", { status: 404 });
     }
     const { mockSnapshot } = await import(
       "@/experiments/leaderboard/queries/mock-snapshot"
     );
     const listing = mockSnapshot().listings.find((item) => item.slug === slug);
     if (!listing || !isSafeHttpUrl(listing.destinationUrl)) {
-      return new Response("No está en el ranking.", { status: 404 });
+      return new Response("Ese perfil no ta en la tabla.", { status: 404 });
     }
     return Response.redirect(listing.destinationUrl, 302);
   }
@@ -43,7 +43,7 @@ export async function GET(
     listing.moderationStatus !== "active" ||
     listing.totalBidCents <= 0
   ) {
-    return new Response("No está en el ranking.", { status: 404 });
+    return new Response("Ese perfil no ta en la tabla.", { status: 404 });
   }
 
   if (!isSafeHttpUrl(listing.destinationUrl)) {

@@ -99,21 +99,21 @@ function activityMessage(input: {
 }): string {
   const money = input.amountCents ? formatUsd(input.amountCents) : "";
   const when = timeAgoEs(input.createdAt);
-  const rank = input.newRank ? `#${input.newRank}` : "el ranking";
+  const rank = input.newRank ? `#${input.newRank}` : "la tabla";
 
   if (input.type === "NEW_NUMBER_ONE") {
     if (input.previousName) {
-      return `${input.name} le quitó el #1 a ${input.previousName} · ${money} · ${when}`;
+      return `${input.name} le tumbó el #1 a ${input.previousName} · ${money} · ${when}`;
     }
-    return `👑 ${input.name} tomó el #1 · ${money} · ${when}`;
+    return `👑 ${input.name} se cogió el #1 · ${money} · ${when}`;
   }
   if (input.type === "LISTING_CREATED") {
-    return `${input.name} entró al ${rank} · ${money} · ${when}`;
+    return `${input.name} se metió en el ${rank} · ${money} · ${when}`;
   }
   if (input.previousRank && input.newRank && input.previousRank !== input.newRank) {
     return `${input.name} subió al ${rank} · ${money} · ${when}`;
   }
-  return `${input.name} subió su monto · ${money} · ${when}`;
+  return `${input.name} le subió al monto · ${money} · ${when}`;
 }
 
 export async function getRecentActivity(

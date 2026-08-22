@@ -115,7 +115,7 @@ const seedListings = [
       identifierType: "website" as const,
       socialNetwork: null,
       destinationUrl: `https://spot${rank}.pa/`,
-      description: rank <= 20 ? `Puesto #${rank} en el ranking de PTY.` : null,
+      description: rank <= 20 ? `Puesto #${rank} en la tabla de PTY.` : null,
       totalBidCents: Math.max(100, 450 - index * 8),
       clickCount: Math.max(1, 40 - index),
       minutes: 20 + index * 7,

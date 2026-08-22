@@ -1,6 +1,6 @@
 import { OgShell, ogSize, renderOg } from "@/core/social/og";
 
-export const alt = "TopPTY.lol — ¿Quién está arriba en Panamá?";
+export const alt = "TopPTY.lol — ¿Quién ta arriba en Panamá?";
 export const size = ogSize;
 export const contentType = "image/png";
 export const runtime = "nodejs";
@@ -42,11 +42,11 @@ export default async function Image() {
           letterSpacing: -2,
         }}
       >
-        Reclama el #1
+        Coge el #1
         <span style={{ color: "#0b4fa8" }}>en Panamá.</span>
       </div>
       <div style={{ fontSize: 26, color: "#5b6578" }}>
-        Paga. Sube. Que te tumben si pueden.
+        Paga. Súbete. Que te tumben si pueden.
       </div>
     </OgShell>,
   );

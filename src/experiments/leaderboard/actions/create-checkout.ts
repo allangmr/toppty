@@ -66,7 +66,7 @@ export async function createCheckout(
     return { ok: false, error: "El monto mínimo es $1." };
   }
   if (amountCents > leaderboardConfig.maxBidCents) {
-    return { ok: false, error: "Ese monto está demasiado alto." };
+    return { ok: false, error: "Ese monto ta muy alto." };
   }
 
   const headerList = await headers();
@@ -101,7 +101,7 @@ export async function createCheckout(
     .limit(1);
 
   if (existing?.moderationStatus === "removed") {
-    return { ok: false, error: "Ese perfil no está disponible." };
+    return { ok: false, error: "Ese perfil no ta disponible." };
   }
 
   let listingId = existing?.id;
@@ -167,7 +167,7 @@ export async function createCheckout(
   }
 
   if (!paypalEnabled()) {
-    return { ok: false, error: "PayPal no está configurado todavía." };
+    return { ok: false, error: "PayPal no ta configurado todavía." };
   }
 
   try {

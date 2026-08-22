@@ -107,7 +107,7 @@ export function LeaderboardList({
 
       {totalPages > 1 ? (
         <nav
-          aria-label="Paginación del ranking"
+          aria-label="Paginación de la tabla"
           className="mt-6 flex flex-col items-center gap-3 sm:flex-row sm:justify-between"
         >
           <p className="text-sm text-muted-foreground">

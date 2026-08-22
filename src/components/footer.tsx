@@ -1,5 +1,7 @@
 import { BrandMark } from "@/components/brand-mark";
+import { CreatorLink } from "@/components/creator-link";
 import { copy } from "@/experiments/leaderboard/copy";
+import { leaderboardConfig } from "@/experiments/leaderboard/config";
 
 export function Footer() {
   return (
@@ -9,8 +11,23 @@ export function Footer() {
           <BrandMark className="h-4" />
           toppty<span className="text-flag-red">.</span>lol
         </p>
-        <p>Hecho en Panamá {copy.flag}. El ranking manda.</p>
+        <p>
+          Hecho en PTY {copy.flag} por <CreatorLink />. Aquí manda el que ponga
+          más.
+        </p>
         <p className="text-xs leading-relaxed">{copy.paymentsFinal}</p>
+        <p className="text-xs">
+          Si hay un lío, chatéame a{" "}
+          <a
+            href={leaderboardConfig.creator.xUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-semibold text-foreground underline-offset-2 hover:underline"
+          >
+            @{leaderboardConfig.creator.xHandle}
+          </a>
+          .
+        </p>
         <p>
           <a
             href="/admin"

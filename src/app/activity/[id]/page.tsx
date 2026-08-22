@@ -62,7 +62,7 @@ export async function generateMetadata({
   const title =
     row.activity.type === "NEW_NUMBER_ONE"
       ? `NUEVO #1 EN PANAMÁ — ${name}`
-      : `${name} se movió en TopPTY`;
+      : `${name} se movió en la tabla`;
   return {
     title,
     description: copyFrom(row),
@@ -90,9 +90,9 @@ function copyFrom(row: NonNullable<Awaited<ReturnType<typeof getActivity>>>) {
     return `${name} acaba de tumbar a ${prev}.`;
   }
   if (row.activity.amountCents) {
-    return `${name} está en el ranking con ${formatUsd(row.activity.amountCents)}.`;
+    return `${name} ta en la tabla con ${formatUsd(row.activity.amountCents)}.`;
   }
-  return `${name} se movió en el ranking.`;
+  return `${name} se movió en la tabla.`;
 }
 
 export default async function ActivityPage({
@@ -127,7 +127,7 @@ export default async function ActivityPage({
       >
         {row.activity.type === "NEW_NUMBER_ONE" ? (
           <p className="text-sm font-semibold tracking-wide text-primary uppercase">
-            Nuevo #1 en Panamá
+            Nuevo #1 en PTY
           </p>
         ) : (
           <p className="text-sm font-semibold tracking-wide text-muted-foreground uppercase">
@@ -156,7 +156,7 @@ export default async function ActivityPage({
           href="/#ranking"
           className="mt-4 inline-flex h-11 w-fit items-center justify-center rounded-full bg-primary px-5 text-sm font-bold text-primary-foreground transition-colors hover:bg-primary/80"
         >
-          Ver el ranking
+          Ver la tabla
         </Link>
       </main>
       <Footer />

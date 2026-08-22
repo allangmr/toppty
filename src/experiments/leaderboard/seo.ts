@@ -30,13 +30,13 @@ export function homeJsonLd(snapshot: HomeSnapshot) {
         inLanguage: "es-PA",
         about: {
           "@type": "Thing",
-          name: "Ranking público de Panamá",
+          name: "La tabla pública de Panamá",
         },
       },
       {
         "@type": "ItemList",
         "@id": `${base}/#ranking`,
-        name: "Ranking TopPTY",
+        name: "La tabla TopPTY",
         numberOfItems: snapshot.listings.length,
         itemListOrder: "https://schema.org/ItemListOrderAscending",
         itemListElement: top.map((listing) => ({
@@ -70,7 +70,7 @@ export function listingJsonLd(listing: RankedListing) {
     "@id": `${base}/p/${listing.slug}#profile`,
     url: `${base}/p/${listing.slug}`,
     name: `${listing.displayName} es #${listing.rank} en TopPTY`,
-    description: `${listing.displayName} está #${listing.rank} con ${formatUsd(listing.totalBidCents)}.`,
+    description: `${listing.displayName} ta #${listing.rank} con ${formatUsd(listing.totalBidCents)}.`,
     inLanguage: "es-PA",
     isPartOf: { "@id": `${base}/#website` },
     mainEntity: {

@@ -16,7 +16,7 @@ export function shareText(input: {
   url: string;
 }) {
   if (input.rank === 1) {
-    return `Estoy #1 en TopPTY 👑🇵🇦\n\nA ver cuánto duro arriba.\n\n${input.url}`;
+    return `Toy #1 en TopPTY 👑🇵🇦\n\nA ver cuánto duro arriba.\n\n${input.url}`;
   }
-  return `${input.displayName} está #${input.rank} en TopPTY 🇵🇦\n\n${input.url}`;
+  return `${input.displayName} ta #${input.rank} en TopPTY 🇵🇦\n\n${input.url}`;
 }
