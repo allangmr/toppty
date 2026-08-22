@@ -3,6 +3,7 @@
 import {
   useActionState,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -188,7 +189,9 @@ export function BidModule({
     };
   }, [identifier, autoMeta, overrides, parsedIdentity]);
 
-  draftRef.current = draft;
+  useLayoutEffect(() => {
+    draftRef.current = draft;
+  }, [draft]);
 
   useEffect(() => {
     if (!state?.ok) return;
@@ -283,9 +286,9 @@ export function BidModule({
 
   return (
     <section id="subir" className="scroll-mt-6">
-      <h1 className="flex flex-wrap items-center justify-center gap-x-2 text-center text-[28px] font-bold tracking-[-0.03em] md:text-[40px]">
-        {claim}
-        <span className="inline-flex items-center gap-2">
+      <h1 className="font-display flex flex-wrap items-center justify-center gap-x-2 text-center text-[30px] font-extrabold tracking-[-0.05em] md:text-[46px]">
+        <span key="claim">{claim}</span>
+        <span key="amount" className="inline-flex items-center gap-2">
           <button
             type="button"
             onClick={() => {
@@ -297,7 +300,7 @@ export function BidModule({
           >
             −
           </button>
-          <label className="relative inline-block text-primary">
+          <label className="display-num relative inline-block text-primary">
             <span className="sr-only">Monto en dólares</span>
             <span className="invisible whitespace-nowrap tabular-nums" aria-hidden>
               ${amountDollars}
@@ -363,8 +366,8 @@ export function BidModule({
         <input type="hidden" name="displayName" value={draft.displayName} />
         <input type="hidden" name="description" value={draft.description} />
         <input type="hidden" name="imageUrl" value={draft.imageUrl} />
-        <div className="relative min-w-0">
-          <span className="pointer-events-none absolute top-1/2 left-2.5 -translate-y-1/2 text-muted-foreground">
+        <div className="glass-card relative min-w-0 rounded-[22px] px-1.5">
+          <span className="pointer-events-none absolute top-1/2 left-3.5 -translate-y-1/2 text-muted-foreground">
             <IdentityPreviewIcon identifier={identifier} />
           </span>
           <input
@@ -387,7 +390,7 @@ export function BidModule({
             autoComplete="off"
             spellCheck={false}
             required
-            className="h-11 w-full min-w-0 rounded-xl border border-input bg-transparent py-1 pr-3 pl-10 text-base outline-none transition-colors placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+            className="h-11 w-full min-w-0 rounded-full bg-transparent py-1 pr-3 pl-11 text-base outline-none transition-shadow placeholder:text-muted-foreground focus-visible:ring-3 focus-visible:ring-ring/40"
           />
         </div>
 
@@ -408,7 +411,7 @@ export function BidModule({
         <button
           type="submit"
           disabled={pending || !identifier.trim() || !parsedIdentity}
-          className="motion-press inline-flex h-11 w-full cursor-pointer items-center justify-center rounded-full bg-primary px-5 text-sm font-bold text-primary-foreground transition-colors hover:bg-primary/80 disabled:cursor-not-allowed disabled:opacity-50"
+          className="btn-glossy h-11 w-full cursor-pointer px-6 text-sm tracking-[-0.01em]"
         >
           {pending ? copy.openingPay : copy.submit}
         </button>

@@ -10,12 +10,14 @@ export function Trending({ items }: { items: TrendingListing[] }) {
   const visible = items.slice(0, 5);
 
   return (
-    <section className="flex h-full flex-col rounded-2xl bg-card px-4 pt-3.5 pb-1 shadow-[var(--shadow-soft)] md:px-5 md:pt-4">
-      <h2 className="mb-1 text-sm font-semibold tracking-[-0.02em]">
+    <section className="glass-card flex h-full flex-col rounded-[20px] px-4 pt-3.5 pb-1 md:px-5 md:pt-4">
+      <h2 className="font-display mb-1 text-sm font-bold tracking-[-0.02em]">
         🔥 {copy.trending}
       </h2>
       {visible.length === 0 ? (
-        <p className="pb-3 text-xs text-muted-foreground">{copy.trendingEmpty}</p>
+        <p className="pb-3 text-xs text-muted-foreground">
+          {copy.trendingEmpty}
+        </p>
       ) : (
         <div className="relative flex min-h-0 flex-1 flex-col">
           <div
@@ -27,10 +29,10 @@ export function Trending({ items }: { items: TrendingListing[] }) {
           >
             <ul className="flex flex-1 flex-col">
               {visible.map((item, index) => (
-                <li
-                  key={item.slug}
-                  className={index === 0 ? undefined : "border-t border-border"}
-                >
+                <li key={item.slug}>
+                  {index === 0 ? null : (
+                    <div className="hairline" aria-hidden />
+                  )}
                   <a
                     href={`#ranking`}
                     className="flex items-center gap-2 py-1.5 text-xs transition-colors hover:text-primary"

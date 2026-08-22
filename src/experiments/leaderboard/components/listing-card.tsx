@@ -34,11 +34,11 @@ export function ListingCard({
   const isRest = rank >= 4;
 
   const shell = isFirst
-    ? "animate-crown my-2 rounded-2xl border-2 border-flag-red/55 bg-flag-red/12 px-3 py-1 shadow-[var(--shadow-soft)] md:my-3 md:px-4"
+    ? "animate-crown glass-card my-2 rounded-[24px] border-2 border-flag-red/55 px-3 py-1 md:my-3 md:px-4"
     : isSecond
-      ? "animate-podium animate-podium-2 my-1.5 rounded-xl border-2 border-primary/45 bg-primary/10 px-2.5 md:my-2.5 md:rounded-2xl md:px-3.5"
+      ? "animate-podium animate-podium-2 glass-card my-1.5 rounded-[20px] border-2 border-primary/45 px-2.5 md:my-2.5 md:rounded-[22px] md:px-3.5"
       : isThird
-        ? "animate-podium animate-podium-3 mt-1.5 mb-0.5 rounded-xl border-2 border-primary/20 bg-primary/5 px-2.5 md:mt-2 md:mb-1 md:rounded-2xl md:px-3.5"
+        ? "animate-podium animate-podium-3 glass-card mt-1.5 mb-0.5 rounded-[20px] border-2 border-primary/20 px-2.5 md:mt-2 md:mb-1 md:rounded-[22px] md:px-3.5"
         : cn(
             "px-3 md:px-4",
             rank !== 4 && rank !== 11 && rank !== 21
@@ -120,13 +120,14 @@ export function ListingCard({
             </p>
             <p
               className={cn(
-                "shrink-0 font-semibold tabular-nums text-primary",
+                "shrink-0 tabular-nums text-primary",
+                isTopThree ? "display-num" : "font-semibold",
                 isFirst
-                  ? "text-base md:text-xl"
+                  ? "text-lg md:text-2xl"
                   : isSecond
-                    ? "text-sm md:text-lg"
+                    ? "text-base md:text-xl"
                     : isThird
-                      ? "text-sm md:text-base"
+                      ? "text-sm md:text-lg"
                       : "text-xs md:text-sm",
               )}
             >
@@ -192,8 +193,8 @@ export function ListingCard({
           takePlace(takeCents);
         }}
         className={cn(
-          "absolute left-1/2 z-20 -translate-x-1/2 rounded-full px-2.5 py-0.5 text-xs font-bold whitespace-nowrap text-primary-foreground shadow-sm transition-opacity duration-150",
-          isFirst ? "bg-flag-red" : "bg-primary",
+          "absolute left-1/2 z-20 -translate-x-1/2 px-3 py-1 text-xs whitespace-nowrap",
+          isFirst ? "btn-glossy-red" : "btn-glossy",
           "pointer-events-none opacity-0 group-hover:pointer-events-auto group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:opacity-100 focus-visible:pointer-events-auto focus-visible:opacity-100",
           isTopThree ? "top-0 -translate-y-1/2" : "top-1.5",
         )}
