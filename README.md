@@ -85,7 +85,9 @@ The ranking only updates after PayPal confirms a **completed capture**. The retu
 
 ## Admin
 
-Visit `/admin` and sign in with `ADMIN_PASSWORD`. Hide or remove listings, inspect payments and reports.
+`/admin` is internal-only (no public link). Sign in with `ADMIN_PASSWORD`.
+
+Login requires **hCaptcha** in production and locks the fingerprint for 30 minutes after **3 failed attempts**.
 
 ## Env
 
@@ -101,9 +103,12 @@ See `.env.example`.
 | `PAYPAL_ENV` | `sandbox` or `live` |
 | `ADMIN_PASSWORD` | Admin gate |
 | `IP_HASH_SALT` | Hash clicks without storing raw IPs |
+| `NEXT_PUBLIC_HCAPTCHA_SITEKEY` | hCaptcha site key (admin login) |
+| `HCAPTCHA_SECRET` | hCaptcha secret (admin login) |
 
 ## Production notes
 
 - Do not run `db:seed` in production.
 - Empty leaderboard is intentional at launch: the #1 is $1 until someone takes it.
 - Payments are final except where the law requires otherwise. This is placement in a ranking, not an investment and not gambling.
+- After deploying admin lockout, run `npm run db:push` so `admin_login_attempts` exists.

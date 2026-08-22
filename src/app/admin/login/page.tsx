@@ -1,4 +1,4 @@
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import {
   ADMIN_COOKIE,
@@ -6,13 +6,50 @@ import {
   passwordsMatch,
   signAdminCookie,
 } from "@/core/admin/auth";
+import { hcaptchaRequired, verifyHCaptchaToken } from "@/core/admin/hcaptcha";
+import {
+  clearAdminLoginFailures,
+  getAdminLockStatus,
+  registerAdminLoginFailure,
+} from "@/core/admin/lockout";
+import { fingerprintFromHeaders } from "@/core/security/fingerprint";
+import { AdminLoginForm } from "./login-form";
+
+export const dynamic = "force-dynamic";
 
 async function login(formData: FormData) {
   "use server";
+
+  const headerList = await headers();
+  const fingerprint = fingerprintFromHeaders(headerList);
+  const lock = await getAdminLockStatus(fingerprint);
+  if (lock.locked) {
+    redirect("/admin/login?error=locked");
+  }
+
+  const captchaToken = String(
+    formData.get("h-captcha-response") ||
+      formData.get("g-recaptcha-response") ||
+      "",
+  );
+  const captchaOk = await verifyHCaptchaToken(captchaToken || null);
+  if (!captchaOk) {
+    const result = await registerAdminLoginFailure(fingerprint);
+    redirect(
+      result.locked ? "/admin/login?error=locked" : "/admin/login?error=captcha",
+    );
+  }
+
   const password = String(formData.get("password") || "");
   if (!passwordsMatch(password)) {
-    redirect("/admin/login?error=1");
+    const result = await registerAdminLoginFailure(fingerprint);
+    redirect(
+      result.locked ? "/admin/login?error=locked" : "/admin/login?error=1",
+    );
   }
+
+  await clearAdminLoginFailures(fingerprint);
+
   const store = await cookies();
   store.set(ADMIN_COOKIE, await signAdminCookie(), {
     httpOnly: true,
@@ -30,6 +67,19 @@ export default async function AdminLoginPage({
   searchParams: Promise<{ error?: string }>;
 }) {
   const { error } = await searchParams;
+  const headerList = await headers();
+  const fingerprint = fingerprintFromHeaders(headerList);
+  const lock = await getAdminLockStatus(fingerprint);
+  const siteKey = process.env.NEXT_PUBLIC_HCAPTCHA_SITEKEY || null;
+  const requireCaptcha = hcaptchaRequired();
+  const lockedUntilLabel =
+    lock.locked && lock.lockedUntil
+      ? lock.lockedUntil.toLocaleString("es-PA", {
+          hour: "2-digit",
+          minute: "2-digit",
+        })
+      : null;
+
   return (
     <main
       id="contenido"
@@ -38,26 +88,17 @@ export default async function AdminLoginPage({
       <h1 className="text-4xl font-bold tracking-[-0.04em]">Admin</h1>
       {!adminConfigured() ? (
         <p className="mt-4 text-muted-foreground">
-          ADMIN_PASSWORD no está configurado.
+          ADMIN_PASSWORD no ta configurado.
         </p>
       ) : (
-        <form action={login} className="mt-6 space-y-3">
-          <input
-            type="password"
-            name="password"
-            placeholder="Clave"
-            className="h-11 w-full rounded-xl border border-input bg-transparent px-3 outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
-          />
-          {error ? (
-            <p className="text-sm text-destructive">Clave incorrecta.</p>
-          ) : null}
-          <button
-            type="submit"
-            className="inline-flex h-11 w-full items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground transition-colors hover:bg-primary/80"
-          >
-            Entrar
-          </button>
-        </form>
+        <AdminLoginForm
+          action={login}
+          siteKey={siteKey}
+          requireCaptcha={requireCaptcha}
+          error={error}
+          locked={lock.locked || error === "locked"}
+          lockedUntilLabel={lockedUntilLabel}
+        />
       )}
     </main>
   );

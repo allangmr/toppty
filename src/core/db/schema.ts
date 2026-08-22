@@ -171,6 +171,22 @@ export const reports = pgTable(
   (table) => [index("reports_listing_idx").on(table.listingId)],
 );
 
+export const adminLoginAttempts = pgTable(
+  "admin_login_attempts",
+  {
+    id: text("id").primaryKey(),
+    fingerprintHash: text("fingerprint_hash").notNull(),
+    failedCount: integer("failed_count").notNull().default(0),
+    lockedUntil: timestamp("locked_until", { withTimezone: true }),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (table) => [
+    uniqueIndex("admin_login_fingerprint_idx").on(table.fingerprintHash),
+  ],
+);
+
 export const analyticsEvents = pgTable(
   "analytics_events",
   {
