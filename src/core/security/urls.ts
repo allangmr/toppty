@@ -58,6 +58,10 @@ export function canonicalizeHttpUrl(value: string) {
   return url.toString();
 }
 
+export function hostnameFromUrl(value: string) {
+  return new URL(value).hostname.replace(/^www\./i, "").toLowerCase();
+}
+
 export function withUtmSource(value: string, source: string) {
   const url = new URL(value);
   url.searchParams.set("utm_source", source);

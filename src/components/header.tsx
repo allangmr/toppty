@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { BrandMark } from "@/components/brand-mark";
 import { CreatorLink } from "@/components/creator-link";
 import { PanamaFlag } from "@/components/panama-flag";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -8,24 +7,27 @@ import { copy } from "@/experiments/leaderboard/copy";
 export function Header() {
   return (
     <header className="sticky top-3 z-40 w-full px-3">
-      <div className="glass-card mx-auto flex w-full max-w-4xl items-center justify-between gap-2 rounded-full py-1.5 pr-2 pl-4 sm:gap-4 sm:pl-5">
+      <div className="glass-card mx-auto flex w-full max-w-4xl items-center justify-center rounded-full py-1.5 pr-4 pl-4 md:justify-between md:gap-4 md:pr-2 md:pl-5">
         <div className="flex min-w-0 items-center">
           <Link
             href="/"
             className="font-display flex items-center gap-2 leading-none"
           >
-            <BrandMark className="block h-9 sm:h-10" />
-            <span className="sr-only">toppty.lol</span>
-            <span className="flex items-center gap-1.5 text-xs font-medium leading-none text-muted-foreground">
+            <span className="font-display text-[20px] font-bold tracking-[-0.04em] sm:text-[22px]">
+              toppty
+              <span className="text-flag-red">.</span>
+              lol
+            </span>
+            <span className="hidden items-center gap-1.5 text-xs font-medium leading-none text-muted-foreground md:flex">
               <PanamaFlag className="h-3 w-4 leading-none" />
-              <span className="hidden sm:inline">Panamá</span>
+              <span>Panamá</span>
             </span>
           </Link>
           <p className="sr-only">
             <CreatorLink prefix="hecho por" />
           </p>
         </div>
-        <div className="flex items-center gap-1 sm:gap-2">
+        <div className="hidden items-center gap-2 md:flex">
           <nav aria-label="Principal">
             <ul className="flex items-center text-sm">
               <li>

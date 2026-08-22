@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { BrandMark } from "@/components/brand-mark";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { logout } from "./actions";
 
@@ -12,7 +11,6 @@ export function AdminHeader() {
             href="/admin"
             className="inline-flex items-center gap-1.5 text-[18px] font-medium tracking-[-0.04em]"
           >
-            <BrandMark />
             <span>
               toppty
               <span className="text-flag-red">.</span>

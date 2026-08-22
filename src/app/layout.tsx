@@ -32,7 +32,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(getAppUrl()),
   title: {
     default: title,
-    template: `%s · TopPTY.lol`,
+    template: `%s · toppty.lol`,
   },
   description,
   applicationName: "TopPTY",
@@ -63,7 +63,7 @@ export const metadata: Metadata = {
     title,
     description,
     url: "/",
-    siteName: "TopPTY.lol",
+    siteName: "toppty.lol",
     locale: "es_PA",
     type: "website",
     images: [

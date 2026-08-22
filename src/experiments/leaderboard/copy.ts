@@ -5,7 +5,7 @@ const creatorAt = `@${leaderboardConfig.creator.xHandle}`;
 export const copy = {
   brand: "toppty.lol",
   flag: "🇵🇦",
-  title: "TopPTY.lol — ¿Quién ta arriba en Panamá?",
+  title: "toppty.lol — ¿Quién ta arriba en Panamá?",
   description:
     "La tabla de PTY. Pagas, te subes y que te tumben si pueden. Sin estafas: el que pone más, manda.",
   hero: "Conquista el #1 por",
