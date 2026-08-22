@@ -179,7 +179,7 @@ export function parseIdentity(raw: string): IdentityResult {
 export function faviconUrlForDomain(domain: string) {
   const host = domain.trim().toLowerCase();
   if (!host) return null;
-  return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(host)}&sz=64`;
+  return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(host)}&sz=128`;
 }
 
 export function initialsFromName(name: string) {
@@ -203,16 +203,19 @@ export async function fetchWebsiteMeta(destinationUrl: string) {
     const response = await fetch(destinationUrl, {
       method: "GET",
       redirect: "follow",
-      signal: AbortSignal.timeout(2500),
+      signal: AbortSignal.timeout(8000),
       headers: {
-        "User-Agent": "TopPTYBot/1.0 (+https://toppty.lol)",
-        Accept: "text/html",
+        "User-Agent":
+          "Mozilla/5.0 (compatible; TopPTYBot/1.0; +https://toppty.lol)",
+        Accept: "text/html,application/xhtml+xml;q=0.9,*/*;q=0.8",
       },
     });
     if (!response.ok) return null;
     const contentType = response.headers.get("content-type") || "";
     if (!contentType.includes("text/html")) return null;
-    const html = (await response.text()).slice(0, 80_000);
+    const html = await readHtmlHead(response, 120_000);
+    const pageUrl = response.url || destinationUrl;
+    const domain = hostnameFromUrl(canonicalizeHttpUrl(pageUrl));
 
     const meta = (property: string) => {
       const re = new RegExp(
@@ -232,22 +235,36 @@ export async function fetchWebsiteMeta(destinationUrl: string) {
       null;
     const description =
       meta("og:description") || meta("description") || null;
-    const iconHref =
-      html.match(
-        /<link[^>]+rel=["'](?:shortcut icon|icon|apple-touch-icon)["'][^>]+href=["']([^"']+)["']/i,
-      )?.[1] ||
-      html.match(
-        /<link[^>]+href=["']([^"']+)["'][^>]+rel=["'](?:shortcut icon|icon|apple-touch-icon)["']/i,
-      )?.[1] ||
+
+    const iconCandidates = [
+      ...Array.from(
+        html.matchAll(
+          /<link[^>]+rel=["']([^"']*icon[^"']*)["'][^>]+href=["']([^"']+)["']/gi,
+        ),
+      ).map((match) => ({ rel: match[1]!.toLowerCase(), href: match[2]! })),
+      ...Array.from(
+        html.matchAll(
+          /<link[^>]+href=["']([^"']+)["'][^>]+rel=["']([^"']*icon[^"']*)["']/gi,
+        ),
+      ).map((match) => ({ rel: match[2]!.toLowerCase(), href: match[1]! })),
+    ];
+
+    const preferredIcon =
+      iconCandidates.find((item) => item.rel.includes("apple-touch-icon"))
+        ?.href ||
+      iconCandidates.find((item) => item.rel.includes("icon"))?.href ||
       "/favicon.ico";
 
     let imageUrl: string | null = null;
     try {
-      imageUrl = new URL(iconHref, destinationUrl).toString();
+      imageUrl = new URL(preferredIcon, pageUrl).toString();
       if (!isSafeHttpUrl(imageUrl)) imageUrl = null;
     } catch {
       imageUrl = null;
     }
+
+    // Prefer a reliable Google favicon when the page icon is missing/broken.
+    imageUrl = imageUrl || faviconUrlForDomain(domain);
 
     return {
       title: decodeHtml(title)?.slice(0, 80) || null,
@@ -255,8 +272,43 @@ export async function fetchWebsiteMeta(destinationUrl: string) {
       imageUrl,
     };
   } catch {
-    return null;
+    try {
+      const domain = hostnameFromUrl(canonicalizeHttpUrl(destinationUrl));
+      return {
+        title: null,
+        description: null,
+        imageUrl: faviconUrlForDomain(domain),
+      };
+    } catch {
+      return null;
+    }
   }
+}
+
+/** Stop reading after </head> so huge SPAs (e.g. outrank.so) don't time out. */
+async function readHtmlHead(response: Response, maxBytes: number) {
+  const reader = response.body?.getReader();
+  if (!reader) {
+    return (await response.text()).slice(0, maxBytes);
+  }
+
+  const decoder = new TextDecoder();
+  let html = "";
+  try {
+    while (html.length < maxBytes) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      html += decoder.decode(value, { stream: true });
+      if (/<\/head>/i.test(html)) break;
+    }
+  } finally {
+    try {
+      await reader.cancel();
+    } catch {
+      // ignore cancel errors
+    }
+  }
+  return html.slice(0, maxBytes);
 }
 
 function decodeHtml(value: string | null) {

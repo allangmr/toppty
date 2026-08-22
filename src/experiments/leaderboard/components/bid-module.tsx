@@ -29,7 +29,6 @@ import type { RankedListing, SocialNetwork } from "../types";
 import { useBid } from "./bid-context";
 
 const initialState: CheckoutState | null = null;
-const DESCRIPTION_MAX = 140;
 
 function SocialPreviewIcon({
   network,
@@ -111,7 +110,6 @@ export function BidModule({
   const router = useRouter();
   const { amountDollars, setAmountDollars } = useBid();
   const [identifier, setIdentifier] = useState("");
-  const [description, setDescription] = useState("");
   const [lookup, setLookup] = useState<string | null>(null);
   const [started, setStarted] = useState(false);
   const [state, action, pending] = useActionState(createCheckout, initialState);
@@ -274,31 +272,6 @@ export function BidModule({
         <p className="text-center text-xs font-medium tracking-wide text-muted-foreground">
           {copy.identifierPrefixes}
         </p>
-
-        <div className="flex flex-col gap-1.5">
-          <label htmlFor="description" className="sr-only">
-            {copy.descriptionLabel}
-          </label>
-          <textarea
-            id="description"
-            name="description"
-            value={description}
-            onFocus={markStarted}
-            onChange={(event) =>
-              setDescription(event.target.value.slice(0, DESCRIPTION_MAX))
-            }
-            placeholder={copy.descriptionPlaceholder}
-            maxLength={DESCRIPTION_MAX}
-            rows={2}
-            className="min-h-[4.5rem] w-full resize-y rounded-xl border border-input bg-transparent px-3 py-2.5 text-base outline-none transition-colors placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
-          />
-          <p className="text-center text-xs text-muted-foreground">
-            {copy.descriptionHint}
-            {description.length > 0
-              ? ` · ${description.length}/${DESCRIPTION_MAX}`
-              : ""}
-          </p>
-        </div>
 
         <p className="text-center text-xs leading-relaxed text-pretty text-muted-foreground">
           {copy.identifierHint}
