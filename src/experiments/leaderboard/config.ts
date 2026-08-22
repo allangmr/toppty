@@ -13,6 +13,7 @@ export const leaderboardConfig = {
   onlineWindowMs: 5 * 60 * 1000,
   checkoutRateLimit: { limit: 8, windowMs: 15 * 60 * 1000 },
   reportRateLimit: { limit: 5, windowMs: 60 * 60 * 1000 },
+  outboundUtmSource: "toppty",
   creator: {
     name: "Allan",
     xHandle: "allan_coding",
