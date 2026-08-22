@@ -93,12 +93,10 @@ export function ListingCard({
           <ListingAvatar
             name={listing.displayName}
             imageUrl={
-              listing.socialNetwork
-                ? null
-                : listing.imageUrl ||
-                  (listing.identifierType === "website"
-                    ? faviconUrlForDomain(listing.displayName)
-                    : null)
+              listing.imageUrl ||
+              (listing.identifierType === "website"
+                ? faviconUrlForDomain(listing.displayName)
+                : null)
             }
             socialNetwork={listing.socialNetwork}
             size={avatarSize}

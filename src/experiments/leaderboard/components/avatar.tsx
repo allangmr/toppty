@@ -52,6 +52,22 @@ export function ListingAvatar({
             : "size-5";
   const hue = avatarHue(name);
 
+  if (imageUrl) {
+    return (
+      // External favicons / profile images vary in format and host.
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={imageUrl}
+        alt=""
+        width={64}
+        height={64}
+        loading="lazy"
+        decoding="async"
+        className={cn(dim, "shrink-0 rounded-md bg-muted object-cover")}
+      />
+    );
+  }
+
   if (socialNetwork) {
     return (
       <div
@@ -63,22 +79,6 @@ export function ListingAvatar({
       >
         <SocialGlyph network={socialNetwork} className={icon} />
       </div>
-    );
-  }
-
-  if (imageUrl) {
-    return (
-      // External favicons vary in format and host.
-      // eslint-disable-next-line @next/next/no-img-element
-      <img
-        src={imageUrl}
-        alt=""
-        width={64}
-        height={64}
-        loading="lazy"
-        decoding="async"
-        className={cn(dim, "shrink-0 rounded-md bg-muted object-cover")}
-      />
     );
   }
 
