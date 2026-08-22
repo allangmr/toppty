@@ -1,7 +1,6 @@
 import { BrandMark } from "@/components/brand-mark";
 import { CreatorLink } from "@/components/creator-link";
 import { copy } from "@/experiments/leaderboard/copy";
-import { leaderboardConfig } from "@/experiments/leaderboard/config";
 
 export function Footer() {
   return (
@@ -13,21 +12,9 @@ export function Footer() {
         </p>
         <p>
           Hecho en PTY {copy.flag} por <CreatorLink />. Aquí manda el que ponga
-          más.
+          más. Si hay un lío, chatéame.
         </p>
         <p className="text-xs leading-relaxed">{copy.paymentsFinal}</p>
-        <p className="text-xs">
-          Si hay un lío, chatéame a{" "}
-          <a
-            href={leaderboardConfig.creator.xUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-semibold text-foreground underline-offset-2 hover:underline"
-          >
-            @{leaderboardConfig.creator.xHandle}
-          </a>
-          .
-        </p>
       </div>
     </footer>
   );
